@@ -16,19 +16,22 @@
 
 @layer components {
   .section {
-    @apply py-20;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 
   .container-main {
-    @apply max-w-7xl mx-auto px-6 lg:px-8;
+    max-width: 85rem;
+    @apply mx-auto px-2;
   }
 
   .page-pt {
-    @apply pt-24 md:pt-32 lg:pt-40;
+    padding-top: 7rem;
   }
 
   .section-spacing {
-    @apply py-16 md:py-24 lg:py-32;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 
   .text-premium-h1 {

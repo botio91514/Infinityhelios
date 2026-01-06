@@ -155,7 +155,7 @@ export default function ProductCatalog({ limit }) {
             <span className="text-[10px] font-black tracking-[0.4em] uppercase text-solarGreen px-5 py-2 bg-solarGreen/10 rounded-full mb-6 inline-block">
               Premium Range
             </span>
-            <h2 className="text-premium-h1 mb-8">
+            <h2 className="text-premium-h2 mb-5">
               State of the Art <span className="text-solarGreen text-glow">Solar Solutions</span>
             </h2>
             <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 font-medium leading-relaxed">

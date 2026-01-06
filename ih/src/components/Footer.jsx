@@ -151,7 +151,7 @@ export default function Footer() {
           <div className="flex gap-8">
             <div className="flex items-center gap-3 bg-white/5 px-6 py-2 rounded-full border border-white/5">
               <div className="w-2 h-2 bg-solarGreen rounded-full animate-pulse shadow-[0_0_10px_rgba(100,255,153,0.8)]"></div>
-              <span className="text-[10px] font-black tracking-widest text-white/50 uppercase">Grid Status: Operational</span>
+              <span className="text-[10px] font-black tracking-widest text-white/50 uppercase">Design & Developed by Gatistwam</span>
             </div>
           </div>
         </div>

@@ -137,7 +137,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                   to="/login"
                   className="px-8 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-solarBlue text-[11px] font-black rounded-full hover:shadow-2xl hover:shadow-solarGreen/20 transition-all uppercase tracking-widest"
                 >
-                  Join JH
+                  Join Us
                 </Link>
               )}
             </div>

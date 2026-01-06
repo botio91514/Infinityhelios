@@ -83,9 +83,8 @@ function StarRating({ rating }) {
       {[...Array(5)].map((_, i) => (
         <svg
           key={i}
-          className={`w-5 h-5 ${
-            i < rating ? "text-yellow-400 fill-current" : "text-gray-300"
-          }`}
+          className={`w-5 h-5 ${i < rating ? "text-yellow-400 fill-current" : "text-gray-300"
+            }`}
           viewBox="0 0 20 20"
         >
           <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
@@ -101,7 +100,7 @@ export default function Testimonials() {
   const [touchEnd, setTouchEnd] = useState(null);
   const intervalRef = useRef(null);
   const [itemsPerView, setItemsPerView] = useState(4);
-  
+
   // Responsive items per view
   useEffect(() => {
     const updateItemsPerView = () => {
@@ -111,18 +110,18 @@ export default function Testimonials() {
       } else if (window.innerWidth < 1024) {
         newItemsPerView = 2;
       }
-      
+
       if (newItemsPerView !== itemsPerView) {
         setItemsPerView(newItemsPerView);
         setCurrentIndex(0); // Reset to first slide when view changes
       }
     };
-    
+
     updateItemsPerView();
     window.addEventListener('resize', updateItemsPerView);
     return () => window.removeEventListener('resize', updateItemsPerView);
   }, [itemsPerView]);
-  
+
   const totalSlides = Math.ceil(testimonials.length / itemsPerView);
 
   // Reset current index if out of bounds
@@ -211,7 +210,7 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="section bg-slate-50 dark:bg-slate-900 py-20">
+    <section className="section bg-slate-50 dark:bg-slate-900">
       <div className="container-main">
         <ScrollReveal>
           <div className="text-center mb-16">
@@ -348,11 +347,10 @@ export default function Testimonials() {
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex
-                    ? "w-8 bg-solarGreen"
-                    : "w-3 bg-slate-300 dark:bg-slate-600 hover:bg-slate-400 dark:hover:bg-slate-500"
-                }`}
+                className={`h-3 rounded-full transition-all duration-300 ${index === currentIndex
+                  ? "w-8 bg-solarGreen"
+                  : "w-3 bg-slate-300 dark:bg-slate-600 hover:bg-slate-400 dark:hover:bg-slate-500"
+                  }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}

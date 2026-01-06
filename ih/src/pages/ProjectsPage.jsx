@@ -139,8 +139,8 @@ export default function ProjectsPage() {
                                 transition={{ delay: idx * 0.05 }}
                                 onClick={() => setFilter(cat)}
                                 className={`px-8 py-3 rounded-2xl font-bold transition-all duration-500 whitespace-nowrap ${filter === cat
-                                        ? "bg-solarGreen text-solarBlue shadow-lg shadow-solarGreen/20 scale-105"
-                                        : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-solarGreen"
+                                    ? "bg-solarGreen text-solarBlue shadow-lg shadow-solarGreen/20 scale-105"
+                                    : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-solarGreen"
                                     }`}
                             >
                                 {cat}
