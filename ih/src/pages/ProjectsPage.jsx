@@ -89,9 +89,9 @@ export default function ProjectsPage() {
     }, [filter]);
 
     return (
-        <div className="min-h-screen bg-white dark:bg-solarBlue page-pt pb-24 transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-solarBlue page-pt pb-24 transition-colors duration-300 relative">
             {/* Background Decorative Elements */}
-            <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-solarGreen/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-solarGreen/5 rounded-full blur-3xl pointer-events-none -z-10" />
 
             {/* Header Section */}
             <section className="relative mb-20">

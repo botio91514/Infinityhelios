@@ -31,13 +31,13 @@ export default function Home() {
         </div>
 
         {/* HERO CONTENT */}
-        <div className="container-main relative z-10 w-full pt-20 pb-35">
+        <div className="container-main relative z-10 w-full pt-20 pb-32 sm:pb-36 md:pb-40 lg:pb-48">
           <div className="max-w-2xl">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-solarGreen/20 backdrop-blur-md border border-solarGreen/30"
+              className="mt-8 mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-solarGreen/20 backdrop-blur-md border border-solarGreen/30"
             >
               <span className="w-2 h-2 rounded-full bg-solarGreen animate-pulse"></span>
               <span className="text-solarGreen text-xs font-bold tracking-widest uppercase">Pioneering Renewable Excellence</span>

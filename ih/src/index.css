@@ -16,48 +16,25 @@
 
 @layer components {
   .section {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-
-  @media (min-width: 768px) {
-    .section {
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 
   .container-main {
     max-width: 85rem;
-    @apply mx-auto px-1;
-  }
-
-  @media (min-width: 768px) {
-    .container-main {
-      @apply px-2;
-    }
+    @apply mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   .page-pt {
-    padding-top: 5rem;
-  }
-
-  @media (min-width: 768px) {
-    .page-pt {
-      padding-top: 7rem;
-    }
+    @apply pt-20 sm:pt-24 md:pt-28 lg:pt-32;
   }
 
   .section-spacing {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    @apply py-8 sm:py-10 md:py-12 lg:py-16;
   }
 
-  @media (min-width: 768px) {
-    .section-spacing {
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
+  .section {
+    @apply py-6 sm:py-8 md:py-10 lg:py-12;
   }
 
   .text-premium-h1 {
