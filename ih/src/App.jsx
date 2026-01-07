@@ -30,6 +30,8 @@ import SolarCalculator from "./pages/SolarCalculator";
 import Maintenance from "./pages/Maintenance";
 import LearningHub from "./pages/LearningHub";
 import BlogPost from "./pages/BlogPost";
+import PrivacyData from "./pages/PrivacyData";
+import Compliance from "./pages/Compliance";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -107,6 +109,8 @@ function App() {
                   <Route path="/maintenance" element={<Maintenance />} />
                   <Route path="/learning-hub" element={<LearningHub />} />
                   <Route path="/blog/:id" element={<BlogPost />} />
+                  <Route path="/privacy-data" element={<PrivacyData />} />
+                  <Route path="/compliance" element={<Compliance />} />
                   <Route
                     path="/order/:id/invoice"
                     element={

@@ -1,14 +1,33 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Send, Instagram, Linkedin, Twitter, Facebook, ArrowRight, ShieldCheck, Zap } from "lucide-react";
+import { Send, Instagram, Linkedin, Twitter, Facebook, ArrowRight, ShieldCheck, Zap, Loader2, Check } from "lucide-react";
+import { sendContactForm } from "../api/contact";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle");
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    alert("Subscription successful! Welcome to the Helios family.");
-    setEmail("");
+    if (!email) return;
+
+    setStatus("loading");
+    try {
+      await sendContactForm({
+        name: "Subscriber",
+        email,
+        phone: "N/A",
+        subject: "Newsletter Subscription",
+        message: "User subscribed to newsletter via footer."
+      });
+      setStatus("success");
+      setEmail("");
+      setTimeout(() => setStatus("idle"), 3000);
+    } catch (error) {
+      console.error(error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
   };
 
   return (
@@ -41,9 +60,17 @@ export default function Footer() {
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 top-2 bottom-2 aspect-square bg-solarGreen text-solarBlue rounded-xl flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-solarGreen/20"
+                  disabled={status === "loading" || status === "success"}
+                  className={`absolute right-2 top-2 bottom-2 aspect-square rounded-xl flex items-center justify-center hover:scale-105 transition-all shadow-lg shadow-solarGreen/20 
+                    ${status === "success" ? "bg-green-500 text-white" : status === "error" ? "bg-red-500 text-white" : "bg-solarGreen text-solarBlue"}`}
                 >
-                  <Send className="w-4 h-4" />
+                  {status === "loading" ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : status === "success" ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
                 </button>
               </form>
               <p className="text-[10px] text-slate-500 font-medium">By subscribing, you agree to our Terms of Technology.</p>
@@ -52,10 +79,10 @@ export default function Footer() {
             {/* Social Media */}
             <div className="flex gap-4">
               {[
-                { icon: <Linkedin className="w-5 h-5" />, href: "#" },
-                { icon: <Twitter className="w-5 h-5" />, href: "#" },
-                { icon: <Instagram className="w-5 h-5" />, href: "#" },
-                { icon: <Facebook className="w-5 h-5" />, href: "#" }
+                { icon: <Linkedin className="w-5 h-5" />, href: "https://linkedin.com/company/infinityhelios" },
+                { icon: <Twitter className="w-5 h-5" />, href: "https://twitter.com/infinityhelios" },
+                { icon: <Instagram className="w-5 h-5" />, href: "https://instagram.com/infinityhelios" },
+                { icon: <Facebook className="w-5 h-5" />, href: "https://facebook.com/infinityhelios" }
               ].map((item, i) => (
                 <a
                   key={i}
@@ -100,8 +127,8 @@ export default function Footer() {
               <li><Link to="/maintenance" className="text-slate-400 hover:text-white transition-colors">Monitoring Care</Link></li>
               <li><Link to="/dashboard" className="text-slate-400 hover:text-white transition-colors">Client Dashboard</Link></li>
               <li><Link to="/contact" className="text-slate-400 hover:text-white transition-colors">Inquiry Support</Link></li>
-              <li><Link to="/" className="text-slate-400 hover:text-white transition-colors">Privacy & Data</Link></li>
-              <li><Link to="/" className="text-slate-400 hover:text-white transition-colors">Compliance</Link></li>
+              <li><Link to="/privacy-data" className="text-slate-400 hover:text-white transition-colors">Privacy & Data</Link></li>
+              <li><Link to="/compliance" className="text-slate-400 hover:text-white transition-colors">Compliance</Link></li>
             </ul>
           </div>
 

@@ -2,6 +2,9 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import ScrollReveal from "../components/ScrollReveal";
 
+import { sendContactForm } from "../api/contact";
+import { Loader2, Check } from "lucide-react";
+
 const Maintenance = () => {
     const [bookingData, setBookingData] = useState({
         name: "",
@@ -10,6 +13,7 @@ const Maintenance = () => {
         address: "",
         preferredDate: ""
     });
+    const [status, setStatus] = useState("idle");
 
     const services = [
         {
@@ -35,9 +39,26 @@ const Maintenance = () => {
         }
     ];
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        alert("Booking request received! Our technician will call you shortly.");
+        setStatus("loading");
+
+        const selectedService = services.find(s => s.id === bookingData.serviceType);
+
+        try {
+            await sendContactForm({
+                ...bookingData,
+                subject: `Maintenance Booking: ${selectedService.name}`,
+                message: `Service Plan: ${selectedService.name} (₹${selectedService.price})\nPreferred Date: ${bookingData.preferredDate}\nAddress: ${bookingData.address}`
+            });
+            setStatus("success");
+            setBookingData({ name: "", phone: "", serviceType: "basic", address: "", preferredDate: "" });
+            setTimeout(() => setStatus("idle"), 5000);
+        } catch (error) {
+            console.error(error);
+            setStatus("error");
+            setTimeout(() => setStatus("idle"), 5000);
+        }
     };
 
     return (
@@ -87,8 +108,8 @@ const Maintenance = () => {
                                     key={service.id}
                                     onClick={() => setBookingData({ ...bookingData, serviceType: service.id })}
                                     className={`relative p-8 rounded-[40px] border-2 transition-all text-left flex flex-col h-full ${bookingData.serviceType === service.id
-                                            ? "border-solarGreen bg-solarGreen/5 shadow-2xl shadow-solarGreen/10"
-                                            : "border-slate-200 dark:border-white/10"
+                                        ? "border-solarGreen bg-solarGreen/5 shadow-2xl shadow-solarGreen/10"
+                                        : "border-slate-200 dark:border-white/10"
                                         }`}
                                 >
                                     <div className="text-4xl mb-4">{service.icon}</div>
@@ -160,9 +181,24 @@ const Maintenance = () => {
                             </div>
                             <button
                                 type="submit"
-                                className="w-full bg-solarGreen text-white font-black py-5 rounded-2xl hover:scale-105 transition-all shadow-xl shadow-solarGreen/20 uppercase tracking-widest text-xs"
+                                disabled={status === "loading" || status === "success"}
+                                className={`w-full font-black py-5 rounded-2xl hover:scale-105 transition-all shadow-xl shadow-solarGreen/20 uppercase tracking-widest text-xs flex items-center justify-center gap-2
+                                    ${status === "success" ? "bg-green-500 text-white" : "bg-solarGreen text-white"}
+                                `}
                             >
-                                Schedule Inspection
+                                {status === "loading" ? (
+                                    <>
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                        Scheduling...
+                                    </>
+                                ) : status === "success" ? (
+                                    <>
+                                        <Check className="w-5 h-5" />
+                                        Booking Confirmed
+                                    </>
+                                ) : (
+                                    "Schedule Inspection"
+                                )}
                             </button>
                         </form>
                     </motion.div>

@@ -2,6 +2,7 @@ import express from "express";
 import axios from "axios";
 import cors from "cors";
 import dotenv from "dotenv";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -219,42 +220,54 @@ app.get("/api/products/:id", async (req, res) => {
 });
 
 // CONTACT FORM 7 PROXY
+// CONTACT FORM - DIRECT EMAIL (NODEMAILER)
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // or 'hostinger'
+    auth: {
+        user: process.env.EMAIL_USER, // Your email (e.g., info@infinityhelios.com)
+        pass: process.env.EMAIL_PASS  // Your email password or App Password
+    }
+});
+
 app.post("/api/contact", async (req, res) => {
     try {
-        const { name, email, phone, subject, message, formId } = req.body;
+        const { name, email, phone, subject, message } = req.body;
+        console.log(`[Contact] Received inquiry from: ${name} (${email})`);
 
-        // CF7 expects FormData (multipart/form-data) but the REST API also accepts application/x-www-form-urlencoded
-        // We'll use a URLSearchParams or just pass it if the WP endpoint accepts JSON (some versions/plugins do)
-        // Standard CF7 REST API usually wants multipart/form-data.
-
-        const cf7Endpoint = `${process.env.WC_BASE_URL}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
-
-        console.log(`[CF7 Proxy] Forwarding to: ${cf7Endpoint}`);
-
-        const formData = new FormData();
-        formData.append("your-name", name);
-        formData.append("your-email", email);
-        formData.append("your-subject", subject || "General Inquiry");
-        formData.append("your-message", `${message || ""}\n\nPhone: ${phone || "Not provided"}`);
-
-        // CF7 requires a unit tag to process the request via REST API
-        formData.append("_wpcf7_unit_tag", `wpcf7-f${formId}-p1-o1`);
-
-        const response = await axios.post(cf7Endpoint, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
+        // 1. Email to YOU (Admin)
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: process.env.EMAIL_USER, // Send to yourself
+            subject: `New Solar Inquiry: ${name}`,
+            html: `
+                <h3>New Lead Received</h3>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Phone:</strong> ${phone}</p>
+                <p><strong>Subject:</strong> ${subject || "Free Quote Request"}</p>
+                <p><strong>Message:</strong></p>
+                <p>${message || "No message provided."}</p>
+            `
         });
 
-        console.log(`[CF7 Success] Status: ${response.data.status}, Message: ${response.data.message}`);
-        res.json(response.data);
+        // 2. Auto-Reply to CUSTOMER
+        if (email) {
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: "We received your solar inquiry! ☀️",
+                html: `
+                    <h3>Hi ${name},</h3>
+                    <p>Thank you for contacting <strong>Infinity Helios</strong>. We have received your request and our solar experts will get back to you within 24 hours.</p>
+                    <p>Best Regards,<br>The Infinity Helios Team</p>
+                `
+            });
+        }
+
+        res.json({ success: true, message: "Email sent successfully!" });
     } catch (error) {
-        console.error("[CF7 Error]", error.response?.data || error.message);
-        res.status(500).json({
-            success: false,
-            message: "Failed to send message. Please try again later.",
-            details: error.response?.data
-        });
+        console.error("[Email Error]", error);
+        res.status(500).json({ success: false, message: "Failed to send email." });
     }
 });
 

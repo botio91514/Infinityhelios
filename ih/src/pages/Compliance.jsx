@@ -1,0 +1,117 @@
+import { motion } from "framer-motion";
+import { CheckCircle, Award, Scale, AlertTriangle, FileCheck, ShieldCheck } from "lucide-react";
+
+export default function Compliance() {
+    const compliances = [
+        {
+            title: "ISO 9001:2015 Certified",
+            id: "QMS-2025-8892",
+            description: "Certified Quality Management System ensuring consistent quality in our solar panel manufacturing and installation processes.",
+            status: "Active",
+            color: "text-green-500"
+        },
+        {
+            title: "IEC 61215 & IEC 61730",
+            id: "PV-IEC-STD-22",
+            description: "International Electrotechnical Commission standards for PV module design qualification, type approval, and safety qualification.",
+            status: "Verified",
+            color: "text-blue-500"
+        },
+        {
+            title: "BIS Certification",
+            id: "R-99002212",
+            description: "Bureau of Indian Standards (BIS) compulsory registration for solar photovoltaic modules, ensuring adherence to Indian safety standards.",
+            status: "Compliant",
+            color: "text-orange-500"
+        },
+        {
+            title: "Grid Connectivity Standards",
+            id: "CEA-REG-2023",
+            description: "Fully compliant with Central Electricity Authority (CEA) technical standards for connectivity to the grid.",
+            status: "Approved",
+            color: "text-purple-500"
+        }
+    ];
+
+    return (
+        <div className="min-h-screen bg-white dark:bg-solarBlue page-pt pb-24 transition-colors duration-300 relative overflow-hidden">
+            {/* Background Elements */}
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-solarGreen/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+
+            <div className="container-main relative z-10">
+                {/* Header */}
+                <div className="text-center mb-20">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white font-bold text-xs uppercase tracking-widest mb-6 border border-slate-200 dark:border-white/10"
+                    >
+                        <ShieldCheck className="w-4 h-4 text-solarGreen" /> Regulatory Adherence
+                    </motion.div>
+
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6"
+                    >
+                        Compliance & <span className="text-solarGreen">Standards</span>
+                    </motion.h1>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="max-w-2xl mx-auto text-lg text-slate-600 dark:text-slate-400"
+                    >
+                        We adhere to the highest international and national standards to ensure safety, reliability, and performance in every kilowatt we generate.
+                    </motion.p>
+                </div>
+
+                {/* Certifications List */}
+                <div className="max-w-4xl mx-auto space-y-6">
+                    {compliances.map((item, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.1 * index + 0.3 }}
+                            className="group p-8 rounded-[30px] bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-white/10 hover:border-solarGreen/50 transition-all flex flex-col md:flex-row items-start md:items-center gap-6 shadow-xl shadow-black/5"
+                        >
+                            <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                <Award className="w-8 h-8 text-solarGreen" />
+                            </div>
+
+                            <div className="flex-1">
+                                <div className="flex flex-wrap items-center gap-3 mb-2">
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">{item.title}</h3>
+                                    <span className="text-xs font-mono bg-slate-100 dark:bg-white/10 px-2 py-1 rounded text-slate-500">{item.id}</span>
+                                </div>
+                                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                                    {item.description}
+                                </p>
+                            </div>
+
+                            <div className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-white/5 border border-white/10 ${item.color}`}>
+                                <CheckCircle className="w-4 h-4" /> {item.status}
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* Footer Note */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                    className="text-center mt-20 pt-10 border-t border-slate-200 dark:border-white/5"
+                >
+                    <p className="text-slate-500 dark:text-slate-500 text-sm flex items-center justify-center gap-2">
+                        <Scale className="w-4 h-4" /> All installation protocols verify with current Ministry of New and Renewable Energy (MNRE) guidelines.
+                    </p>
+                </motion.div>
+            </div>
+        </div>
+    );
+}
