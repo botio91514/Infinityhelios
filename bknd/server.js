@@ -227,13 +227,17 @@ app.get("/api/products/:id", async (req, res) => {
     }
 });
 
-// CONTACT FORM 7 PROXY
-// CONTACT FORM - DIRECT EMAIL (NODEMAILER)
+// CONTACT FORM - NODEMAILER (Render-compatible SMTP)
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // or 'hostinger'
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT) || 2525,
+    secure: false, // Use STARTTLS
     auth: {
-        user: process.env.EMAIL_USER, // Your email (e.g., info@infinityhelios.com)
-        pass: process.env.EMAIL_PASS  // Your email password or App Password
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    },
+    tls: {
+        rejectUnauthorized: false
     }
 });
 
