@@ -227,17 +227,17 @@ app.get("/api/products/:id", async (req, res) => {
     }
 });
 
-// CONTACT FORM - NODEMAILER (Render-compatible SMTP)
+// CONTACT FORM - NODEMAILER with Gmail (Cloud-compatible)
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT) || 2525,
-    secure: false, // Use STARTTLS
+    host: 'smtp.gmail.com',
+    port: 465, // SSL port
+    secure: true, // Use SSL
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        pass: process.env.EMAIL_PASS // Must be App Password, not regular password
     },
     tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: true
     }
 });
 
