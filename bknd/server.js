@@ -20,21 +20,13 @@ app.post("/api/auth/register", async (req, res) => {
         const { email, password, first_name, last_name } = req.body;
         console.log(`[Auth] Registration attempt for: ${email}`);
 
-        // Create the customer in WooCommerce using our Secret Keys
-        const response = await axios.post(`${process.env.WC_BASE_URL}/wp-json/wc/v3/customers`, {
+        // Create the customer using 'wc' instance (Basic Auth) which works for products
+        const response = await wc.post("/customers", {
             email,
             password,
             first_name,
             last_name,
-            username: email.split('@')[0] // Use email prefix as username
-        }, {
-            params: {
-                consumer_key: process.env.WC_CONSUMER_KEY,
-                consumer_secret: process.env.WC_CONSUMER_SECRET
-            },
-            headers: {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            }
+            username: email.split('@')[0]
         });
 
         res.json({ success: true, user: response.data });
