@@ -31,6 +31,9 @@ app.post("/api/auth/register", async (req, res) => {
             params: {
                 consumer_key: process.env.WC_CONSUMER_KEY,
                 consumer_secret: process.env.WC_CONSUMER_SECRET
+            },
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             }
         });
 
@@ -51,6 +54,10 @@ app.post("/api/auth/login", async (req, res) => {
         const response = await axios.post(`${process.env.WC_BASE_URL}/wp-json/jwt-auth/v1/token`, {
             username,
             password
+        }, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
         });
 
         // If successful, WordPress returns a token and user details
@@ -70,6 +77,8 @@ app.all(/^\/api\/store\/.*/, async (req, res) => {
         console.log(`[Proxy] Incoming: ${req.path} -> Target: ${url}`);
 
         const headers = {
+            "component-type": req.headers["content-type"],
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "host": new URL(process.env.WC_BASE_URL).host
         };
 
