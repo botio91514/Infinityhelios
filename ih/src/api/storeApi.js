@@ -5,6 +5,11 @@ const BASE_URL = `${API_BASE_URL}/api/store`;
 
 export const storeApi = axios.create({
   baseURL: BASE_URL,
+  headers: {
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0",
+  },
   withCredentials: true,
 });
 // Add a request interceptor to attach JWT token if available

@@ -107,6 +107,10 @@ app.all(/^\/api\/store\/.*/, async (req, res) => {
         if (respNonce) res.setHeader("nonce", respNonce);
         if (response.headers["cart-token"]) res.setHeader("cart-token", response.headers["cart-token"]);
 
+        res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        res.set("Pragma", "no-cache");
+        res.set("Expires", "0");
+
         res.status(response.status).json(response.data);
     } catch (error) {
         console.error(`[Proxy Error] ${error.response?.status || 'No Status'} - ${req.path}`);

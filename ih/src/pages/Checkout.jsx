@@ -83,6 +83,12 @@ const Checkout = () => {
     ];
 
     useEffect(() => {
+        // Load saved data first
+        const savedData = localStorage.getItem("checkout_safe_data");
+        if (savedData) {
+            setFormData(JSON.parse(savedData));
+        }
+
         const fetchProfile = async () => {
             if (user?.email) {
                 try {
@@ -94,20 +100,22 @@ const Checkout = () => {
                         const isValidState = indianStates.some(s => s.code === loadedState);
                         const safeState = isValidState ? loadedState : "";
 
-                        setFormData({
+                        // Merge profile data but prefer saved fields if user typed something
+                        setFormData(prev => ({
                             billing_address: {
-                                first_name: data.billing.first_name || data.first_name || "",
-                                last_name: data.billing.last_name || data.last_name || "",
-                                address_1: data.billing.address_1 || "",
-                                address_2: data.billing.address_2 || "",
-                                city: data.billing.city || "",
-                                state: safeState,
-                                postcode: data.billing.postcode || "",
+                                ...prev.billing_address,
+                                first_name: prev.billing_address.first_name || data.billing.first_name || data.first_name || "",
+                                last_name: prev.billing_address.last_name || data.billing.last_name || data.last_name || "",
+                                address_1: prev.billing_address.address_1 || data.billing.address_1 || "",
+                                address_2: prev.billing_address.address_2 || data.billing.address_2 || "",
+                                city: prev.billing_address.city || data.billing.city || "",
+                                state: prev.billing_address.state || safeState,
+                                postcode: prev.billing_address.postcode || data.billing.postcode || "",
                                 country: data.billing.country || "IN",
-                                email: data.billing.email || user.email,
-                                phone: data.billing.phone || ""
+                                email: prev.billing_address.email || data.billing.email || user.email,
+                                phone: prev.billing_address.phone || data.billing.phone || ""
                             }
-                        });
+                        }));
                     }
                 } catch (err) {
                     console.log("Could not fetch profile, using auth defaults.");
@@ -116,6 +124,14 @@ const Checkout = () => {
         };
         fetchProfile();
     }, [user]);
+
+    // Save form data on every change
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            localStorage.setItem("checkout_safe_data", JSON.stringify(formData));
+        }, 500);
+        return () => clearTimeout(timeout);
+    }, [formData]);
 
     const validateForm = () => {
         const newErrors = {};
