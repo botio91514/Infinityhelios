@@ -11,6 +11,7 @@ export const CartProvider = ({ children }) => {
 
   const loadCart = async () => {
     try {
+      setLoading(true);
       const data = await getCart();
       setCart(data);
     } catch (err) {
@@ -20,9 +21,20 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // Reload cart whenever user logs in or out
+  // Only load cart once on mount, not on every user change
   useEffect(() => {
-    loadCart();
+    // Delay initial cart load to prioritize page content
+    const timer = setTimeout(() => {
+      loadCart();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []); // Empty dependency - only run once
+
+  // Reload cart when user logs in/out
+  useEffect(() => {
+    if (user !== null) {
+      loadCart();
+    }
   }, [user]);
 
   const addItem = async (productId, quantity = 1) => {
