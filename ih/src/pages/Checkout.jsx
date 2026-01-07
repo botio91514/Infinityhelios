@@ -84,9 +84,19 @@ const Checkout = () => {
 
     useEffect(() => {
         // Load saved data first
-        const savedData = localStorage.getItem("checkout_safe_data");
-        if (savedData) {
-            setFormData(JSON.parse(savedData));
+        const savedRaw = localStorage.getItem("checkout_safe_data");
+        if (savedRaw) {
+            try {
+                const savedData = JSON.parse(savedRaw);
+                // Security: If logged in, ensure saved data email matches current user
+                if (user?.email && savedData.billing_address?.email && savedData.billing_address.email !== user.email) {
+                    localStorage.removeItem("checkout_safe_data");
+                } else {
+                    setFormData(savedData);
+                }
+            } catch (e) {
+                console.error("Failed to parse saved checkout data", e);
+            }
         }
 
         const fetchProfile = async () => {

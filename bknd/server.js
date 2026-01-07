@@ -79,15 +79,24 @@ app.all(/^\/api\/store\/.*/, async (req, res) => {
         const nonce = req.headers["nonce"] || req.headers["Nonce"] || req.headers["x-wc-store-api-nonce"];
         const cartToken = req.headers["cart-token"] || req.headers["Cart-Token"];
         const cookies = req.headers["cookie"];
+        const auth = req.headers["authorization"];
 
         if (nonce) {
             headers["nonce"] = nonce;
             headers["X-WC-Store-API-Nonce"] = nonce;
         }
-        if (cartToken) headers["cart-token"] = cartToken;
-        if (cookies) headers["cookie"] = cookies;
+
+        // Logic: If user is authenticated (JWT), don't send guest cookies/tokens
+        // to prevent WooCommerce from trying to merge or use the guest session.
+        if (auth) {
+            headers["authorization"] = auth;
+            console.log("[Proxy] Auth detected. Suppressing guest cookies/tokens.");
+        } else {
+            if (cartToken) headers["cart-token"] = cartToken;
+            if (cookies) headers["cookie"] = cookies;
+        }
+
         if (req.headers["content-type"]) headers["content-type"] = req.headers["content-type"];
-        if (req.headers["authorization"]) headers["authorization"] = req.headers["authorization"];
 
         console.log(`[Proxy] Forwarding headers: Nonce=${!!nonce}, Token=${!!cartToken}, Auth=${!!req.headers["authorization"]}`);
 

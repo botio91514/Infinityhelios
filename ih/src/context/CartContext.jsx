@@ -32,9 +32,19 @@ export const CartProvider = ({ children }) => {
 
   // Reload cart when user logs in/out
   useEffect(() => {
-    if (user !== null) {
-      loadCart();
-    }
+    const handleUserChange = async () => {
+      if (user) {
+        // Clear tokens to force WooCommerce to switch to the user's DB cart
+        localStorage.removeItem("wc_cart_token");
+        localStorage.removeItem("wc_nonce");
+
+        // Wait 300ms for state/auth to settle before fetching
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+      await loadCart();
+    };
+
+    handleUserChange();
   }, [user]);
 
   const addItem = async (productId, quantity = 1) => {

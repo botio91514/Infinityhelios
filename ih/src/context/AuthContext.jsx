@@ -63,6 +63,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setUser(null);
         localStorage.removeItem("user");
+        localStorage.removeItem("checkout_safe_data"); // Clear checkout form data
         clearCartSession();
     };
 

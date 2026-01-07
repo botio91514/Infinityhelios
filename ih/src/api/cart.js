@@ -39,7 +39,8 @@ storeApi.interceptors.response.use((response) => {
 
 // GET CART
 export const getCart = async () => {
-    const res = await storeApi.get("/v1/cart");
+    // Add cache buster to prevent stale "empty" responses
+    const res = await storeApi.get(`/v1/cart?cb=${Date.now()}`);
     return res.data;
 };
 
