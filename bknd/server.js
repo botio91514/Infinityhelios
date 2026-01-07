@@ -3,6 +3,7 @@ import axios from "axios";
 import cors from "cors";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 dotenv.config();
 
@@ -227,29 +228,28 @@ app.get("/api/products/:id", async (req, res) => {
     }
 });
 
-// CONTACT FORM - NODEMAILER with Gmail (Cloud-compatible)
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465, // SSL port
-    secure: true, // Use SSL
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS // Must be App Password, not regular password
-    },
-    tls: {
-        rejectUnauthorized: true
-    }
-});
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
         console.log(`[Contact] Received inquiry from: ${name} (${email})`);
 
+        if (!process.env.RESEND_API_KEY) {
+            console.error("[Email Error] RESEND_API_KEY not configured");
+            return res.status(500).json({
+                success: false,
+                message: "Email service not configured"
+            });
+        }
+
+        const adminEmail = process.env.EMAIL_USER || "botio91514@gmail.com";
+
         // 1. Email to YOU (Admin)
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER, // Send to yourself
+        await resend.emails.send({
+            from: 'Infinity Helios <onboarding@resend.dev>', // Resend's default sender
+            to: adminEmail,
             subject: `New Solar Inquiry: ${name}`,
             html: `
                 <h3>New Lead Received</h3>
@@ -264,8 +264,8 @@ app.post("/api/contact", async (req, res) => {
 
         // 2. Auto-Reply to CUSTOMER
         if (email) {
-            await transporter.sendMail({
-                from: process.env.EMAIL_USER,
+            await resend.emails.send({
+                from: 'Infinity Helios <onboarding@resend.dev>',
                 to: email,
                 subject: "We received your solar inquiry! ☀️",
                 html: `
@@ -276,6 +276,7 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
+        console.log("[Email] Successfully sent via Resend");
         res.json({ success: true, message: "Email sent successfully!" });
     } catch (error) {
         console.error("[Email Error]", error);
