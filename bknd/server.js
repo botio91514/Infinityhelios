@@ -97,6 +97,9 @@ app.all(/^\/api\/store\/.*/, async (req, res) => {
 
         if (req.headers["content-type"]) headers["content-type"] = req.headers["content-type"];
 
+        // delete content-length to let axios calculate it for the new body
+        delete headers["content-length"];
+
         console.log(`[Proxy] Forwarding headers: Nonce=${!!nonce}, Token=${!!cartToken}, Auth=${!!req.headers["authorization"]}`);
 
         const response = await axios({
