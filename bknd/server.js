@@ -87,7 +87,20 @@ app.post("/api/contact", async (req, res) => {
 
     } catch (error) {
         console.error("[Contact Proxy Error]", error.message);
-        res.status(500).json({ success: false, message: "Server connection failed." });
+        console.error("Using ID:", CONTACT_FORM_ID);
+        console.error("Target URL:", `${WP_BASE_URL}/wp-json/contact-form-7/v1/contact-forms/${CONTACT_FORM_ID}/feedback`);
+
+        res.status(500).json({
+            success: false,
+            message: "Server connection failed.",
+            // EXPOSE ERROR DETAILS FOR DEBUGGING
+            debug_error: error.message,
+            debug_response: error.response ? error.response.data : "No upstream response",
+            debug_config: {
+                id: CONTACT_FORM_ID,
+                url: WP_BASE_URL
+            }
+        });
     }
 });
 
