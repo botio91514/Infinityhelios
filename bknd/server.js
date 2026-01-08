@@ -239,10 +239,12 @@ app.get("/api/products/:id", async (req, res) => {
 app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
-        const domain = process.env.WC_BASE_URL || "https://admin.infinityhelios.com";
+        let domain = process.env.WC_BASE_URL || "https://admin.infinityhelios.com";
+        // Remove trailing slash if present
+        domain = domain.replace(/\/$/, "");
         const formId = "ab42349"; // Your custom form ID
 
-        console.log(`[Contact] Forwarding inquiry to WP Ajax: ${name} (${email})`);
+        console.log(`[Contact] Forwarding to: ${domain}/wp-admin/admin-ajax.php`);
 
         // Use admin-ajax.php which is more robust than REST API
         const formData = new URLSearchParams();
