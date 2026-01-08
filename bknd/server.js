@@ -246,11 +246,28 @@ app.post("/api/contact", async (req, res) => {
         console.log(`[Contact] Routing inquiry to WordPress: ${name}`);
 
         const formData = new FormData();
+        // 1. Standard "Recommended" CF7 names
         formData.append('your-name', name);
         formData.append('your-email', email);
         formData.append('your-phone', phone);
         formData.append('your-subject', subject || 'Inquiry from Website');
         formData.append('your-message', message);
+
+        // 2. Generic "Default" CF7 names (Fallback for when users don't rename fields)
+        formData.append('text-1', name);    // Common default for Name
+        formData.append('email-1', email);  // Common default for Email
+        formData.append('tel-1', phone);    // Common default for Phone
+        formData.append('text-2', subject || 'Inquiry'); // Common default for Subject
+        formData.append('textarea-1', message); // Common default for Message
+
+        // 3. Simple names (Just in case)
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('phone', phone);
+        formData.append('subject', subject);
+        formData.append('message', message);
+
+        formData.append('_wpcf7_unit_tag', `wpcf7-f${formId}-p1-o1`); // "p1" is safer than just "o1"
 
         const response = await axios.post(
             `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`,
