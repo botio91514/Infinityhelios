@@ -243,19 +243,18 @@ app.get("/api/products/:id", async (req, res) => {
 app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
-        const domain = "https://admin.infinityhelios.com";
         const formId = "67";
+        const domain = "https://admin.infinityhelios.com";
         const url = `${domain}/wp-admin/admin-ajax.php`;
 
-        console.log(`[Contact] Sending via Admin AJAX to: ${url}`);
+        console.log(`[Contact] Sending Raw Ajax to: ${url}`);
 
+        // Simple, standard form data
         const formData = new FormData();
         formData.append('action', 'wpcf7_submit');
         formData.append('_wpcf7', formId);
-        formData.append('_wpcf7_version', '5.8.7');
-        formData.append('_wpcf7_locale', 'en_US');
-        formData.append('_wpcf7_unit_tag', `wpcf7-f${formId}-p${formId}-o1`);
 
+        // Core fields only
         formData.append('your-name', name);
         formData.append('your-email', email);
         formData.append('your-phone', phone);
@@ -263,23 +262,21 @@ app.post("/api/contact", async (req, res) => {
         formData.append('your-message', message);
 
         const response = await axios.post(url, formData, {
-            headers: {
-                ...formData.getHeaders(),
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Origin": "https://infinityhelios.com",
-                "Referer": "https://infinityhelios.com/contact/"
-            }
+            headers: formData.getHeaders() // Only necessary headers
         });
 
-        // Check if the response is actually valid JSON (Ajax returns JSON on success)
-        if (typeof response.data === 'object' && response.data.status === "mail_sent") {
-            res.json({ success: true, message: "Message sent via AJAX!" });
+        console.log(`[Contact] WP Response Status: ${response.status}`);
+
+        // CF7 Ajax usually returns { status: "mail_sent" } or similar JSON
+        // even if it failed, it returns JSON. A 200 OK means it reached WP.
+        if (response.data && response.data.status === "mail_sent") {
+            res.json({ success: true, message: "Message sent!" });
         } else {
-            console.error("[AJAX Failed]", response.data);
+            console.error("[AJAX Error Content]", response.data);
             res.status(400).json({
                 success: false,
-                message: response.data.message || "Could not send message.",
-                errors: response.data.invalid_fields
+                message: response.data.message || "Failed to send.",
+                detail: response.data
             });
         }
     } catch (error) {
