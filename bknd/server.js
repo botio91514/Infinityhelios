@@ -244,9 +244,9 @@ app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
         const domain = "https://admin.infinityhelios.com";
-        const formId = "2f17740";
+        const formId = "67"; // REST API REQUIRES Numeric ID
 
-        console.log(`[Contact] Routing inquiry to WordPress: ${name}`);
+        console.log(`[Contact] Routing inquiry to WordPress Form ID: ${formId}`);
 
         const formData = new FormData();
         formData.append('your-name', name);
@@ -255,19 +255,31 @@ app.post("/api/contact", async (req, res) => {
         formData.append('your-subject', subject || 'Inquiry from Website');
         formData.append('your-message', message);
 
+        // This tag helps CF7 identify the specific form instance
+        formData.append('_wpcf7_unit_tag', `wpcf7-f${formId}-p${formId}-o1`);
+
         const response = await axios.post(
             `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`,
             formData,
-            { headers: formData.getHeaders() }
+            {
+                headers: {
+                    ...formData.getHeaders(),
+                    // Emulate a real browser to bypass Hostinger Firewall
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Origin": domain,
+                    "Referer": `${domain}/contact`
+                }
+            }
         );
 
         if (response.data.status === "mail_sent") {
-            res.json({ success: true, message: "Message sent! WordPress is handling it now." });
+            res.json({ success: true, message: "Message sent successfully!" });
         } else {
-            console.error("[WP Rejected]", response.data);
+            console.error("[WP Validation Failure]", JSON.stringify(response.data, null, 2));
             res.status(400).json({
                 success: false,
                 message: response.data.message,
+                // Send back the specific field that failed (e.g. "your-email is invalid")
                 errors: response.data.invalid_fields
             });
         }
