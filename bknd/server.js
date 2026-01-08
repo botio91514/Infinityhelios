@@ -240,57 +240,54 @@ app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
         let domain = process.env.WC_BASE_URL || "https://admin.infinityhelios.com";
-        // Remove trailing slash if present
         domain = domain.replace(/\/$/, "");
-        const formId = "67"; // Real Database ID
+        const formId = "67"; // The numeric ID you found
 
-        console.log(`[Contact] Forwarding to: ${domain}/wp-admin/admin-ajax.php`);
+        console.log(`[Contact] Target Domain: ${domain}`);
+        console.log(`[Contact] Target Form ID: ${formId}`);
 
-        // Use admin-ajax.php which is more robust than REST API
+        // Construct the multipart form data as expected by CF7 REST API
         const formData = new URLSearchParams();
-        formData.append('action', 'wpcf7_submit'); // Required for CF7 admin-ajax
-        formData.append('_wpcf7', formId);
         formData.append('your-name', name);
         formData.append('your-email', email);
         formData.append('your-phone', phone);
         formData.append('your-subject', subject || 'Contact Form Submission');
         formData.append('your-message', message);
-        formData.append('_wpcf7_unit_tag', `wpcf7-f${formId}-o1`);
 
-        const response = await axios.post(
-            `${domain}/wp-admin/admin-ajax.php`,
-            formData,
-            {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                }
+        const url = `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
+        console.log(`[Contact] Sending to: ${url}`);
+
+        const response = await axios.post(url, formData, {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             }
-        );
+        });
 
-        console.log(`[Contact] WP Ajax Response:`, response.data.status);
+        console.log(`[Contact] WP Response Status: ${response.status} - ${response.data.status}`);
 
-        // CF7 admin-ajax returns "mail_sent" on success
         if (response.data.status === "mail_sent") {
             res.json({ success: true, message: response.data.message });
         } else {
-            console.error("[Contact Proxy Warning]", response.data);
-            res.status(400).json({ success: false, message: response.data.message || "WordPress could not send the mail." });
+            console.error("[Contact Proxy Warning] WP rejected mail:", response.data);
+            res.status(400).json({
+                success: false,
+                message: response.data.message || "WordPress could not send the mail.",
+                validation_errors: response.data.invalid_fields
+            });
         }
     } catch (error) {
-        const errorData = error.response?.data;
         const statusCode = error.response?.status || 500;
+        const errorData = error.response?.data;
 
         console.error(`[Contact Proxy Error] (${statusCode})`);
         if (errorData) {
             console.error("WP Error Body:", JSON.stringify(errorData, null, 2));
-        } else {
-            console.error("Error Message:", error.message);
         }
 
         res.status(statusCode).json({
             success: false,
-            message: "Failed to connect to email service.",
+            message: "Failed to connect to WordPress email service.",
             detail: errorData?.message || errorData || error.message
         });
     }
