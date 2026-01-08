@@ -29,7 +29,7 @@ app.use(express.json());
 // ---------------------------------------------------------
 const WP_BASE_URL = process.env.WC_BASE_URL || "https://admin.infinityhelios.com";
 // REPLACE '123' WITH YOUR ACTUAL CONTACT FORM 7 ID FROM WORDPRESS
-const CONTACT_FORM_ID = process.env.CONTACT_FORM_ID || "67";
+const CONTACT_FORM_ID = process.env.CONTACT_FORM_ID || "6";
 
 // WooCommerce API Instance
 const wc = axios.create({
@@ -58,7 +58,14 @@ app.post("/api/contact", async (req, res) => {
         form.append('your-email', email);
         form.append('your-subject', subject || "New Inquiry from Website");
         form.append('your-message', message);
-        form.append('your-phone', phone); // Ensure your CF7 form has a field named 'your-phone'
+        form.append('your-phone', phone);
+
+        // CF7 Hidden Fields (Required for some configurations)
+        form.append('_wpcf7', CONTACT_FORM_ID);
+        form.append('_wpcf7_unit_tag', `wpcf7-f${CONTACT_FORM_ID}-p1-o1`);
+        form.append('_wpcf7_version', '5.9');
+        form.append('_wpcf7_locale', 'en_US');
+        form.append('_wpcf7_container_post', '0');
 
         // Hit the CF7 REST Endpoint
         const cf7Url = `${WP_BASE_URL}/wp-json/contact-form-7/v1/contact-forms/${CONTACT_FORM_ID}/feedback`;
