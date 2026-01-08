@@ -8,7 +8,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:5174", "https://infinityhelios.com", "https://www.infinityhelios.com"],
     credentials: true,
     exposedHeaders: ["nonce", "cart-token", "Nonce", "Cart-Token", "X-WC-Store-API-Nonce"]
 }));
@@ -243,39 +243,34 @@ app.get("/api/products/:id", async (req, res) => {
 app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
-        const formId = "67";
         const domain = "https://admin.infinityhelios.com";
         const url = `${domain}/wp-admin/admin-ajax.php`;
 
-        console.log(`[Contact] Sending Raw Ajax to: ${url}`);
+        console.log(`[Contact] Sending Custom Action to: ${url}`);
 
-        // Simple, standard form data
         const formData = new FormData();
-        formData.append('action', 'wpcf7_submit');
-        formData.append('_wpcf7', formId);
+        // matches the PHP function you will add to functions.php
+        formData.append('action', 'infinity_contact_form');
 
-        // Core fields only
-        formData.append('your-name', name);
-        formData.append('your-email', email);
-        formData.append('your-phone', phone);
-        formData.append('your-subject', subject || 'Inquiry from Website');
-        formData.append('your-message', message);
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('phone', phone);
+        formData.append('subject', subject || 'Inquiry from Website');
+        formData.append('message', message);
 
         const response = await axios.post(url, formData, {
-            headers: formData.getHeaders() // Only necessary headers
+            headers: formData.getHeaders()
         });
 
-        console.log(`[Contact] WP Response Status: ${response.status}`);
+        console.log(`[Contact] WP Response:`, response.data);
 
-        // CF7 Ajax usually returns { status: "mail_sent" } or similar JSON
-        // even if it failed, it returns JSON. A 200 OK means it reached WP.
-        if (response.data && response.data.status === "mail_sent") {
+        if (response.data && response.data.success) {
             res.json({ success: true, message: "Message sent!" });
         } else {
-            console.error("[AJAX Error Content]", response.data);
+            console.error("[Custom Action Failed]", response.data);
             res.status(400).json({
                 success: false,
-                message: response.data.message || "Failed to send.",
+                message: response.data.data || "Failed to send message.",
                 detail: response.data
             });
         }
