@@ -2,6 +2,7 @@ import express from "express";
 import axios from "axios";
 import cors from "cors";
 import dotenv from "dotenv";
+import FormData from "form-data";
 
 dotenv.config();
 
@@ -247,29 +248,20 @@ app.post("/api/contact", async (req, res) => {
         console.log(`[Contact] Target Form ID: ${formId}`);
 
         // Construct the multipart form data as expected by CF7 REST API
-        // We send BOTH "your-name" and "name" to be 100% safe
-        const formData = new URLSearchParams();
+        // Contact Form 7 REST API STICKLY requires multipart/form-data
+        const formData = new FormData();
         formData.append('your-name', name);
-        formData.append('name', name);
-
         formData.append('your-email', email);
-        formData.append('email', email);
-
         formData.append('your-phone', phone);
-        formData.append('phone', phone);
-
         formData.append('your-subject', subject || 'Contact Form Submission');
-        formData.append('subject', subject || 'Contact Form Submission');
-
         formData.append('your-message', message);
-        formData.append('message', message);
 
         const url = `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
-        console.log(`[Contact] Sending to: ${url}`);
+        console.log(`[Contact] Sending multipart to: ${url}`);
 
         const response = await axios.post(url, formData, {
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                ...formData.getHeaders(),
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             }
         });
