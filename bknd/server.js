@@ -115,11 +115,10 @@ app.post("/api/auth/login", async (req, res) => {
 // ---------------------------------------------------------
 // 4. STORE API PROXY (Fixed Route Matching)
 // ---------------------------------------------------------
-// Use standard string pattern (safer than Regex)
-app.all("/api/store/*", async (req, res) => {
-    // req.path will include the full path, e.g. /api/store/v1/cart
-    // We want the part AFTER /api/store
-    const path = req.path.replace("/api/store", "");
+// Use standard Express wildcard syntax
+app.all("/api/store/:path(*)", async (req, res) => {
+    // req.params.path will contain the part matched by (*)
+    const path = `/${req.params.path}`;
     const targetUrl = `${WP_BASE_URL}/wp-json/wc/store${path}`;
 
     try {
