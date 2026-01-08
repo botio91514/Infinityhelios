@@ -271,8 +271,13 @@ app.post("/api/contact", async (req, res) => {
             res.status(400).json({ success: false, message: response.data.message || "Failed to send message via WordPress." });
         }
     } catch (error) {
-        console.error("[Contact Proxy Error]", error.response?.data || error.message);
-        res.status(500).json({ success: false, message: "Failed to connect to email service." });
+        const errorDetail = error.response?.data?.message || error.response?.data || error.message;
+        console.error("[Contact Proxy Error]", errorDetail);
+        res.status(500).json({
+            success: false,
+            message: "Failed to connect to email service.",
+            detail: errorDetail
+        });
     }
 });
 
