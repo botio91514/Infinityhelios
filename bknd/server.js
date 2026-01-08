@@ -241,7 +241,7 @@ app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
         const domain = "https://admin.infinityhelios.com";
-        const formId = "67";
+        const formId = "2f17740";
 
         console.log(`[Contact] Routing inquiry to WordPress: ${name}`);
 
