@@ -2,7 +2,7 @@ import Products from "../components/Products";
 
 export default function ProductsPage() {
   return (
-    <section className="section">
+    <section className="section pt-32 lg:pt-40">
       <div className="container-main">
         <h1 className="text-4xl font-bold mb-6">
           Our <span className="text-solarGreen">Products & Solutions</span>
