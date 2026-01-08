@@ -251,10 +251,10 @@ app.post("/api/contact", async (req, res) => {
         formData.append('_wpcf7_unit_tag', 'wpcf7-f123-o1'); // Optional tag
 
         // Call the Contact Form 7 REST API endpoint
-        // Change 'ab42349' to your actual form ID if different
         const formId = "ab42349";
+        const domain = process.env.WC_BASE_URL || "https://admin.infinityhelios.com";
         const response = await axios.post(
-            `${process.env.WC_BASE_URL}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`,
+            `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`,
             formData,
             {
                 headers: {
