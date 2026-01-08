@@ -250,11 +250,23 @@ app.post("/api/contact", async (req, res) => {
         // Construct the multipart form data as expected by CF7 REST API
         // Contact Form 7 REST API STICKLY requires multipart/form-data
         const formData = new FormData();
+        // Duplicating fields to ensure compatibility with all CF7 setups
         formData.append('your-name', name);
+        formData.append('name', name);
+
         formData.append('your-email', email);
+        formData.append('email', email);
+
         formData.append('your-phone', phone);
+        formData.append('phone', phone);
+
         formData.append('your-subject', subject || 'Contact Form Submission');
+        formData.append('subject', subject || 'Contact Form Submission');
+
         formData.append('your-message', message);
+        formData.append('message', message);
+
+        formData.append('_wpcf7_unit_tag', `wpcf7-f${formId}-o1`);
 
         const url = `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
         console.log(`[Contact] Sending multipart to: ${url}`);
