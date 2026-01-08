@@ -2,8 +2,6 @@ import express from "express";
 import axios from "axios";
 import cors from "cors";
 import dotenv from "dotenv";
-import nodemailer from "nodemailer";
-import { Resend } from "resend";
 
 dotenv.config();
 
@@ -237,59 +235,44 @@ app.get("/api/products/:id", async (req, res) => {
     }
 });
 
-// Initialize Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
-
+// CONTACT FORM PROXY: Forward to WordPress Contact Form 7
 app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
-        console.log(`[Contact] Received inquiry from: ${name} (${email})`);
+        console.log(`[Contact] Forwarding inquiry to WordPress: ${name} (${email})`);
 
-        if (!process.env.RESEND_API_KEY) {
-            console.error("[Email Error] RESEND_API_KEY not configured");
-            return res.status(500).json({
-                success: false,
-                message: "Email service not configured"
-            });
+        // Convert data to FormData format for Contact Form 7
+        const formData = new URLSearchParams();
+        formData.append('your-name', name);
+        formData.append('your-email', email);
+        formData.append('your-phone', phone);
+        formData.append('your-subject', subject || 'Contact Form Submission');
+        formData.append('your-message', message);
+        formData.append('_wpcf7_unit_tag', 'wpcf7-f123-o1'); // Optional tag
+
+        // Call the Contact Form 7 REST API endpoint
+        // Change 'ab42349' to your actual form ID if different
+        const formId = "ab42349";
+        const response = await axios.post(
+            `${process.env.WC_BASE_URL}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                }
+            }
+        );
+
+        if (response.data.status === "mail_sent") {
+            res.json({ success: true, message: response.data.message });
+        } else {
+            console.error("[Contact Proxy Warning]", response.data);
+            res.status(400).json({ success: false, message: response.data.message || "Failed to send message via WordPress." });
         }
-
-        const adminEmail = process.env.EMAIL_USER || "botio91514@gmail.com";
-
-        // 1. Email to YOU (Admin)
-        await resend.emails.send({
-            from: 'Infinity Helios <onboarding@resend.dev>', // Resend's default sender
-            to: adminEmail,
-            subject: `New Solar Inquiry: ${name}`,
-            html: `
-                <h3>New Lead Received</h3>
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Phone:</strong> ${phone}</p>
-                <p><strong>Subject:</strong> ${subject || "Free Quote Request"}</p>
-                <p><strong>Message:</strong></p>
-                <p>${message || "No message provided."}</p>
-            `
-        });
-
-        // 2. Auto-Reply to CUSTOMER
-        if (email) {
-            await resend.emails.send({
-                from: 'Infinity Helios <onboarding@resend.dev>',
-                to: email,
-                subject: "We received your solar inquiry! ☀️",
-                html: `
-                    <h3>Hi ${name},</h3>
-                    <p>Thank you for contacting <strong>Infinity Helios</strong>. We have received your request and our solar experts will get back to you within 24 hours.</p>
-                    <p>Best Regards,<br>The Infinity Helios Team</p>
-                `
-            });
-        }
-
-        console.log("[Email] Successfully sent via Resend");
-        res.json({ success: true, message: "Email sent successfully!" });
     } catch (error) {
-        console.error("[Email Error]", error);
-        res.status(500).json({ success: false, message: "Failed to send email." });
+        console.error("[Contact Proxy Error]", error.response?.data || error.message);
+        res.status(500).json({ success: false, message: "Failed to connect to email service." });
     }
 });
 
