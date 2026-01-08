@@ -242,7 +242,7 @@ app.post("/api/contact", async (req, res) => {
         let domain = process.env.WC_BASE_URL || "https://admin.infinityhelios.com";
         // Remove trailing slash if present
         domain = domain.replace(/\/$/, "");
-        const formId = "ab42349"; // Your custom form ID
+        const formId = "67"; // Real Database ID
 
         console.log(`[Contact] Forwarding to: ${domain}/wp-admin/admin-ajax.php`);
 
@@ -278,13 +278,20 @@ app.post("/api/contact", async (req, res) => {
             res.status(400).json({ success: false, message: response.data.message || "WordPress could not send the mail." });
         }
     } catch (error) {
-        const errorDetail = error.response?.data || error.message;
+        const errorData = error.response?.data;
         const statusCode = error.response?.status || 500;
-        console.error(`[Contact Proxy Error] (${statusCode})`, errorDetail);
+
+        console.error(`[Contact Proxy Error] (${statusCode})`);
+        if (errorData) {
+            console.error("WP Error Body:", JSON.stringify(errorData, null, 2));
+        } else {
+            console.error("Error Message:", error.message);
+        }
+
         res.status(statusCode).json({
             success: false,
             message: "Failed to connect to email service.",
-            detail: errorDetail
+            detail: errorData?.message || errorData || error.message
         });
     }
 });
