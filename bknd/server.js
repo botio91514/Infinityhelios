@@ -116,9 +116,11 @@ app.post("/api/auth/login", async (req, res) => {
 // 4. STORE API PROXY (Fixed Route Matching)
 // ---------------------------------------------------------
 // Use standard Express wildcard syntax
-app.all("/api/store/:path(*)", async (req, res) => {
-    // req.params.path will contain the part matched by (*)
-    const path = `/${req.params.path}`;
+// Use standard middleware mounting (Fail-Safe)
+app.use("/api/store", async (req, res) => {
+    // req.path DOES NOT include /api/store when using app.use
+    // It will be just /v1/cart, etc.
+    const path = req.path;
     const targetUrl = `${WP_BASE_URL}/wp-json/wc/store${path}`;
 
     try {
