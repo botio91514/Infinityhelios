@@ -247,12 +247,22 @@ app.post("/api/contact", async (req, res) => {
         console.log(`[Contact] Target Form ID: ${formId}`);
 
         // Construct the multipart form data as expected by CF7 REST API
+        // We send BOTH "your-name" and "name" to be 100% safe
         const formData = new URLSearchParams();
         formData.append('your-name', name);
+        formData.append('name', name);
+
         formData.append('your-email', email);
+        formData.append('email', email);
+
         formData.append('your-phone', phone);
+        formData.append('phone', phone);
+
         formData.append('your-subject', subject || 'Contact Form Submission');
+        formData.append('subject', subject || 'Contact Form Submission');
+
         formData.append('your-message', message);
+        formData.append('message', message);
 
         const url = `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
         console.log(`[Contact] Sending to: ${url}`);
@@ -266,14 +276,15 @@ app.post("/api/contact", async (req, res) => {
 
         console.log(`[Contact] WP Response Status: ${response.status} - ${response.data.status}`);
 
+        // Handle validation errors or successes
         if (response.data.status === "mail_sent") {
             res.json({ success: true, message: response.data.message });
         } else {
-            console.error("[Contact Proxy Warning] WP rejected mail:", response.data);
+            console.error("[Contact Proxy Warning] WP rejected mail:", JSON.stringify(response.data, null, 2));
             res.status(400).json({
                 success: false,
                 message: response.data.message || "WordPress could not send the mail.",
-                validation_errors: response.data.invalid_fields
+                detail: response.data.invalid_fields || response.data
             });
         }
     } catch (error) {

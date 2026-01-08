@@ -1,33 +1,27 @@
-import { productCatalog } from "../data/productCatalog";
+import { products } from "../data/products";
 import ProductCard from "./ProductCard";
+import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal";
 
-export default function Products({ products }) {
-  const displayProducts = products || productCatalog;
-
+export default function Products() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-      {displayProducts.map((product) => {
-        // Handle WooCommerce image vs Local Catalog image
-        const image = product.images?.[0]?.src || product.image || "";
+    <section className="py-20 px-8">
+      <ScrollReveal>
+        <h2 className="text-4xl font-bold text-center mb-12">
+        Our <span className="text-solarGreen">Solar Solutions</span>
+        </h2>
+      </ScrollReveal>
 
-        // Strip HTML tags if present (common in WooCommerce)
-        const rawDescription = product.short_description || product.description || "";
-        const description = rawDescription.replace(/<[^>]+>/g, "");
-
-        return (
-          <div key={product.id}>
-            <ProductCard
-              id={product.id}
-              title={product.name}
-              description={description}
-              image={image}
-              price={product.price}
-              regular_price={product.regular_price}
-              sale_price={product.sale_price}
-            />
-          </div>
-        );
-      })}
-    </div>
+      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={0.12}>
+        {products.map((product, i) => (
+          <StaggerItem key={i}>
+          <ProductCard
+            title={product.title}
+            description={product.description}
+            image={product.image}
+          />
+          </StaggerItem>
+        ))}
+      </StaggerContainer>
+    </section>
   );
 }
