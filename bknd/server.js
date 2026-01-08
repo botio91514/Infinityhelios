@@ -239,22 +239,24 @@ app.get("/api/products/:id", async (req, res) => {
 app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
-        console.log(`[Contact] Forwarding inquiry to WordPress: ${name} (${email})`);
+        const domain = process.env.WC_BASE_URL || "https://admin.infinityhelios.com";
+        const formId = "ab42349"; // Your custom form ID
 
-        // Convert data to FormData format for Contact Form 7
+        console.log(`[Contact] Forwarding inquiry to WP Ajax: ${name} (${email})`);
+
+        // Use admin-ajax.php which is more robust than REST API
         const formData = new URLSearchParams();
+        formData.append('action', 'wpcf7_submit'); // Required for CF7 admin-ajax
+        formData.append('_wpcf7', formId);
         formData.append('your-name', name);
         formData.append('your-email', email);
         formData.append('your-phone', phone);
         formData.append('your-subject', subject || 'Contact Form Submission');
         formData.append('your-message', message);
-        formData.append('_wpcf7_unit_tag', 'wpcf7-f123-o1'); // Optional tag
+        formData.append('_wpcf7_unit_tag', `wpcf7-f${formId}-o1`);
 
-        // Call the Contact Form 7 REST API endpoint
-        const formId = "ab42349";
-        const domain = process.env.WC_BASE_URL || "https://admin.infinityhelios.com";
         const response = await axios.post(
-            `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`,
+            `${domain}/wp-admin/admin-ajax.php`,
             formData,
             {
                 headers: {
@@ -264,16 +266,20 @@ app.post("/api/contact", async (req, res) => {
             }
         );
 
+        console.log(`[Contact] WP Ajax Response:`, response.data.status);
+
+        // CF7 admin-ajax returns "mail_sent" on success
         if (response.data.status === "mail_sent") {
             res.json({ success: true, message: response.data.message });
         } else {
             console.error("[Contact Proxy Warning]", response.data);
-            res.status(400).json({ success: false, message: response.data.message || "Failed to send message via WordPress." });
+            res.status(400).json({ success: false, message: response.data.message || "WordPress could not send the mail." });
         }
     } catch (error) {
-        const errorDetail = error.response?.data?.message || error.response?.data || error.message;
-        console.error("[Contact Proxy Error]", errorDetail);
-        res.status(500).json({
+        const errorDetail = error.response?.data || error.message;
+        const statusCode = error.response?.status || 500;
+        console.error(`[Contact Proxy Error] (${statusCode})`, errorDetail);
+        res.status(statusCode).json({
             success: false,
             message: "Failed to connect to email service.",
             detail: errorDetail
