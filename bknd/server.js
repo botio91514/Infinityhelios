@@ -240,71 +240,37 @@ app.get("/api/products/:id", async (req, res) => {
 app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
-        let domain = process.env.WC_BASE_URL || "https://admin.infinityhelios.com";
-        domain = domain.replace(/\/$/, "");
-        const formId = "67"; // The numeric ID you found
+        const domain = "https://admin.infinityhelios.com";
+        const formId = "75";
 
-        console.log(`[Contact] Target Domain: ${domain}`);
-        console.log(`[Contact] Target Form ID: ${formId}`);
+        console.log(`[Contact] Routing inquiry to WordPress: ${name}`);
 
-        // Construct the multipart form data as expected by CF7 REST API
-        // Contact Form 7 REST API STICKLY requires multipart/form-data
         const formData = new FormData();
-        // Duplicating fields to ensure compatibility with all CF7 setups
         formData.append('your-name', name);
-        formData.append('name', name);
-
         formData.append('your-email', email);
-        formData.append('email', email);
-
         formData.append('your-phone', phone);
-        formData.append('phone', phone);
-
-        formData.append('your-subject', subject || 'Contact Form Submission');
-        formData.append('subject', subject || 'Contact Form Submission');
-
+        formData.append('your-subject', subject || 'Inquiry from Website');
         formData.append('your-message', message);
-        formData.append('message', message);
 
-        formData.append('_wpcf7_unit_tag', `wpcf7-f${formId}-o1`);
+        const response = await axios.post(
+            `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`,
+            formData,
+            { headers: formData.getHeaders() }
+        );
 
-        const url = `${domain}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
-        console.log(`[Contact] Sending multipart to: ${url}`);
-
-        const response = await axios.post(url, formData, {
-            headers: {
-                ...formData.getHeaders(),
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            }
-        });
-
-        console.log(`[Contact] WP Response Status: ${response.status} - ${response.data.status}`);
-
-        // Handle validation errors or successes
         if (response.data.status === "mail_sent") {
-            res.json({ success: true, message: response.data.message });
+            res.json({ success: true, message: "Message sent! WordPress is handling it now." });
         } else {
-            console.error("[Contact Proxy Warning] WP rejected mail:", JSON.stringify(response.data, null, 2));
+            console.error("[WP Rejected]", response.data);
             res.status(400).json({
                 success: false,
-                message: response.data.message || "WordPress could not send the mail.",
-                detail: response.data.invalid_fields || response.data
+                message: response.data.message,
+                errors: response.data.invalid_fields
             });
         }
     } catch (error) {
-        const statusCode = error.response?.status || 500;
-        const errorData = error.response?.data;
-
-        console.error(`[Contact Proxy Error] (${statusCode})`);
-        if (errorData) {
-            console.error("WP Error Body:", JSON.stringify(errorData, null, 2));
-        }
-
-        res.status(statusCode).json({
-            success: false,
-            message: "Failed to connect to WordPress email service.",
-            detail: errorData?.message || errorData || error.message
-        });
+        console.error("[Proxy Error]", error.response?.data || error.message);
+        res.status(500).json({ success: false, message: "Could not reach WordPress." });
     }
 });
 
