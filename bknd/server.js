@@ -112,21 +112,24 @@ app.post("/api/auth/login", async (req, res) => {
 // ---------------------------------------------------------
 // 4. STORE API PROXY (Cleaner Version)
 // ---------------------------------------------------------
-app.all(/^\/api\/store\/.*/, async (req, res) => {
+// ---------------------------------------------------------
+// 4. STORE API PROXY (Fixed Route Matching)
+// ---------------------------------------------------------
+// Use standard string pattern (safer than Regex)
+app.all("/api/store/*", async (req, res) => {
+    // req.path will include the full path, e.g. /api/store/v1/cart
+    // We want the part AFTER /api/store
     const path = req.path.replace("/api/store", "");
     const targetUrl = `${WP_BASE_URL}/wp-json/wc/store${path}`;
 
     try {
-        // Prepare Headers
         const headers = {
             ...req.headers,
             host: new URL(WP_BASE_URL).host
         };
-        // Remove headers that confuse Axios/Node
         delete headers["content-length"];
         delete headers["connection"];
 
-        // Forward the request
         const response = await axios({
             method: req.method,
             url: targetUrl,
@@ -135,14 +138,14 @@ app.all(/^\/api\/store\/.*/, async (req, res) => {
             headers: headers
         });
 
-        // Forward important headers back to frontend
         if (response.headers["nonce"]) res.set("nonce", response.headers["nonce"]);
         if (response.headers["x-wc-store-api-nonce"]) res.set("x-wc-store-api-nonce", response.headers["x-wc-store-api-nonce"]);
+        if (response.headers["cart-token"]) res.set("cart-token", response.headers["cart-token"]);
 
         res.status(response.status).json(response.data);
 
     } catch (error) {
-        console.error(`[Store Proxy Error] ${error.message} -> ${path}`);
+        console.error(`[Store Proxy Error] ${targetUrl}:`, error.message);
         res.status(error.response?.status || 500).json(error.response?.data || { message: "Store API Error" });
     }
 });
@@ -152,10 +155,13 @@ app.all(/^\/api\/store\/.*/, async (req, res) => {
 // ---------------------------------------------------------
 app.get("/api/products", async (req, res) => {
     try {
+        console.log("Fetching products from:", `${WP_BASE_URL}/wp-json/wc/v3/products`);
         const response = await wc.get("/products");
         res.json(response.data);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch products" });
+        console.error("[Products Error]", error.response?.data || error.message);
+        // Pass the actual error from WP back to frontend for debugging
+        res.status(error.response?.status || 500).json(error.response?.data || { error: "Failed to fetch products" });
     }
 });
 
