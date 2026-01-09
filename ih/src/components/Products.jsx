@@ -29,13 +29,13 @@ export default function Products() {
   };
 
   return (
-    <section className="py-20 px-8">
+    <>
       {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="w-12 h-12 border-4 border-solarGreen border-t-transparent rounded-full animate-spin"></div>
+        <div className="flex justify-center py-12">
+          <div className="w-10 h-10 border-4 border-solarGreen border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : (
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={0.12}>
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.1}>
           {products.map((product) => (
             <StaggerItem key={product.id}>
               <ProductCard
@@ -51,6 +51,6 @@ export default function Products() {
           ))}
         </StaggerContainer>
       )}
-    </section>
+    </>
   );
 }

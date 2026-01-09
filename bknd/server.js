@@ -195,6 +195,100 @@ app.get("/api/products/:id", async (req, res) => {
     }
 });
 
+// ---------------------------------------------------------
+// 6. USER DATA ROUTES (Dashboard)
+// ---------------------------------------------------------
+app.get("/api/user/profile", async (req, res) => {
+    try {
+        const { email } = req.query;
+        if (!email) return res.status(400).json({ error: "Email is required" });
+
+        const response = await wc.get(`/customers`, {
+            params: { email: email }
+        });
+
+        if (response.data && response.data.length > 0) {
+            res.json(response.data[0]);
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (error) {
+        console.error("[Profile Error]", error.message);
+        res.status(500).json({ error: "Failed to fetch profile" });
+    }
+});
+
+app.get("/api/user/orders", async (req, res) => {
+    try {
+        const { customer_id } = req.query;
+        if (!customer_id) return res.status(400).json({ error: "Customer ID is required" });
+
+        const response = await wc.get(`/orders`, {
+            params: { customer: customer_id }
+        });
+        res.json(response.data);
+    } catch (error) {
+        console.error("[Orders Error]", error.message);
+        res.status(500).json({ error: "Failed to fetch orders" });
+    }
+});
+
+app.get("/api/user/order/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const response = await wc.get(`/orders/${id}`);
+        res.json(response.data);
+    } catch (error) {
+        console.error("[Order Error]", error.message);
+        res.status(500).json({ error: "Failed to fetch order" });
+    }
+});
+
+app.put("/api/user/update/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const response = await wc.put(`/customers/${id}`, req.body);
+        res.json(response.data);
+    } catch (error) {
+        console.error("[Update Error]", error.message);
+        res.status(500).json({ error: "Failed to update profile" });
+    }
+});
+
+// ---------------------------------------------------------
+// 7. PUBLIC TOOLS (Tracking & Auth)
+// ---------------------------------------------------------
+app.post("/api/track-order", async (req, res) => {
+    try {
+        const { order_id, email } = req.body;
+
+        // Fetch order (admin privileges via wc instance)
+        const response = await wc.get(`orders/${order_id}`);
+        const order = response.data;
+
+        if (!order) return res.status(404).json({ error: "Order not found" });
+
+        // precise email check (case insensitive)
+        if (order.billing.email.toLowerCase() === email.toLowerCase()) {
+            res.json(order);
+        } else {
+            res.status(403).json({ error: "Email address does not match order records" });
+        }
+    } catch (error) {
+        if (error.response?.status === 404) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+        res.status(500).json({ error: "Tracking failed. Please check the Order ID." });
+    }
+});
+
+app.post("/api/auth/forgot-password", async (req, res) => {
+    // Simulation for Headless (Requires WP Plugin for real email)
+    const { email } = req.body;
+    console.log(`[Forgot Password] Reset requested for: ${email}`);
+    res.json({ success: true, message: "If an account exists, a reset link has been sent." });
+});
+
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Server running on port ${process.env.PORT || 5000}`);
 });

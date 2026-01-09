@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import ThemeToggle from "./ThemeToggle";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, User, Menu, X, ChevronRight, LayoutDashboard, LogOut } from "lucide-react";
+import { ShoppingCart, User, Menu, X, ChevronRight, LayoutDashboard, LogOut, Search } from "lucide-react";
 import logo from "../assets/ihlogo.png";
 
 export default function Navbar({ darkMode, setDarkMode }) {
@@ -12,7 +12,19 @@ export default function Navbar({ darkMode, setDarkMode }) {
   const { user, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setIsSearchOpen(false);
+      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -96,6 +108,15 @@ export default function Navbar({ darkMode, setDarkMode }) {
 
             {/* Icons Group */}
             <div className="flex items-center gap-5">
+
+              {/* Search Trigger */}
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group"
+              >
+                <Search className="w-5 h-5 text-slate-800 dark:text-white group-hover:text-solarGreen transition-colors" />
+              </button>
+
               <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
 
               <Link to="/cart" className="relative group p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
@@ -146,6 +167,13 @@ export default function Navbar({ darkMode, setDarkMode }) {
 
         {/* Mobile Menu Toggle */}
         <div className="lg:hidden flex items-center gap-4 relative z-[110]">
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group"
+          >
+            <Search className="w-6 h-6 text-slate-800 dark:text-white" />
+          </button>
+
           <Link to="/cart" className="relative group p-2">
             <ShoppingCart className="w-6 h-6 text-slate-800 dark:text-white" />
             {(cart?.items_count > 0 || cart?.item_count > 0) && (
@@ -242,6 +270,80 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 </div>
               </motion.div>
             </>
+          )}
+        </AnimatePresence>
+
+        {/* Global Search Modal */}
+        <AnimatePresence>
+          {isSearchOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-6"
+            >
+              <button
+                onClick={() => setIsSearchOpen(false)}
+                className="absolute top-8 right-8 p-2 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition-colors"
+              >
+                <X className="w-8 h-8 text-slate-400" />
+              </button>
+
+              <div className="w-full max-w-3xl text-center space-y-8">
+                <motion.div
+                  initial={{ title: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter mb-2">
+                    Search <span className="text-solarGreen">Infinity</span>
+                  </h2>
+                  <p className="text-slate-500 dark:text-slate-400 text-lg">Find products, solutions, and resources.</p>
+                </motion.div>
+
+                <motion.form
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  onSubmit={handleSearch}
+                  className="relative"
+                >
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Type to search..."
+                    className="w-full bg-transparent border-b-2 border-slate-200 dark:border-white/10 text-3xl md:text-5xl font-bold py-6 text-center outline-none focus:border-solarGreen transition-all placeholder:text-slate-300 dark:placeholder:text-white/10 text-slate-900 dark:text-white"
+                    autoFocus
+                  />
+                  <button type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 p-4 bg-solarGreen text-solarBlue rounded-full hover:scale-110 transition-transform">
+                    <Search className="w-6 h-6" />
+                  </button>
+                </motion.form>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex flex-wrap items-center justify-center gap-4 text-sm font-bold text-slate-400"
+                >
+                  <span className="opacity-50 uppercase tracking-widest text-xs">Trending:</span>
+                  {['Solar Panels', 'Inverters', 'Batteries', 'Controllers'].map(tag => (
+                    <button
+                      key={tag}
+                      onClick={() => {
+                        setSearchQuery(tag);
+                        navigate(`/products?search=${tag}`);
+                        setIsSearchOpen(false);
+                      }}
+                      className="px-4 py-2 bg-slate-100 dark:bg-white/5 rounded-lg hover:text-solarGreen hover:bg-white dark:hover:bg-white/10 transition-colors"
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </motion.div>
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>

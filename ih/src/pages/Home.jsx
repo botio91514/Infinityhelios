@@ -9,11 +9,17 @@ import ContactCTA from "../components/ContactCTA";
 import Testimonials from "../components/Testimonials";
 import RollingBanner from "../components/RollingBanner";
 
+import SEO from "../components/SEO";
+
 export default function Home() {
   return (
     <>
+      <SEO
+        title="Infinity Helios | Advanced Solar Solutions & Installation"
+        description="Transform your energy future with Infinity Helios. We provide top-tier solar panels, inverters, and complete installation services for homes and businesses."
+      />
       {/* ================= HERO SECTION ================= */}
-      <section className="relative min-h-[100vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[90vh] md:min-h-[100vh] flex items-center overflow-hidden">
         {/* VIDEO BACKGROUND */}
         <div className="absolute inset-0 z-0">
           <video
@@ -31,7 +37,7 @@ export default function Home() {
         </div>
 
         {/* HERO CONTENT */}
-        <div className="container-main relative z-10 w-full pt-20 pb-32 sm:pb-36 md:pb-40 lg:pb-48">
+        <div className="container-main relative z-10 w-full pt-24 pb-20 md:pt-32 md:pb-32 lg:pb-48">
           <div className="max-w-2xl">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -74,7 +80,7 @@ export default function Home() {
                 <motion.button
                   whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(100, 255, 153, 0.3)" }}
                   whileTap={{ scale: 0.95 }}
-                  className="group px-10 py-5 rounded-full bg-solarGreen text-solarBlue font-black transition-all duration-300 flex items-center gap-3"
+                  className="group px-6 py-3 md:px-10 md:py-5 rounded-full bg-solarGreen text-solarBlue font-black transition-all duration-300 flex items-center gap-3"
                 >
                   Get Free Solar Quote
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -85,7 +91,7 @@ export default function Home() {
                 <motion.button
                   whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.15)" }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-10 py-5 rounded-full border-2 border-white/20 text-white bg-white/5 backdrop-blur-xl transition-all duration-300 flex items-center gap-3 font-bold"
+                  className="px-6 py-3 md:px-10 md:py-5 rounded-full border-2 border-white/20 text-white bg-white/5 backdrop-blur-xl transition-all duration-300 flex items-center gap-3 font-bold"
                 >
                   <Play className="w-4 h-4 fill-white" />
                   Explore Products

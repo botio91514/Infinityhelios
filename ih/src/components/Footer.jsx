@@ -73,7 +73,9 @@ export default function Footer() {
                   )}
                 </button>
               </form>
-              <p className="text-[10px] text-slate-500 font-medium">By subscribing, you agree to our Terms of Technology.</p>
+              <p className="text-[10px] text-slate-500 font-medium">
+                By subscribing, you agree to our <Link to="/terms" className="underline hover:text-solarGreen">Terms of Technology</Link>.
+              </p>
             </div>
 
             {/* Social Media */}
@@ -122,11 +124,13 @@ export default function Footer() {
 
           {/* SUPPORT */}
           <div className="lg:col-span-2">
-            <h4 className="font-black text-white mb-8 text-xs uppercase tracking-[0.2em]">Platform</h4>
+            <h4 className="font-black text-white mb-8 text-xs uppercase tracking-[0.2em]">Customer Support</h4>
             <ul className="space-y-4 text-sm">
               <li><Link to="/maintenance" className="text-slate-400 hover:text-white transition-colors">Monitoring Care</Link></li>
               <li><Link to="/dashboard" className="text-slate-400 hover:text-white transition-colors">Client Dashboard</Link></li>
-              <li><Link to="/contact" className="text-slate-400 hover:text-white transition-colors">Inquiry Support</Link></li>
+              <li><Link to="/faq" className="text-slate-400 hover:text-white transition-colors">Help Center & FAQ</Link></li>
+              <li><Link to="/terms" className="text-slate-400 hover:text-white transition-colors">Terms & Conditions</Link></li>
+              <li><Link to="/shipping-policy" className="text-slate-400 hover:text-white transition-colors">Shipping & Returns</Link></li>
               <li><Link to="/privacy-data" className="text-slate-400 hover:text-white transition-colors">Privacy & Data</Link></li>
               <li><Link to="/compliance" className="text-slate-400 hover:text-white transition-colors">Compliance</Link></li>
             </ul>
@@ -137,7 +141,7 @@ export default function Footer() {
             <div className="bg-white/5 border border-white/10 rounded-[40px] p-10 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-solarGreen/5 rounded-full blur-2xl group-hover:bg-solarGreen/10 transition-colors" />
 
-              <h4 className="font-black text-white mb-8 text-xs uppercase tracking-[0.2em]">Global Command</h4>
+              <h4 className="font-black text-white mb-8 text-xs uppercase tracking-[0.2em]">Get in Touch</h4>
               <div className="space-y-8">
                 <div className="space-y-2">
                   <span className="text-[10px] font-black uppercase text-solarGreen tracking-widest">Headquarters</span>

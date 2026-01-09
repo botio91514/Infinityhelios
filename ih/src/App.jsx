@@ -22,6 +22,8 @@ import ProjectsPage from "./pages/ProjectsPage";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import OrderTracking from "./pages/OrderTracking";
 import OrderSuccess from "./pages/OrderSuccess";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import Dashboard from "./pages/Dashboard";
@@ -32,6 +34,9 @@ import LearningHub from "./pages/LearningHub";
 import BlogPost from "./pages/BlogPost";
 import PrivacyData from "./pages/PrivacyData";
 import Compliance from "./pages/Compliance";
+import Terms from "./pages/Terms";
+import FAQ from "./pages/FAQ";
+import ShippingPolicy from "./pages/ShippingPolicy";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -94,6 +99,8 @@ function App() {
                   />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/track-order" element={<OrderTracking />} />
                   <Route path="/order-success" element={<OrderSuccess />} />
                   <Route path="/order-confirmation" element={<OrderConfirmation />} />
                   <Route
@@ -111,6 +118,9 @@ function App() {
                   <Route path="/blog/:id" element={<BlogPost />} />
                   <Route path="/privacy-data" element={<PrivacyData />} />
                   <Route path="/compliance" element={<Compliance />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/shipping-policy" element={<ShippingPolicy />} />
                   <Route
                     path="/order/:id/invoice"
                     element={
