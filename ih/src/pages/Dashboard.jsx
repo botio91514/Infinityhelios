@@ -446,20 +446,24 @@ const Dashboard = () => {
                                                             <p className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">₹{parseFloat(order.total).toLocaleString('en-IN')}</p>
                                                             <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">{order.payment_method_title}</p>
                                                         </div>
-                                                        <button
-                                                            onClick={() => navigate('/track-order', { state: { orderId: order.id, email: user.email } })}
-                                                            className="w-12 h-12 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl flex items-center justify-center hover:bg-solarGreen hover:text-solarBlue transition-all shadow-xl group/btn mr-3"
-                                                            title="Track Order"
-                                                        >
-                                                            <Truck className="w-5 h-5 transition-transform group-hover/btn:scale-110" />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => navigate(`/order/${order.id}/invoice`)}
-                                                            className="w-12 h-12 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl flex items-center justify-center hover:bg-solarGreen hover:text-solarBlue transition-all shadow-xl group/btn"
-                                                            title="View Invoice"
-                                                        >
-                                                            <FileText className="w-5 h-5 transition-transform group-hover/btn:scale-125" />
-                                                        </button>
+                                                        <div className="flex items-center gap-3">
+                                                            <button
+                                                                onClick={() => navigate('/track-order', { state: { orderId: order.id, email: user.email } })}
+                                                                className="px-5 py-3 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl flex items-center gap-2 hover:bg-solarGreen hover:text-solarBlue transition-all shadow-sm group/btn font-black text-[10px] uppercase tracking-widest text-slate-600 dark:text-slate-400"
+                                                                title="Track Order"
+                                                            >
+                                                                <Truck className="w-3.5 h-3.5" />
+                                                                <span className="hidden sm:inline">Track</span>
+                                                            </button>
+                                                            <button
+                                                                onClick={() => navigate(`/order/${order.id}/invoice`)}
+                                                                className="px-5 py-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-white/10 transition-all shadow-sm group/btn font-black text-[10px] uppercase tracking-widest text-slate-600 dark:text-slate-400"
+                                                                title="View Invoice"
+                                                            >
+                                                                <FileText className="w-3.5 h-3.5" />
+                                                                <span className="hidden sm:inline">Invoice</span>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             )) : (
