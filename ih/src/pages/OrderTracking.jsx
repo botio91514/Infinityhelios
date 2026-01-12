@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Mail, Package, ArrowRight, Loader, AlertCircle, CheckCircle2, MapPin, Truck, Calendar } from "lucide-react";
 import axios from "axios";
@@ -13,16 +13,20 @@ const OrderTracking = () => {
     const [order, setOrder] = useState(null);
     const [error, setError] = useState("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const location = useLocation();
+
+    // Reusable fetch function
+    const fetchOrder = async (id, userEmail) => {
+        if (!id || !userEmail) return;
+
         setIsSubmitting(true);
         setError("");
         setOrder(null);
 
         try {
             const response = await axios.post(`${API_BASE_URL}/api/track-order`, {
-                order_id: orderId,
-                email: email
+                order_id: id,
+                email: userEmail
             });
             setOrder(response.data);
         } catch (err) {
@@ -30,6 +34,20 @@ const OrderTracking = () => {
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    // Auto-fill and submit if data passed via navigation state
+    useEffect(() => {
+        if (location.state?.orderId && location.state?.email) {
+            setOrderId(location.state.orderId);
+            setEmail(location.state.email);
+            fetchOrder(location.state.orderId, location.state.email);
+        }
+    }, [location.state]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        fetchOrder(orderId, email);
     };
 
     return (

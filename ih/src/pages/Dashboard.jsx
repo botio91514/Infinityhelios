@@ -25,7 +25,8 @@ import {
     Save,
     X,
     Loader,
-    ChevronDown
+    ChevronDown,
+    Truck
 } from "lucide-react";
 
 const indianStates = [
@@ -446,8 +447,16 @@ const Dashboard = () => {
                                                             <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">{order.payment_method_title}</p>
                                                         </div>
                                                         <button
+                                                            onClick={() => navigate('/track-order', { state: { orderId: order.id, email: user.email } })}
+                                                            className="w-12 h-12 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl flex items-center justify-center hover:bg-solarGreen hover:text-solarBlue transition-all shadow-xl group/btn mr-3"
+                                                            title="Track Order"
+                                                        >
+                                                            <Truck className="w-5 h-5 transition-transform group-hover/btn:scale-110" />
+                                                        </button>
+                                                        <button
                                                             onClick={() => navigate(`/order/${order.id}/invoice`)}
                                                             className="w-12 h-12 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl flex items-center justify-center hover:bg-solarGreen hover:text-solarBlue transition-all shadow-xl group/btn"
+                                                            title="View Invoice"
                                                         >
                                                             <FileText className="w-5 h-5 transition-transform group-hover/btn:scale-125" />
                                                         </button>
