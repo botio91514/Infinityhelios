@@ -5,7 +5,7 @@ import { sendContactForm } from "../api/contact";
 import { Check, Loader2 } from "lucide-react";
 
 export default function ContactCTA() {
-  const [formData, setFormData] = useState({ name: "", phone: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [status, setStatus] = useState("idle"); // idle, loading, success, error
 
   const handleChange = (e) => {
@@ -13,7 +13,7 @@ export default function ContactCTA() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.name || !formData.phone) return;
+    if (!formData.name || !formData.email || !formData.phone) return;
 
     setStatus("loading");
     try {
@@ -56,6 +56,16 @@ export default function ContactCTA() {
               value={formData.name}
               onChange={handleChange}
               placeholder="Your Name"
+              className="w-full md:w-auto px-5 py-4 rounded-full text-black outline-none border-2 border-transparent focus:border-solarGreen transition-all"
+            />
+          </StaggerItem>
+          <StaggerItem>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Your Email Address"
               className="w-full md:w-auto px-5 py-4 rounded-full text-black outline-none border-2 border-transparent focus:border-solarGreen transition-all"
             />
           </StaggerItem>
