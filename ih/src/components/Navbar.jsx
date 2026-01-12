@@ -198,7 +198,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/60 backdrop-blur-lg z-[150] lg:hidden"
+                className="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[900] lg:hidden" // Increased opacity and z-index
                 onClick={() => setIsMenuOpen(false)}
               />
               <motion.div
@@ -206,7 +206,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                className="fixed top-0 right-0 h-full w-[300px] sm:w-[350px] bg-white dark:bg-solarBlue z-[160] lg:hidden p-8 pt-24 border-l border-slate-200 dark:border-white/10"
+                className="fixed top-0 right-0 h-full w-[300px] sm:w-[350px] bg-white dark:bg-solarBlue z-[950] lg:hidden p-8 pt-24 border-l border-slate-200 dark:border-white/10 shadow-2xl"
               >
                 <div className="flex flex-col h-full">
                   <div className="space-y-6">
