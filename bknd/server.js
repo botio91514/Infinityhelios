@@ -204,16 +204,24 @@ app.get("/api/user/profile", async (req, res) => {
         if (!email) return res.status(400).json({ error: "Email is required" });
 
         const response = await wc.get(`/customers`, {
-            params: { email: email }
+            params: {
+                email: email,
+                role: 'all' // CRITICAL FIX: Include Admins and other roles, not just 'customer'
+            }
         });
 
         if (response.data && response.data.length > 0) {
             res.json(response.data[0]);
         } else {
+            console.warn(`[Profile Warning] User not found for email: ${email}`);
             res.status(404).json({ error: "User not found" });
         }
     } catch (error) {
         console.error("[Profile Error]", error.message);
+        // Log full error for debugging in production
+        if (error.response) {
+            console.error("WC Response:", error.response.data);
+        }
         res.status(500).json({ error: "Failed to fetch profile" });
     }
 });

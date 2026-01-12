@@ -116,8 +116,13 @@ const Dashboard = () => {
             }
         } catch (error) {
             console.error("Dashboard fetch error:", error);
-            // Optional: User feedback for network errors could go here
-            // e.g. toast.error("Could not load dashboard data. Please try again.");
+
+            // Handle Stale Session: User exists in local storage but not in backend
+            if (error.response && error.response.status === 404) {
+                console.warn("User profile not found. Logging out...");
+                logout();
+                navigate("/login");
+            }
         } finally {
             hideLoader();
         }
