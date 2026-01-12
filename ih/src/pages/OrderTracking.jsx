@@ -139,64 +139,92 @@ const OrderTracking = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -50 }}
                                 key="result"
-                                className="bg-white dark:bg-white/5 backdrop-blur-3xl border border-slate-200 dark:border-white/10 rounded-[30px] p-8 shadow-2xl"
+                                className="bg-white dark:bg-white/5 backdrop-blur-3xl border border-slate-200 dark:border-white/10 rounded-[30px] p-8 shadow-2xl relative overflow-hidden"
                             >
-                                <div className="flex justify-between items-start mb-8 pb-8 border-b border-slate-100 dark:border-white/5">
+                                {/* Status Header */}
+                                <div className="flex justify-between items-start mb-10 pb-8 border-b border-slate-100 dark:border-white/5 relative z-10">
                                     <div>
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-1">Order Status</p>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Order Current Status</p>
                                         <div className="flex items-center gap-3">
-                                            <span className={`w-3 h-3 rounded-full ${order.status === 'completed' ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 'bg-solarGreen animate-pulse'}`} />
-                                            <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">{order.status}</h2>
+                                            <span className={`w-3 h-3 rounded-full ${['completed'].includes(order.status) ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 'bg-solarGreen animate-pulse'}`} />
+                                            <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">{order.status.replace('-', ' ')}</h2>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-1">Date</p>
-                                        <p className="text-sm font-bold">{new Date(order.date_created).toLocaleDateString()}</p>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Order Date</p>
+                                        <p className="text-sm font-bold opacity-80">{new Date(order.date_created).toLocaleDateString()}</p>
                                     </div>
                                 </div>
 
-                                <div className="space-y-6">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 bg-slate-50 dark:bg-white/5 rounded-xl flex items-center justify-center text-solarGreen shrink-0">
-                                            <MapPin className="w-5 h-5" />
+                                {/* Timeline Section */}
+                                {['cancelled', 'refunded', 'failed', 'trash'].includes(order.status) ? (
+                                    <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl mb-8 flex items-center gap-4 text-red-500">
+                                        <AlertCircle className="w-8 h-8 shrink-0" />
+                                        <div>
+                                            <h3 className="font-black uppercase tracking-widest text-sm mb-1">Order {order.status}</h3>
+                                            <p className="text-xs font-medium opacity-80">This order has been stopped. Please contact support for help.</p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="mb-10 pl-4 relative space-y-8">
+                                        {/* Timeline Line */}
+                                        <div className="absolute top-2 left-[21px] bottom-2 w-0.5 bg-slate-100 dark:bg-white/5 z-0" />
+
+                                        {[
+                                            { step: 1, label: "Order Placed", icon: CheckCircle2, active: true }, // Always true if exists
+                                            { step: 2, label: "Processing", icon: Package, active: ['processing', 'completed', 'on-hold'].includes(order.status) },
+                                            { step: 3, label: "On Its Way", icon: Truck, active: ['completed'].includes(order.status) },
+                                            { step: 4, label: "Delivered", icon: MapPin, active: ['completed'].includes(order.status) }
+                                        ].map((item, index) => (
+                                            <div key={index} className={`relative z-10 flex items-center gap-6 ${item.active ? 'opacity-100' : 'opacity-40 grayscale'}`}>
+                                                <div className={`w-11 h-11 rounded-full border-4 flex items-center justify-center transition-all duration-500 ${item.active ? 'bg-solarGreen border-solarGreen/20 text-solarBlue shadow-[0_0_20px_rgba(34,197,94,0.4)]' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-white/5 text-slate-400'}`}>
+                                                    <item.icon className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <h4 className={`text-sm font-black uppercase tracking-widest ${item.active ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{item.label}</h4>
+                                                    {item.active && index === 0 && <p className="text-[10px] text-slate-500 mt-1">We have received your order.</p>}
+                                                    {item.active && index === 1 && order.status === 'processing' && <p className="text-[10px] text-solarGreen mt-1 animate-pulse font-bold">Currently working on it...</p>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Order Details */}
+                                <div className="space-y-6 bg-slate-50/50 dark:bg-black/20 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    {/* Items */}
+                                    <div>
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-3">Items Ordered</p>
+                                        <div className="space-y-3">
+                                            {order.line_items.map(item => (
+                                                <div key={item.id} className="flex justify-between text-xs font-bold p-3 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="w-5 h-5 bg-slate-100 dark:bg-white/10 rounded-md flex items-center justify-center text-[10px] text-slate-500">{item.quantity}x</span>
+                                                        <span>{item.name}</span>
+                                                    </div>
+                                                    <span>{order.currency_symbol}{item.total}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Shipping Address */}
+                                    <div className="flex items-start gap-4 pt-4 border-t border-slate-200/50 dark:border-white/5">
+                                        <div className="w-8 h-8 bg-slate-100 dark:bg-white/5 rounded-lg flex items-center justify-center text-slate-400 shrink-0">
+                                            <MapPin className="w-4 h-4" />
                                         </div>
                                         <div>
                                             <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Shipping To</p>
-                                            <p className="text-sm font-bold text-slate-900 dark:text-white">{order.shipping.city}, {order.shipping.postcode}</p>
-                                            <p className="text-xs text-slate-500 mt-0.5">{order.shipping.country}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 bg-slate-50 dark:bg-white/5 rounded-xl flex items-center justify-center text-solarGreen shrink-0">
-                                            <Package className="w-5 h-5" />
-                                        </div>
-                                        <div className="w-full">
-                                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Items Included</p>
-                                            <div className="space-y-2">
-                                                {order.line_items.map(item => (
-                                                    <div key={item.id} className="flex justify-between text-xs font-bold p-2 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/5">
-                                                        <span>{item.name} <span className="opacity-50">x{item.quantity}</span></span>
-                                                        <span>{order.currency_symbol}{item.total}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 bg-slate-50 dark:bg-white/5 rounded-xl flex items-center justify-center text-solarGreen shrink-0">
-                                            <Truck className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Estimated Delivery</p>
-                                            <p className="text-sm font-bold text-slate-900 dark:text-white">3-5 Business Days</p>
+                                            <p className="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">
+                                                {order.shipping.address_1}, {order.shipping.city}<br />
+                                                {order.shipping.postcode}, {order.shipping.country}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="mt-8 pt-8 border-t border-slate-100 dark:border-white/5 text-center">
-                                    <p className="text-xs font-black uppercase tracking-widest opacity-40">Total: {order.currency_symbol}{order.total}</p>
+                                <div className="mt-8 text-center">
+                                    <p className="text-xs font-black uppercase tracking-widest opacity-40">Total Paid: {order.currency_symbol}{order.total}</p>
                                 </div>
                             </motion.div>
                         )}
