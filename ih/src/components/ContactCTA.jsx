@@ -7,6 +7,7 @@ import { Check, Loader2 } from "lucide-react";
 export default function ContactCTA() {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [status, setStatus] = useState("idle"); // idle, loading, success, error
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,6 +17,7 @@ export default function ContactCTA() {
     if (!formData.name || !formData.email || !formData.phone) return;
 
     setStatus("loading");
+    setErrorMessage("");
     try {
       await sendContactForm({
         ...formData,
@@ -26,9 +28,10 @@ export default function ContactCTA() {
       setFormData({ name: "", email: "", phone: "" });
       setTimeout(() => setStatus("idle"), 3000);
     } catch (error) {
-      console.error(error);
+      console.error("Submission Failed:", error.response?.data || error.message);
+      setErrorMessage(error.response?.data?.message || "Failed to send. Please try again.");
       setStatus("error");
-      setTimeout(() => setStatus("idle"), 3000);
+      setTimeout(() => setStatus("idle"), 5000);
     }
   };
 
@@ -101,7 +104,9 @@ export default function ContactCTA() {
             </motion.button>
           </StaggerItem>
         </StaggerContainer>
-        {status === "error" && <p className="text-red-400 mt-4 text-sm">Failed to send. Please try again.</p>}
+        {status === "error" && (
+          <p className="text-red-400 mt-4 text-sm font-medium animate-pulse">{errorMessage}</p>
+        )}
       </div>
     </section>
   );

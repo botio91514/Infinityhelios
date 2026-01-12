@@ -57,8 +57,13 @@ app.post("/api/contact", async (req, res) => {
         form.append('your-name', name);
         form.append('your-email', email);
         form.append('your-subject', subject || "New Inquiry from Website");
-        form.append('your-message', message);
-        form.append('your-phone', phone);
+
+        // Append phone to message to ensure it's captured even if 'your-phone' field is missing in WP
+        const finalMessage = phone ? `${message}\n\nPhone: ${phone}` : message;
+        form.append('your-message', finalMessage);
+
+        // Try sending phone as a separate field too (standard CF7 often ignores unknown fields)
+        if (phone) form.append('your-phone', phone);
 
         // CF7 Hidden Fields (Required for some configurations)
         form.append('_wpcf7', CONTACT_FORM_ID);
@@ -81,6 +86,7 @@ app.post("/api/contact", async (req, res) => {
             res.status(400).json({
                 success: false,
                 message: response.data.message || "Failed to send message.",
+                cf7_status: response.data.status, // vital for debugging (e.g. 'spam', 'validation_failed')
                 detail: response.data.invalid_fields
             });
         }
