@@ -205,7 +205,7 @@ const Register = () => {
                     <div className="mt-6 pt-6 border-t border-slate-100 dark:border-white/5 text-center">
                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
                             Already have an account?{" "}
-                            <Link to="/login" className="text-solarGreen hover:opacity-70 transition-opacity ml-2">
+                            <Link to="/login" state={{ from: location.state?.from }} className="text-solarGreen hover:opacity-70 transition-opacity ml-2">
                                 Login Now
                             </Link>
                         </p>

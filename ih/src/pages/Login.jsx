@@ -138,7 +138,7 @@ const Login = () => {
                     <div className="mt-8 pt-8 border-t border-slate-100 dark:border-white/5 text-center">
                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
                             Don't have an account?{" "}
-                            <Link to="/register" className="text-solarGreen hover:opacity-70 transition-opacity ml-2">
+                            <Link to="/register" state={{ from: location.state?.from }} className="text-solarGreen hover:opacity-70 transition-opacity ml-2">
                                 Register Now
                             </Link>
                         </p>
