@@ -241,11 +241,11 @@ app.get("/api/user/orders", async (req, res) => {
         const requests = [];
 
         if (customer_id) {
-            requests.push(wc.get(`/orders`, { params: { customer: customer_id, per_page: 20, _fields: "id,status,total,currency_symbol,date_created" } }));
+            requests.push(wc.get(`/orders`, { params: { customer: customer_id, per_page: 20, _fields: "id,status,total,currency_symbol,date_created,line_items,payment_method_title" } }));
         }
 
         if (email) {
-            requests.push(wc.get(`/orders`, { params: { search: email, per_page: 20, _fields: "id,status,total,currency_symbol,date_created" } }));
+            requests.push(wc.get(`/orders`, { params: { search: email, per_page: 20, _fields: "id,status,total,currency_symbol,date_created,line_items,payment_method_title" } }));
         }
 
         const responses = await Promise.all(requests);
