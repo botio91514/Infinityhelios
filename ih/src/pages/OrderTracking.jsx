@@ -164,19 +164,19 @@ const OrderTracking = () => {
                                 <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-solarOrange/5 rounded-full blur-[60px] translate-y-1/2 -translate-x-1/2" />
 
                                 {/* Status Header */}
-                                <div className="flex justify-between items-start mb-10 pb-8 border-b border-slate-100 dark:border-white/5 relative z-10">
-                                    <div>
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 pb-8 border-b border-slate-100 dark:border-white/5 relative z-10 w-full">
+                                    <div className="w-full md:w-auto">
                                         <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Order Current Status</p>
                                         <div className="flex items-center gap-3">
-                                            <span className={`flex h-3 w-3 relative`}>
+                                            <span className={`flex h-3 w-3 relative shrink-0`}>
                                                 <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${['completed'].includes(order.status) ? 'bg-green-500' : 'bg-solarGreen'}`}></span>
                                                 <span className={`relative inline-flex rounded-full h-3 w-3 ${['completed'].includes(order.status) ? 'bg-green-500' : 'bg-solarGreen'}`}></span>
                                             </span>
-                                            <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">{order.status.replace('-', ' ')}</h2>
+                                            <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter break-words">{order.status.replace('-', ' ')}</h2>
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Order Date</p>
+                                    <div className="w-full md:w-auto text-left md:text-right flex flex-row md:flex-col justify-between md:justify-start items-center md:items-end gap-3 md:gap-0">
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 md:mb-2">Order Date</p>
                                         <div className="flex items-center justify-end gap-2 text-slate-900 dark:text-white font-black text-sm">
                                             <Calendar className="w-4 h-4 text-solarGreen" />
                                             {new Date(order.date_created).toLocaleDateString()}
@@ -194,9 +194,9 @@ const OrderTracking = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="mb-12 pl-4 relative space-y-10">
+                                    <div className="mb-12 pl-2 md:pl-4 relative space-y-10">
                                         {/* Timeline Line */}
-                                        <div className="absolute top-3 left-[21px] bottom-3 w-0.5 bg-slate-100 dark:bg-white/5 z-0" />
+                                        <div className="absolute top-3 left-[19px] md:left-[21px] bottom-3 w-0.5 bg-slate-100 dark:bg-white/5 z-0" />
 
                                         {[
                                             { step: 1, label: "Order Placed", icon: CheckCircle2, active: true }, // Always true if exists
@@ -209,13 +209,13 @@ const OrderTracking = () => {
                                                 initial={{ opacity: 0, x: -20 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 transition={{ delay: index * 0.1 }}
-                                                className={`relative z-10 flex items-center gap-6 ${item.active ? 'opacity-100' : 'opacity-40 grayscale'}`}
+                                                className={`relative z-10 flex items-start md:items-center gap-4 md:gap-6 ${item.active ? 'opacity-100' : 'opacity-40 grayscale'}`}
                                             >
-                                                <div className={`w-11 h-11 rounded-full border-4 flex items-center justify-center transition-all duration-500 z-10 ${item.active ? 'bg-solarGreen border-solarGreen/20 text-solarBlue shadow-[0_0_20px_rgba(34,197,94,0.4)] scale-110' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-white/5 text-slate-400'}`}>
-                                                    <item.icon className="w-5 h-5" />
+                                                <div className={`w-10 h-10 md:w-11 md:h-11 rounded-full border-4 flex items-center justify-center transition-all duration-500 z-10 shrink-0 ${item.active ? 'bg-solarGreen border-solarGreen/20 text-solarBlue shadow-[0_0_20px_rgba(34,197,94,0.4)] scale-110' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-white/5 text-slate-400'}`}>
+                                                    <item.icon className="w-4 h-4 md:w-5 md:h-5" />
                                                 </div>
-                                                <div>
-                                                    <h4 className={`text-sm font-black uppercase tracking-widest ${item.active ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{item.label}</h4>
+                                                <div className="pt-2 md:pt-0">
+                                                    <h4 className={`text-xs md:text-sm font-black uppercase tracking-widest ${item.active ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{item.label}</h4>
                                                     {item.active && index === 0 && <p className="text-[10px] text-slate-500 mt-1 font-medium">We have received your order.</p>}
                                                     {item.active && index === 1 && order.status === 'processing' && <p className="text-[10px] text-solarGreen mt-1 animate-pulse font-bold">Currently working on it...</p>}
                                                 </div>
@@ -225,18 +225,18 @@ const OrderTracking = () => {
                                 )}
 
                                 {/* Order Details */}
-                                <div className="space-y-6 bg-slate-50 dark:bg-white/5 p-8 rounded-3xl border border-slate-100 dark:border-white/5 relative z-10">
+                                <div className="space-y-6 bg-slate-50 dark:bg-white/5 p-5 md:p-8 rounded-3xl border border-slate-100 dark:border-white/5 relative z-10">
                                     {/* Items */}
                                     <div>
                                         <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4">Items Ordered</p>
                                         <div className="space-y-3">
                                             {order.line_items.map(item => (
-                                                <div key={item.id} className="flex justify-between text-xs font-bold p-4 bg-white dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm hover:border-solarGreen/30 transition-colors">
-                                                    <div className="flex items-center gap-4">
-                                                        <span className="w-6 h-6 bg-slate-100 dark:bg-white/10 rounded-lg flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-300 font-black">{item.quantity}x</span>
-                                                        <span className="text-slate-900 dark:text-white">{item.name}</span>
+                                                <div key={item.id} className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-0 text-xs font-bold p-4 bg-white dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm hover:border-solarGreen/30 transition-colors">
+                                                    <div className="flex items-start gap-4">
+                                                        <span className="w-6 h-6 bg-slate-100 dark:bg-white/10 rounded-lg flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-300 font-black shrink-0">{item.quantity}x</span>
+                                                        <span className="text-slate-900 dark:text-white break-words w-full sm:w-auto pr-4">{item.name}</span>
                                                     </div>
-                                                    <span className="text-slate-900 dark:text-white tabular-nums">{order.currency_symbol}{item.total}</span>
+                                                    <span className="text-slate-900 dark:text-white tabular-nums text-right sm:text-left">{order.currency_symbol}{item.total}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -257,7 +257,7 @@ const OrderTracking = () => {
                                     </div>
                                 </div>
 
-                                <div className="mt-8 flex items-center justify-between px-4">
+                                <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0 px-4">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Paid</p>
                                     <p className="text-2xl font-black text-solarGreen tabular-nums tracking-tighter shadow-solarGreen drop-shadow-lg">{order.currency_symbol}{order.total}</p>
                                 </div>
