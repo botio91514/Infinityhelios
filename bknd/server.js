@@ -228,13 +228,38 @@ app.get("/api/user/profile", async (req, res) => {
 
 app.get("/api/user/orders", async (req, res) => {
     try {
-        const { customer_id } = req.query;
-        if (!customer_id) return res.status(400).json({ error: "Customer ID is required" });
+        const { customer_id, email } = req.query;
+        if (!customer_id && !email) return res.status(400).json({ error: "Customer ID or Email is required" });
 
-        const response = await wc.get(`/orders`, {
-            params: { customer: customer_id }
+        // Dual Strategy: Fetch by ID AND Fetch by Email (to catch guest orders)
+        const requests = [];
+
+        if (customer_id) {
+            requests.push(wc.get(`/orders`, { params: { customer: customer_id, per_page: 50 } }));
+        }
+
+        if (email) {
+            requests.push(wc.get(`/orders`, { params: { search: email, per_page: 50 } }));
+        }
+
+        const responses = await Promise.all(requests);
+
+        // Merge arrays
+        let allOrders = [];
+        responses.forEach(r => {
+            if (r.data) allOrders = [...allOrders, ...r.data];
         });
-        res.json(response.data);
+
+        // Deduplicate by ID
+        const uniqueOrders = Array.from(new Map(allOrders.map(item => [item.id, item])).values());
+
+        // Filter out Trash and Auto-drafts
+        const validOrders = uniqueOrders.filter(order => order.status !== 'trash' && order.status !== 'auto-draft');
+
+        // Sort by date (newest first)
+        validOrders.sort((a, b) => new Date(b.date_created) - new Date(a.date_created));
+
+        res.json(validOrders);
     } catch (error) {
         console.error("[Orders Error]", error.message);
         res.status(500).json({ error: "Failed to fetch orders" });

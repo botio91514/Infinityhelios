@@ -1,12 +1,25 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { useLoader } from "../context/LoaderContext";
 
 const GlobalLoader = () => {
     const { isLoading } = useLoader();
+    const [shouldShow, setShouldShow] = useState(false);
+
+    useEffect(() => {
+        let timeout;
+        if (isLoading) {
+            // Only show loader if request takes longer than 200ms
+            timeout = setTimeout(() => setShouldShow(true), 200);
+        } else {
+            setShouldShow(false);
+        }
+        return () => clearTimeout(timeout);
+    }, [isLoading]);
 
     return (
         <AnimatePresence>
-            {isLoading && (
+            {shouldShow && (
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

@@ -142,7 +142,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                       Dashboard
                     </span>
                   </Link>
-                  <div className="absolute top-full right-0 mt-4 w-48 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto transition-all duration-300">
+                  <div className="absolute top-full right-0 pt-4 w-48 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto transition-all duration-300">
                     <div className="bg-white dark:bg-solarBlue border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl p-2 overflow-hidden backdrop-blur-2xl">
                       <button
                         onClick={logout}

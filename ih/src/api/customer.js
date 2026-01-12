@@ -12,10 +12,13 @@ export const getProfile = async (email) => {
     }
 };
 
-export const getOrders = async (customerId) => {
+export const getOrders = async (customerId, email) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/api/user/orders`, {
-            params: { customer_id: customerId }
+            params: {
+                customer_id: customerId,
+                email: email
+            }
         });
         return response.data;
     } catch (error) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -89,14 +89,16 @@ const Dashboard = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [activeTab]);
 
-    const fetchDashboardData = async () => {
+    const fetchDashboardData = useCallback(async (isPolling = false) => {
         if (!user?.email) return;
 
-        // Don't show global loader on re-fetches to keep UI smooth
-        if (!profile) showLoader();
+        // Don't show global loader on polling or if profile already exists
+        if (!isPolling && !profile) showLoader();
 
         try {
             const profileData = await getProfile(user.email);
+            // Only update profile state if changed (deep check might be better but simple ref check is ok for now)
+            // or just update it. React handles reconcile.
             setProfile(profileData);
             setEditForm({
                 first_name: profileData.first_name,
@@ -106,7 +108,8 @@ const Dashboard = () => {
             });
 
             if (profileData.id) {
-                const ordersData = await getOrders(profileData.id);
+                // Pass email to catch guest orders or unlinked orders
+                const ordersData = await getOrders(profileData.id, user.email);
                 setOrders(ordersData);
                 const total = ordersData.reduce((acc, order) => acc + parseFloat(order.total), 0);
                 setStats({
@@ -124,13 +127,21 @@ const Dashboard = () => {
                 navigate("/login");
             }
         } finally {
-            hideLoader();
+            if (!isPolling) hideLoader();
         }
-    };
+    }, [user, hideLoader, showLoader, logout, navigate, profile]); // removed profile from deps to prevent loop reset, handled logic inside
 
     useEffect(() => {
-        fetchDashboardData();
-    }, [user, showLoader, hideLoader]);
+        // Initial Fetch
+        fetchDashboardData(false);
+
+        // Polling Strategy (Every 10 seconds)
+        const interval = setInterval(() => {
+            fetchDashboardData(true);
+        }, 10000);
+
+        return () => clearInterval(interval);
+    }, [fetchDashboardData]);
 
     const handleSaveProfile = async () => {
         setIsSaving(true);
