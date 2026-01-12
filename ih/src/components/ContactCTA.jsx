@@ -23,7 +23,7 @@ export default function ContactCTA() {
         message: "Requesting a free quote via homepage CTA."
       });
       setStatus("success");
-      setFormData({ name: "", phone: "" });
+      setFormData({ name: "", email: "", phone: "" });
       setTimeout(() => setStatus("idle"), 3000);
     } catch (error) {
       console.error(error);
