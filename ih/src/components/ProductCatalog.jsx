@@ -47,7 +47,7 @@ export default function ProductCatalog({ limit }) {
       </div>
     ),
     title: product.name,
-    href: `/product/${product.id}`
+    // href removed to let ProductCard handle navigation via useNavigate (SPA routing)
   }));
 
   return (
