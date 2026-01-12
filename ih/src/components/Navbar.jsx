@@ -57,8 +57,8 @@ export default function Navbar({ darkMode, setDarkMode }) {
     <nav className={`
       fixed top-0 left-0 w-full z-[100]
       transition-all duration-700 ease-out
-      ${isScrolled
-        ? "py-3 bg-white/80 dark:bg-solarBlue/85 backdrop-blur-2xl border-b border-slate-200/50 dark:border-white/5 shadow-2xl shadow-black/5"
+      ${isScrolled || isMenuOpen
+        ? "py-3 bg-white dark:bg-solarBlue border-b border-slate-200/50 dark:border-white/5 shadow-2xl shadow-black/5"
         : "py-6 bg-transparent border-b border-transparent"
       }
     `}>
@@ -206,8 +206,9 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                className="fixed top-0 right-0 h-full w-[300px] sm:w-[350px] bg-white dark:bg-solarBlue z-[950] lg:hidden p-8 pt-24 border-l border-slate-200 dark:border-white/10 shadow-2xl"
+                className="fixed top-0 right-0 h-full w-[300px] sm:w-[350px] bg-white dark:bg-slate-950 z-[950] lg:hidden p-8 pt-24 border-l border-slate-200 dark:border-white/10 shadow-2xl"
               >
+
                 <div className="flex flex-col h-full">
                   <div className="space-y-6">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Main Navigation</p>
