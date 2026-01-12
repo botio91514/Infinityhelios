@@ -156,6 +156,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
               ) : (
                 <Link
                   to="/login"
+                  state={{ from: location }}
                   className="px-8 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-solarBlue text-[11px] font-black rounded-full hover:shadow-2xl hover:shadow-solarGreen/20 transition-all uppercase tracking-widest"
                 >
                   Join Us
@@ -262,6 +263,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                     ) : (
                       <Link
                         to="/login"
+                        state={{ from: location }}
                         className="w-full px-6 py-4 bg-solarGreen text-solarBlue font-black text-sm uppercase tracking-widest rounded-2xl text-center shadow-xl shadow-solarGreen/20"
                       >
                         Login / Register
