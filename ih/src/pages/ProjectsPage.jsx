@@ -11,7 +11,7 @@ const projectsData = [
         title: "1.2MW Industrial Rooftop",
         location: "Ahmedabad, Gujarat",
         category: "Industrial",
-        image: "/projects/project1.jpg",
+        image: "/images/projects/project1.jpg",
         capacity: "1.2 MW",
         year: "2023",
         description: "Large-scale industrial solar installation powering a major textile manufacturing unit, reducing carbon footprint by 40%."
@@ -21,7 +21,7 @@ const projectsData = [
         title: "Green Valley Residential Complex",
         location: "Pune, Maharashtra",
         category: "Residential",
-        image: "/projects/project2.jpg",
+        image: "/images/projects/project2.jpg",
         capacity: "450 kW",
         year: "2022",
         description: "Complete rooftop solution for a 500-unit residential society, creating a self-sustaining green community."
@@ -31,7 +31,7 @@ const projectsData = [
         title: "Agro-Solar Hybrid Farm",
         location: "Jodhpur, Rajasthan",
         category: "Agricultural",
-        image: "/projects/project3.jpg",
+        image: "/images/projects/project3.jpg",
         capacity: "2.5 MW",
         year: "2023",
         description: "Innovative dual-use solar installation allowing farming beneath panels, optimizing land use efficiency."
@@ -41,7 +41,7 @@ const projectsData = [
         title: "Educational Institute Campus",
         location: "Bangalore, Karnataka",
         category: "Commercial",
-        image: "/projects/project1.jpg",
+        image: "/images/projects/project1.jpg",
         capacity: "800 kW",
         year: "2021",
         description: "A comprehensive solar grid for a university campus, including solar carports and rooftop panels."
@@ -51,7 +51,7 @@ const projectsData = [
         title: "Tech Park Carport",
         location: "Hyderabad, Telangana",
         category: "Commercial",
-        image: "/projects/project2.jpg",
+        image: "/images/projects/project2.jpg",
         capacity: "1.5 MW",
         year: "2023",
         description: "Solar EV charging carport structure serving a major IT park, combining shade and power generation."
@@ -61,7 +61,7 @@ const projectsData = [
         title: "Rural Electrification Project",
         location: "Kutch, Gujarat",
         category: "Government",
-        image: "/projects/project3.jpg",
+        image: "/images/projects/project3.jpg",
         capacity: "3.0 MW",
         year: "2020",
         description: "Government-backed initiative to provide 24/7 renewable power to 15 remote villages."

@@ -77,7 +77,7 @@ export default function About() {
             <div className="relative group">
               <div className="absolute inset-0 bg-solarGreen/20 rounded-[30px] blur-2xl group-hover:blur-3xl transition-all duration-700 -z-10" />
               <img
-                src="/about/solarfarm.jpg"
+                src="/images/about/solarfarm.jpg"
                 alt="Solar Plant"
                 className="rounded-[30px] shadow-xl w-full object-cover max-h-[400px] border border-white/10"
               />
@@ -146,7 +146,7 @@ export default function About() {
                 <div className="relative">
                   <div className="absolute -inset-4 bg-gradient-to-tr from-solarGreen/20 to-transparent blur-2xl rounded-full -z-10 opacity-50" />
                   <img
-                    src="/about/journey.png"
+                    src="/images/about/journey.png"
                     alt="Journey Start"
                     className="rounded-[20px] shadow-lg w-full max-h-[300px] object-cover"
                   />
@@ -161,7 +161,7 @@ export default function About() {
                   <div className="relative">
                     <div className="absolute -inset-4 bg-gradient-to-bl from-solarOrange/20 to-transparent blur-2xl rounded-full -z-10 opacity-50" />
                     <img
-                      src="/about/journey2.png"
+                      src="/images/about/journey2.png"
                       alt="Expansion"
                       className="rounded-[20px] shadow-lg w-full max-h-[300px] object-cover"
                     />
@@ -206,7 +206,7 @@ export default function About() {
                 <div className="relative">
                   <div className="absolute -inset-4 bg-gradient-to-br from-solarGreen/20 to-solarOrange/20 blur-2xl rounded-full -z-10 opacity-50" />
                   <img
-                    src="/about/journey3.png"
+                    src="/images/about/journey3.png"
                     alt="Smart Energy"
                     className="rounded-[20px] shadow-lg w-full max-h-[300px] object-cover"
                   />
