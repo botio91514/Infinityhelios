@@ -16,6 +16,11 @@ const allowedOrigins = [
     "https://www.infinityhelios.com"
 ];
 
+// Health Check Endpoint (Keep-Alive)
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
+
 app.use(cors({
     origin: allowedOrigins,
     credentials: true,
