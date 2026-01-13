@@ -5,17 +5,15 @@ import API_BASE_URL from "../api/config";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        // Check for saved user in localStorage
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-            setUser(JSON.parse(savedUser));
+    const [user, setUser] = useState(() => {
+        try {
+            const savedUser = localStorage.getItem("user");
+            return savedUser ? JSON.parse(savedUser) : null;
+        } catch (e) {
+            return null;
         }
-        setLoading(false);
-    }, []);
+    });
+    const [loading, setLoading] = useState(false);
 
     const login = async (email, password) => {
         setLoading(true);
