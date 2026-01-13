@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { sendContactForm } from "../api/contact";
-import { MapPin, Phone, Mail, Clock, Send, ShieldCheck, Activity } from "lucide-react";
+import { MapPin, Phone, Mail, Send, ShieldCheck, Activity, AlertCircle } from "lucide-react";
 import SEO from "../components/SEO";
 
 export default function Contact() {
@@ -14,6 +14,10 @@ export default function Contact() {
     subject: "",
     message: "",
   });
+
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
   useEffect(() => {
     if (location.state?.results) {
@@ -32,20 +36,67 @@ export default function Contact() {
     }
   }, [location.state]);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Full Name is required";
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!phoneRegex.test(formData.phone)) {
+      newErrors.phone = "Enter valid 10-digit mobile number";
+    }
+
+    if (!formData.subject.trim()) {
+      newErrors.subject = "Subject is required";
+    } else if (formData.subject.trim().length < 5) {
+      newErrors.subject = "Subject must be at least 5 characters";
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = "Message is required";
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = "Message must be at least 10 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    // Clear error for this field as user types
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSubmitStatus(null);
+
+    if (!validateForm()) {
+      // Shake form or show toast? Errors are already displayed
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
       const response = await sendContactForm(formData);
@@ -61,6 +112,7 @@ export default function Contact() {
           subject: "",
           message: "",
         });
+        setErrors({});
       } else {
         setSubmitStatus("error");
         console.error("CF7 Error Response:", response);
@@ -70,7 +122,7 @@ export default function Contact() {
       console.error("Submission failed:", error);
     } finally {
       setIsSubmitting(false);
-      setTimeout(() => setSubmitStatus(null), 5000);
+      setTimeout(() => setSubmitStatus(null), 8000);
     }
   };
 
@@ -94,6 +146,33 @@ export default function Contact() {
       subDetails: "We'll respond within 24 hours",
     },
   ];
+
+  const InputField = ({ label, name, type = "text", placeholder, required = true }) => (
+    <div className="space-y-2">
+      <div className="flex justify-between">
+        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-3">
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+        {errors[name] && (
+          <span className="text-[10px] font-bold text-red-500 flex items-center gap-1 animate-pulse">
+            <AlertCircle className="w-3 h-3" /> {errors[name]}
+          </span>
+        )}
+      </div>
+      <input
+        type={type}
+        name={name}
+        value={formData[name]}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className={`w-full bg-slate-50 dark:bg-slate-900 border rounded-2xl px-5 py-3 text-sm font-bold text-slate-800 dark:text-white focus:ring-1 transition-all outline-none placeholder:opacity-30 shadow-inner
+            ${errors[name]
+            ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
+            : 'border-slate-200 dark:border-white/10 focus:border-solarGreen focus:ring-solarGreen'
+          }`}
+      />
+    </div>
+  );
 
   return (
     <section className="min-h-screen bg-white dark:bg-solarBlue pt-20 md:pt-28 pb-12 relative overflow-hidden">
@@ -228,72 +307,39 @@ export default function Contact() {
                 )}
               </AnimatePresence>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-3">Full Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="e.g. Rahul Sharma"
-                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl px-5 py-3 text-sm font-bold text-slate-800 dark:text-white focus:border-solarGreen focus:ring-1 focus:ring-solarGreen transition-all outline-none placeholder:opacity-30 shadow-inner"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-3">Email Address</label>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="sharma.r@gmail.com"
-                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl px-5 py-3 text-sm font-bold text-slate-800 dark:text-white focus:border-solarGreen focus:ring-1 focus:ring-solarGreen transition-all outline-none placeholder:opacity-30 shadow-inner"
-                    />
-                  </div>
+                  <InputField label="Full Name" name="name" placeholder="e.g. Rahul Sharma" />
+                  <InputField label="Email Address" name="email" type="email" placeholder="sharma.r@gmail.com" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-3">Phone Number</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="+91 00000 00000"
-                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl px-5 py-3 text-sm font-bold text-slate-800 dark:text-white focus:border-solarGreen focus:ring-1 focus:ring-solarGreen transition-all outline-none placeholder:opacity-30 shadow-inner"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-3">Subject</label>
-                    <input
-                      type="text"
-                      name="subject"
-                      required
-                      value={formData.subject}
-                      onChange={handleChange}
-                      placeholder="e.g. Solar System Inquiry"
-                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl px-5 py-3 text-sm font-bold text-slate-800 dark:text-white focus:border-solarGreen focus:ring-1 focus:ring-solarGreen transition-all outline-none placeholder:opacity-30 shadow-inner"
-                    />
-                  </div>
+                  <InputField label="Phone Number" name="phone" type="tel" placeholder="+91 98765 43210" />
+                  <InputField label="Subject" name="subject" placeholder="e.g. Solar System Inquiry" />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-3">Your Message</label>
+                  <div className="flex justify-between">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-3">
+                      Your Message <span className="text-red-500">*</span>
+                    </label>
+                    {errors.message && (
+                      <span className="text-[10px] font-bold text-red-500 flex items-center gap-1 animate-pulse">
+                        <AlertCircle className="w-3 h-3" /> {errors.message}
+                      </span>
+                    )}
+                  </div>
                   <textarea
                     name="message"
-                    required
                     rows={4}
                     value={formData.message}
                     onChange={handleChange}
                     placeholder="Tell us about your requirements..."
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-[30px] px-6 py-4 text-sm font-bold text-slate-800 dark:text-white focus:border-solarGreen focus:ring-1 focus:ring-solarGreen transition-all outline-none resize-none placeholder:opacity-30 shadow-inner"
+                    className={`w-full bg-slate-50 dark:bg-slate-900 border rounded-[30px] px-6 py-4 text-sm font-bold text-slate-800 dark:text-white focus:ring-1 transition-all outline-none resize-none placeholder:opacity-30 shadow-inner
+                        ${errors.message
+                        ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-slate-200 dark:border-white/10 focus:border-solarGreen focus:ring-solarGreen'
+                      }`}
                   />
                 </div>
 
