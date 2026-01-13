@@ -10,8 +10,8 @@ export default function SplashScreen({ onComplete }) {
         const timer = setTimeout(() => {
             setExit(true);
             // Notify parent to unmount after exit animation finishes (approx 0.5s)
-            setTimeout(onComplete, 500);
-        }, 1200);
+            setTimeout(onComplete, 1500);
+        }, 1500);
 
         return () => clearTimeout(timer);
     }, [onComplete]);
