@@ -9,10 +9,10 @@ export const CartProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth(); // Hook into auth state
 
-  const loadCart = async () => {
+  const loadCart = async (options = {}) => {
     try {
       setLoading(true);
-      const data = await getCart();
+      const data = await getCart(options);
       setCart(data);
     } catch (err) {
       console.error("Failed to load cart", err);
@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     // Delay initial cart load to prioritize page content
     const timer = setTimeout(() => {
-      loadCart();
+      loadCart({ skipLoader: true });
     }, 100);
     return () => clearTimeout(timer);
   }, []); // Empty dependency - only run once

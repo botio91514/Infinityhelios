@@ -10,7 +10,9 @@ const AxiosLoader = () => {
         // Request interceptor
         const reqInterceptor = storeApi.interceptors.request.use(
             (config) => {
-                showLoader();
+                if (!config.skipLoader) {
+                    showLoader();
+                }
                 return config;
             },
             (error) => {
