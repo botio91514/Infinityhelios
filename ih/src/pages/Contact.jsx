@@ -5,6 +5,33 @@ import { sendContactForm } from "../api/contact";
 import { MapPin, Phone, Mail, Send, ShieldCheck, Activity, AlertCircle } from "lucide-react";
 import SEO from "../components/SEO";
 
+const InputField = ({ label, name, type = "text", placeholder, required = true, value, onChange, error }) => (
+  <div className="space-y-2">
+    <div className="flex justify-between">
+      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-3">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      {error && (
+        <span className="text-[10px] font-bold text-red-500 flex items-center gap-1 animate-pulse">
+          <AlertCircle className="w-3 h-3" /> {error}
+        </span>
+      )}
+    </div>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={`w-full bg-slate-50 dark:bg-slate-900 border rounded-2xl px-5 py-3 text-sm font-bold text-slate-800 dark:text-white focus:ring-1 transition-all outline-none placeholder:opacity-30 shadow-inner
+          ${error
+          ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
+          : 'border-slate-200 dark:border-white/10 focus:border-solarGreen focus:ring-solarGreen'
+        }`}
+    />
+  </div>
+);
+
 export default function Contact() {
   const location = useLocation();
   const [formData, setFormData] = useState({
@@ -147,32 +174,7 @@ export default function Contact() {
     },
   ];
 
-  const InputField = ({ label, name, type = "text", placeholder, required = true }) => (
-    <div className="space-y-2">
-      <div className="flex justify-between">
-        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-3">
-          {label} {required && <span className="text-red-500">*</span>}
-        </label>
-        {errors[name] && (
-          <span className="text-[10px] font-bold text-red-500 flex items-center gap-1 animate-pulse">
-            <AlertCircle className="w-3 h-3" /> {errors[name]}
-          </span>
-        )}
-      </div>
-      <input
-        type={type}
-        name={name}
-        value={formData[name]}
-        onChange={handleChange}
-        placeholder={placeholder}
-        className={`w-full bg-slate-50 dark:bg-slate-900 border rounded-2xl px-5 py-3 text-sm font-bold text-slate-800 dark:text-white focus:ring-1 transition-all outline-none placeholder:opacity-30 shadow-inner
-            ${errors[name]
-            ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
-            : 'border-slate-200 dark:border-white/10 focus:border-solarGreen focus:ring-solarGreen'
-          }`}
-      />
-    </div>
-  );
+
 
   return (
     <section className="min-h-screen bg-white dark:bg-solarBlue pt-20 md:pt-28 pb-12 relative overflow-hidden">
@@ -309,13 +311,43 @@ export default function Contact() {
 
               <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputField label="Full Name" name="name" placeholder="e.g. Rahul Sharma" />
-                  <InputField label="Email Address" name="email" type="email" placeholder="sharma.r@gmail.com" />
+                  <InputField
+                    label="Full Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    error={errors.name}
+                    placeholder="e.g. Rahul Sharma"
+                  />
+                  <InputField
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={errors.email}
+                    placeholder="sharma.r@gmail.com"
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputField label="Phone Number" name="phone" type="tel" placeholder="+91 98765 43210" />
-                  <InputField label="Subject" name="subject" placeholder="e.g. Solar System Inquiry" />
+                  <InputField
+                    label="Phone Number"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    error={errors.phone}
+                    placeholder="+91 98765 43210"
+                  />
+                  <InputField
+                    label="Subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    error={errors.subject}
+                    placeholder="e.g. Solar System Inquiry"
+                  />
                 </div>
 
                 <div className="space-y-2">
