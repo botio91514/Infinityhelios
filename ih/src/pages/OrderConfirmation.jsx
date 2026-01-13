@@ -47,11 +47,10 @@ const OrderConfirmation = () => {
         setIsProcessing(true);
         try {
             if (location.state?.customerId) {
-                await fetch(`${API_BASE_URL}/api/user/profile`, {
-                    method: "POST",
+                await fetch(`${API_BASE_URL}/api/user/update/${location.state.customerId}`, {
+                    method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        id: location.state.customerId,
                         billing: checkoutData,
                         shipping: checkoutData
                     })
