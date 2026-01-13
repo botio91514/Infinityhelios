@@ -125,8 +125,8 @@ const OrderConfirmation = () => {
                                         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                             <span className="opacity-20 uppercase tracking-[0.4em]">PHONE</span> {checkoutData.phone}
                                         </p>
-                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                            <span className="opacity-20 uppercase tracking-[0.4em]">EMAIL</span> {checkoutData.email}
+                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 break-all">
+                                            <span className="opacity-20 uppercase tracking-[0.4em] flex-shrink-0">EMAIL</span> {checkoutData.email}
                                         </p>
                                     </div>
                                 </div>
