@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { sendContactForm } from "../api/contact";
@@ -34,6 +34,7 @@ const InputField = ({ label, name, type = "text", placeholder, required = true, 
 
 export default function Contact() {
   const location = useLocation();
+  const messageRef = useRef(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -130,7 +131,7 @@ export default function Contact() {
 
       if (response.status === "mail_sent" || response.success) {
         setSubmitStatus("success");
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => messageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
 
         setFormData({
           name: "",
@@ -268,7 +269,7 @@ export default function Contact() {
             <div className="bg-white/80 dark:bg-slate-950/40 backdrop-blur-3xl p-8 md:p-10 rounded-[40px] border border-slate-200 dark:border-white/10 shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-solarGreen/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
-              <h2 className="text-2xl font-black mb-8 flex items-center gap-4 text-slate-900 dark:text-white tracking-tight">
+              <h2 ref={messageRef} className="text-2xl font-black mb-8 flex items-center gap-4 text-slate-900 dark:text-white tracking-tight">
                 <div className="w-1.5 h-8 bg-solarGreen rounded-full shadow-[0_0_15px_rgba(100,255,153,0.5)]" />
                 Send a Message
               </h2>
