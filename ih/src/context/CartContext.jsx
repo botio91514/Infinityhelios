@@ -37,7 +37,7 @@ export const CartProvider = ({ children }) => {
         // Wait 300ms for state/auth to settle before fetching
         await new Promise(resolve => setTimeout(resolve, 300));
       }
-      await loadCart();
+      await loadCart({ skipLoader: true });
     };
 
     handleUserChange();

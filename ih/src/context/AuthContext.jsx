@@ -19,9 +19,9 @@ export const AuthProvider = ({ children }) => {
         setLoading(true);
         try {
             // Call our Node.js backend proxy
-            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {    
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json" },                    
                 body: JSON.stringify({ username: email, password })
             });
 
