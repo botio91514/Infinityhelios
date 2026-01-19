@@ -211,7 +211,7 @@ export default function ProductsPage() {
                   <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
                     <Filter className="w-3 h-3" /> Max Price
                   </h3>
-                  <span className="text-xs font-black text-solarGreen">₹{priceRange.toLocaleString()}</span>
+                  <span className="text-xs font-black text-solarGreen">£{priceRange.toLocaleString()}</span>
                 </div>
                 <input
                   type="range"
@@ -223,8 +223,8 @@ export default function ProductsPage() {
                   className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-solarGreen"
                 />
                 <div className="flex justify-between mt-2 text-[9px] font-bold text-slate-400 uppercase">
-                  <span>₹0</span>
-                  <span>₹{maxPrice.toLocaleString()}</span>
+                  <span>£0</span>
+                  <span>£{maxPrice.toLocaleString()}</span>
                 </div>
               </div>
 

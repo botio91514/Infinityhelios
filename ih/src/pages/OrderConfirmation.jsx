@@ -14,15 +14,35 @@ import {
     AlertCircle,
     CheckCircle2
 } from "lucide-react";
+import StripeWrapper from "../components/StripeWrapper";
+import StripePaymentForm from "../components/StripePaymentForm";
+import { createPaymentIntent, placeSecureOrder, placeBankTransferOrder } from "../api/cart";
 
 const OrderConfirmation = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { checkout, loadCart, cart } = useCart();
     const [isProcessing, setIsProcessing] = useState(false);
+    const [clientSecret, setClientSecret] = useState(null);
 
     const checkoutData = location.state?.checkoutData;
     const paymentMethod = location.state?.paymentMethod;
+
+    // Fetch Payment Intent if paying via Stripe
+    useState(() => {
+        if (paymentMethod === 'stripe' && !clientSecret) {
+            const fetchSecret = async () => {
+                const secretData = await createPaymentIntent();
+                if (secretData?.client_secret) {
+                    setClientSecret(secretData.client_secret);
+                } else {
+                    console.error("Failed to init Stripe session");
+                    alert("Could not initialize secure payment. Please try again or use COD.");
+                }
+            };
+            fetchSecret();
+        }
+    }, [paymentMethod]);
 
     if (!checkoutData || !cart) {
         return (
@@ -43,7 +63,7 @@ const OrderConfirmation = () => {
         );
     }
 
-    const handleConfirmOrder = async () => {
+    const handleConfirmOrder = async (extraData = []) => {
         setIsProcessing(true);
         try {
             if (location.state?.customerId) {
@@ -57,16 +77,49 @@ const OrderConfirmation = () => {
                 });
             }
 
-            const response = await checkout(checkoutData, paymentMethod);
-            if (response.payment_result?.status === "success" || response.order_id) {
+            // If incoming extraData is NOT array, make it one (robustness)
+            const paymentMeta = Array.isArray(extraData) ? extraData : [];
+
+            // Branch Logic:
+            let response;
+            if (paymentMethod === 'bacs') {
+                const bacsResult = await placeBankTransferOrder(checkoutData);
+                response = bacsResult.order; // Format expectation
+            } else {
+                // COD or others (Standard Store API)
+                response = await checkout(checkoutData, paymentMethod, paymentMeta);
+            }
+
+            if (response.payment_result?.status === "success" || response.order_id || response.id) {
                 await loadCart();
+                // Ensure ID is mapped correctly if Admin API response (id) vs Store API (order_id)
+                if (!response.order_id && response.id) response.order_id = response.id;
+
                 navigate("/order-success", { state: { order: response } });
             } else {
                 alert("Order status: " + (response.payment_result?.payment_details?.[0]?.value || "Pending."));
             }
         } catch (error) {
             console.error("Place order error:", error);
-            alert("Error placing order: " + (error.response?.data?.message || "Please try again."));
+            alert("Error placing order: " + (error.response?.data?.message || error.response?.data?.error || "Please try again."));
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const onStripeSuccess = async (paymentIntent) => {
+        // Stripe confirmed payment. Now we tell WC to create order.
+        setIsProcessing(true);
+        try {
+            // Use the SECURE backend endpoint to place order via Admin API
+            const order = await placeSecureOrder(checkoutData, paymentIntent.id);
+            await loadCart();
+            navigate("/order-success", { state: { order } });
+        } catch (error) {
+            console.error("Secure Order Placement Failed:", error);
+            // Even if placement fails, payment succeeded. 
+            // We should ideally show a "Contact Support" message or retry.
+            alert("Payment successful but order creation failed. Please contact support with ID: " + paymentIntent.id);
         } finally {
             setIsProcessing(false);
         }
@@ -167,7 +220,7 @@ const OrderConfirmation = () => {
                                                 <span className="text-[9px] font-black uppercase tracking-tight text-white block group-hover/item:text-solarGreen transition-colors">{item.name}</span>
                                                 <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Qty: {item.quantity}</span>
                                             </div>
-                                            <span className="font-black text-xs tabular-nums text-white/80 group-hover/item:text-white transition-colors">₹{(item.totals.line_total / 100).toLocaleString('en-IN')}</span>
+                                            <span className="font-black text-xs tabular-nums text-white/80 group-hover/item:text-white transition-colors">£{(item.totals.line_total / 100).toLocaleString('en-GB')}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -176,7 +229,7 @@ const OrderConfirmation = () => {
                                     <div className="space-y-2">
                                         <div className="flex justify-between text-white/30 font-black text-[9px] uppercase tracking-widest">
                                             <span>Subtotal</span>
-                                            <span>₹{(cart.totals.total_price / 100).toLocaleString('en-IN')}</span>
+                                            <span>£{(cart.totals.total_price / 100).toLocaleString('en-GB')}</span>
                                         </div>
                                         <div className="flex justify-between text-solarGreen font-black text-[9px] uppercase tracking-widest">
                                             <span>Shipping</span>
@@ -187,7 +240,7 @@ const OrderConfirmation = () => {
                                         <div>
                                             <p className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20 mb-1">TOTAL AMOUNT</p>
                                         </div>
-                                        <span className="text-3xl font-black text-white tabular-nums tracking-tighter">₹{(cart.totals.total_price / 100).toLocaleString('en-IN')}</span>
+                                        <span className="text-3xl font-black text-white tabular-nums tracking-tighter">£{(cart.totals.total_price / 100).toLocaleString('en-GB')}</span>
                                     </div>
                                 </div>
                             </div>
@@ -200,36 +253,54 @@ const OrderConfirmation = () => {
                     </div>
 
                     <div className="flex flex-col md:flex-row gap-4 pt-8 border-t border-slate-100 dark:border-white/5">
-                        <button
-                            onClick={handleConfirmOrder}
-                            disabled={isProcessing}
-                            className={`group relative flex-1 flex items-center justify-between pl-8 pr-5 py-3.5 bg-solarGreen text-solarBlue rounded-[24px] font-black uppercase tracking-[0.3em] text-[10px] shadow-2xl shadow-solarGreen/20 transition-all overflow-hidden ${isProcessing ? 'opacity-70 cursor-not-allowed' : 'hover:scale-[1.02] active:scale-[0.98]'}`}
-                        >
-                            <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
-                            <span className="relative z-10 flex items-center gap-3">
-                                {isProcessing ? (
-                                    <>
-                                        <div className="w-4 h-4 border-2 border-solarBlue/30 border-t-solarBlue rounded-full animate-spin" />
-                                        Processing Order...
-                                    </>
-                                ) : (
-                                    "Confirm & Place Order"
-                                )}
-                            </span>
-                            {!isProcessing && (
-                                <div className="relative z-10 w-10 h-10 bg-solarBlue text-solarGreen rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <ArrowRight className="w-4 h-4" />
-                                </div>
-                            )}
-                        </button>
 
-                        <button
-                            onClick={() => navigate(-1)}
-                            disabled={isProcessing}
-                            className="px-8 py-3.5 bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-400 rounded-[24px] font-black uppercase tracking-[0.2em] text-[9px] hover:bg-slate-200 dark:hover:bg-white/10 transition-all disabled:opacity-50"
-                        >
-                            Cancel
-                        </button>
+                        {paymentMethod === 'stripe' ? (
+                            <div className="w-full">
+                                {clientSecret ? (
+                                    <StripeWrapper clientSecret={clientSecret}>
+                                        <StripePaymentForm onSuccess={onStripeSuccess} onError={(msg) => alert(msg)} billingDetails={checkoutData} />
+                                    </StripeWrapper>
+                                ) : (
+                                    <div className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-white/5 rounded-2xl animate-pulse">
+                                        <div className="w-5 h-5 border-2 border-solarGreen/30 border-t-solarGreen rounded-full animate-spin" />
+                                        <span className="text-xs font-bold text-slate-400">Initializing Secure Payment...</span>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => handleConfirmOrder()}
+                                disabled={isProcessing}
+                                className={`group relative flex-1 flex items-center justify-between pl-8 pr-5 py-3.5 bg-solarGreen text-solarBlue rounded-[24px] font-black uppercase tracking-[0.3em] text-[10px] shadow-2xl shadow-solarGreen/20 transition-all overflow-hidden ${isProcessing ? 'opacity-70 cursor-not-allowed' : 'hover:scale-[1.02] active:scale-[0.98]'}`}
+                            >
+                                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+                                <span className="relative z-10 flex items-center gap-3">
+                                    {isProcessing ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-solarBlue/30 border-t-solarBlue rounded-full animate-spin" />
+                                            Processing Order...
+                                        </>
+                                    ) : (
+                                        "Confirm & Place Order"
+                                    )}
+                                </span>
+                                {!isProcessing && (
+                                    <div className="relative z-10 w-10 h-10 bg-solarBlue text-solarGreen rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <ArrowRight className="w-4 h-4" />
+                                    </div>
+                                )}
+                            </button>
+                        )}
+
+                        {paymentMethod !== 'stripe' && (
+                            <button
+                                onClick={() => navigate(-1)}
+                                disabled={isProcessing}
+                                className="px-8 py-3.5 bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-400 rounded-[24px] font-black uppercase tracking-[0.2em] text-[9px] hover:bg-slate-200 dark:hover:bg-white/10 transition-all disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

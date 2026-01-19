@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { useRef } from "react";
 import {
   Leaf,
   Globe,
@@ -25,6 +26,18 @@ const ScrollReveal = ({ children, delay = 0 }) => (
 );
 
 export default function About() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end end"]
+  });
+
+  const scaleY = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   return (
     <section className="relative min-h-screen bg-white dark:bg-solarBlue pt-20 md:pt-28 pb-12 overflow-hidden">
       <SEO
@@ -125,9 +138,27 @@ export default function About() {
             </div>
           </ScrollReveal>
 
-          <div className="space-y-12 md:space-y-16 max-w-5xl mx-auto">
+          <div ref={containerRef} className="relative space-y-12 md:space-y-16 max-w-5xl mx-auto">
+            {/* Animated Timeline Line (Desktop) */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-800 -translate-x-1/2 hidden lg:block overflow-hidden rounded-full">
+              <motion.div
+                style={{ scaleY, transformOrigin: "top" }}
+                className="w-full h-full bg-gradient-to-b from-solarGreen via-emerald-400 to-solarGreen shadow-[0_0_20px_#22c55e]"
+              />
+            </div>
             {/* STEP 1 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative group">
+              <motion.div
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 hidden lg:flex items-center justify-center"
+              >
+                <div className="w-4 h-4 rounded-full bg-solarGreen shadow-[0_0_15px_rgba(34,197,94,0.8)] relative">
+                  <div className="absolute inset-0 rounded-full bg-solarGreen animate-ping opacity-75" />
+                </div>
+              </motion.div>
               <ScrollReveal>
                 <div className="space-y-4">
                   <span className="text-5xl font-black text-solarGreen/20">2018</span>
@@ -146,7 +177,7 @@ export default function About() {
                 <div className="relative">
                   <div className="absolute -inset-4 bg-gradient-to-tr from-solarGreen/20 to-transparent blur-2xl rounded-full -z-10 opacity-50" />
                   <img
-                    src="/images/about/journey.png"
+                    src="/images/about/journey.jpg"
                     alt="Journey Start"
                     className="rounded-[20px] shadow-lg w-full max-h-[300px] object-cover"
                   />
@@ -155,13 +186,24 @@ export default function About() {
             </div>
 
             {/* STEP 2 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative group">
+              <motion.div
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 hidden lg:flex items-center justify-center"
+              >
+                <div className="w-4 h-4 rounded-full bg-solarGreen shadow-[0_0_15px_rgba(34,197,94,0.8)] relative">
+                  <div className="absolute inset-0 rounded-full bg-solarGreen animate-ping opacity-75" />
+                </div>
+              </motion.div>
               <div className="order-2 lg:order-1">
                 <ScrollReveal>
                   <div className="relative">
                     <div className="absolute -inset-4 bg-gradient-to-bl from-solarOrange/20 to-transparent blur-2xl rounded-full -z-10 opacity-50" />
                     <img
-                      src="/images/about/journey2.png"
+                      src="/images/about/journey2.jpg"
                       alt="Expansion"
                       className="rounded-[20px] shadow-lg w-full max-h-[300px] object-cover"
                     />
@@ -187,7 +229,18 @@ export default function About() {
             </div>
 
             {/* STEP 3 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative group">
+              <motion.div
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 hidden lg:flex items-center justify-center"
+              >
+                <div className="w-4 h-4 rounded-full bg-solarGreen shadow-[0_0_15px_rgba(34,197,94,0.8)] relative">
+                  <div className="absolute inset-0 rounded-full bg-solarGreen animate-ping opacity-75" />
+                </div>
+              </motion.div>
               <ScrollReveal>
                 <div className="space-y-4">
                   <span className="text-5xl font-black text-solarGreen/20">2024</span>
@@ -206,7 +259,7 @@ export default function About() {
                 <div className="relative">
                   <div className="absolute -inset-4 bg-gradient-to-br from-solarGreen/20 to-solarOrange/20 blur-2xl rounded-full -z-10 opacity-50" />
                   <img
-                    src="/images/about/journey3.png"
+                    src="/images/about/journey3.jpg"
                     alt="Smart Energy"
                     className="rounded-[20px] shadow-lg w-full max-h-[300px] object-cover"
                   />

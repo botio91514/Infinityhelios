@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getOrderById } from "../api/woocommerce";
 import { motion } from "framer-motion";
 import { useLoader } from "../context/LoaderContext";
+import html2pdf from "html2pdf.js";
+import logoDark from "../assets/ihlogo-dark.png";
 
 const Invoice = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { showLoader, hideLoader } = useLoader();
     const [order, setOrder] = useState(null);
+    const invoiceRef = useRef();
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -26,151 +29,129 @@ const Invoice = () => {
         if (id) fetchOrder();
     }, [id, showLoader, hideLoader]);
 
-    const handlePrint = () => {
-        window.print();
+    const handleDownload = () => {
+        const element = invoiceRef.current;
+        const opt = {
+            margin: [0, 0, 0, 0], // Zero margins to control layout via CSS padding
+            filename: `Invoice_${order.id || 'InfinityHelios'}.pdf`,
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: {
+                scale: 3, // Higher scale for crisper text
+                useCORS: true,
+                letterRendering: true,
+                scrollY: 0,
+                windowWidth: 1200 // Force desktop rendering width for PDF
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
     };
 
     if (!order) return null;
 
     const subtotal = order.line_items.reduce((acc, item) => acc + parseFloat(item.subtotal), 0);
-    const taxTotal = parseFloat(order.total_tax) || 0;
+    // const taxTotal = parseFloat(order.total_tax) || 0; // Keeping if needed, but per request focusing on clean layout
     const total = parseFloat(order.total);
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 md:pt-28 pb-12 px-6 print:p-0 print:bg-white print:pt-0">
-            <div className="max-w-4xl mx-auto print:max-w-none hover:max-w-4xl transition-all">
-                {/* ACTIONS - HIDDEN ON PRINT */}
-                <div className="flex justify-between items-center mb-6 print:hidden">
+        <div className="min-h-screen bg-neutral-100 dark:bg-slate-950 pt-20 pb-12 px-4 flex justify-center items-start overflow-auto">
+            <div className="w-full md:max-w-[210mm]">
+
+                {/* Control Bar */}
+                <div className="flex flex-col sm:flex-row justify-between items-center mb-8 px-2 gap-4">
                     <button
-                        onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-slate-500 hover:text-solarBlue transition-colors font-bold text-xs uppercase tracking-wider"
+                        onClick={() => navigate('/dashboard')}
+                        className="flex items-center gap-3 text-neutral-500 hover:text-black transition-all text-xs font-bold uppercase tracking-widest py-3 px-4 -ml-4 rounded-lg hover:bg-neutral-100 cursor-pointer"
                     >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
                         Back to Dashboard
                     </button>
 
                     <button
-                        onClick={handlePrint}
-                        className="bg-solarGreen text-white px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-lg shadow-solarGreen/20 hover:scale-[1.02] active:scale-95 transition-all font-bold text-xs uppercase tracking-wider"
+                        onClick={handleDownload}
+                        className="w-full sm:w-auto bg-black text-white px-6 py-3 rounded-full flex items-center justify-center gap-3 hover:bg-neutral-800 transition-all text-xs font-bold uppercase tracking-widest shadow-xl shadow-black/10 hover:shadow-black/20 transform hover:-translate-y-0.5"
                     >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9v4a2 2 0 00-2 2v4zm2-2h2" />
-                        </svg>
-                        Download / Print Invoice
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                        </span>
+                        Download PDF
                     </button>
                 </div>
 
-                {/* INVOICE CONTENT */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white dark:bg-slate-900 shadow-2xl rounded-[30px] overflow-hidden border border-slate-200 dark:border-white/10 print:shadow-none print:border-none print:rounded-none"
-                >
-                    {/* Header Banner */}
-                    <div className="bg-gradient-to-r from-solarBlue to-blue-900 p-6 md:p-8 text-white flex flex-col md:flex-row justify-between items-start gap-6 relative overflow-hidden print:from-slate-100 print:to-slate-100 print:text-black print:p-8">
-                        <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl print:hidden"></div>
+                {/* INVOICE PAPER */}
+                <div ref={invoiceRef} className="bg-white text-black w-full shadow-2xl overflow-hidden relative rounded-sm md:rounded-none">
+                    <div className="p-6 md:p-[15mm] min-h-[auto] md:min-h-[297mm] flex flex-col relative">
 
-                        <div className="relative z-10">
-                            <div className="text-2xl font-black tracking-tighter mb-1 flex items-center gap-2">
-                                <span className="w-6 h-6 bg-solarGreen rounded-lg flex items-center justify-center text-white text-xs">∞</span>
-                                INFINITY<span className="text-solarGreen">HELIOS</span>
+                        {/* 1. Brand Header */}
+                        <div className="flex flex-col md:flex-row justify-between items-start mb-12 md:mb-16 gap-8 md:gap-0">
+                            <div className="w-full md:w-1/2">
+                                <img src={logoDark} alt="Infinity Helios" className="h-12 md:h-16 w-auto object-contain mb-4 md:mb-6" />
                             </div>
-                            <p className="opacity-70 text-xs max-w-xs leading-relaxed print:text-xs">
-                                Providing sustainable solar solutions for a greener, brighter future.
-                            </p>
-                        </div>
-
-                        <div className="text-right relative z-10 flex flex-col items-end">
-                            <h1 className="text-4xl font-black mb-1 opacity-20 print:text-black print:opacity-40">INVOICE</h1>
-                            <div className="bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-bold print:bg-slate-200 print:text-slate-800">
-                                #{order.id}
+                            <div className="text-left md:text-right w-full md:w-1/2">
+                                <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] text-black mb-2 uppercase">Invoice</h1>
+                                <p className="text-base font-medium text-neutral-900">#{order.id}</p>
+                                <p className="text-xs text-neutral-500 mt-1 uppercase tracking-wider">{new Date(order.date_created).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="p-6 md:p-8 print:p-8 print:pt-0">
-                        {/* Meta Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 border-b border-slate-100 dark:border-white/5 pb-8 print:mb-8 print:pb-8">
-                            <div>
-                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 block">Billed To</label>
-                                <div className="space-y-0.5">
-                                    <p className="font-bold text-base">{order.billing.first_name} {order.billing.last_name}</p>
-                                    <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
-                                        {order.billing.address_1}<br />
-                                        {order.billing.city}, {order.billing.state} {order.billing.postcode}<br />
-                                        {order.billing.country}
-                                    </p>
-                                    <p className="text-slate-500 dark:text-slate-400 text-xs pt-1">{order.billing.email}</p>
-                                    <p className="text-slate-500 dark:text-slate-400 text-xs">{order.billing.phone}</p>
+                        {/* 2. Addresses & Meta */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-x-12 md:gap-y-12 mb-12 md:mb-20">
+                            <div className="space-y-6 md:space-y-8">
+                                <div>
+                                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 mb-3 md:mb-4">Billed To</h3>
+                                    <div className="text-sm font-medium leading-relaxed text-neutral-800">
+                                        <p className="text-lg text-black mb-2">{order.billing.first_name} {order.billing.last_name}</p>
+                                        <p>{order.billing.address_1}</p>
+                                        <p>{order.billing.city}, {order.billing.state} {order.billing.postcode}</p>
+                                        <p>{order.billing.country}</p>
+                                        <p className="mt-2 text-neutral-500 break-all">{order.billing.email}</p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 block">Shipping Address</label>
-                                <div className="space-y-0.5">
-                                    <p className="font-bold text-base">{order.shipping.first_name} {order.shipping.last_name}</p>
-                                    <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
-                                        {order.shipping.address_1}<br />
-                                        {order.shipping.city}, {order.shipping.state} {order.shipping.postcode}<br />
-                                        {order.shipping.country}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col gap-6 md:col-start-2 lg:col-start-3">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 block">Date Issued</label>
-                                        <p className="font-bold text-xs">{new Date(order.date_created).toLocaleDateString()}</p>
-                                    </div>
-                                    <div>
-                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 block">Order Status</label>
-                                        <span className="inline-block px-2.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-md text-[9px] font-black uppercase tracking-wider">
-                                            {order.status}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 block">Payment Method</label>
-                                        <p className="font-bold text-xs">{order.payment_method_title}</p>
-                                    </div>
-                                    <div>
-                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5 block">Currency</label>
-                                        <p className="font-bold text-xs">{order.currency_symbol} {order.currency}</p>
+                            <div className="space-y-6 md:space-y-8 text-left md:text-right">
+                                <div>
+                                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 mb-3 md:mb-4">Shipped To</h3>
+                                    <div className="text-sm font-medium leading-relaxed text-neutral-800">
+                                        <p className="text-lg text-black mb-2">{order.shipping.first_name} {order.shipping.last_name}</p>
+                                        <p>{order.shipping.address_1}</p>
+                                        <p>{order.shipping.city}, {order.shipping.state} {order.shipping.postcode}</p>
+                                        <p>{order.shipping.country}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Items Table */}
-                        <div className="mb-8 overflow-x-auto rounded-2xl border border-slate-100 dark:border-white/5 print:border-none print:rounded-none">
-                            <table className="w-full text-left">
-                                <thead className="bg-slate-50 dark:bg-white/5 print:bg-slate-100">
-                                    <tr>
-                                        <th className="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400">Description</th>
-                                        <th className="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400 text-center">Qty</th>
-                                        <th className="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400 text-right">Price</th>
-                                        <th className="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400 text-right">Amount</th>
+                        {/* 3. Line Items */}
+                        <div className="flex-grow overflow-x-auto mb-8 md:mb-0">
+                            <table className="w-full text-left border-collapse min-w-[500px] md:min-w-0">
+                                <thead>
+                                    <tr className="border-b border-black">
+                                        <th className="py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-black w-1/2">Description</th>
+                                        <th className="py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-black text-center w-1/6">Qty</th>
+                                        <th className="py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-black text-right w-1/6">Price</th>
+                                        <th className="py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-black text-right w-1/6">Total</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+                                <tbody>
                                     {order.line_items.map((item) => (
-                                        <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                                            <td className="px-5 py-4">
-                                                <div className="font-bold text-sm text-slate-800 dark:text-white mb-0.5">{item.name}</div>
-                                                <div className="text-[9px] opacity-40 uppercase tracking-wider">SKU: {item.sku || 'N/A'}</div>
+                                        <tr key={item.id} className="border-b border-neutral-100">
+                                            <td className="py-6 pr-4 align-top">
+                                                <p className="font-semibold text-sm text-neutral-900 mb-1">{item.name}</p>
+                                                {item.sku && <p className="text-[10px] text-neutral-400 uppercase tracking-wider">Ref. {item.sku}</p>}
                                             </td>
-                                            <td className="px-5 py-4 text-center font-bold text-xs text-slate-600 dark:text-slate-400">
+                                            <td className="py-6 px-4 text-center align-top text-sm text-neutral-600 font-medium">
                                                 {item.quantity}
                                             </td>
-                                            <td className="px-5 py-4 text-right font-bold text-xs text-slate-600 dark:text-slate-400">
-                                                {order.currency_symbol} {(parseFloat(item.price)).toFixed(2)}
+                                            <td className="py-6 px-4 text-right align-top text-sm text-neutral-600 font-medium">
+                                                {order.currency_symbol}{parseFloat(item.price).toFixed(2)}
                                             </td>
-                                            <td className="px-5 py-4 text-right font-black text-xs text-slate-800 dark:text-white">
-                                                {order.currency_symbol} {(parseFloat(item.total)).toFixed(2)}
+                                            <td className="py-6 pl-4 text-right align-top text-sm font-bold text-neutral-900">
+                                                {order.currency_symbol}{parseFloat(item.total).toFixed(2)}
                                             </td>
                                         </tr>
                                     ))}
@@ -178,59 +159,50 @@ const Invoice = () => {
                             </table>
                         </div>
 
-                        {/* Totals */}
-                        <div className="flex flex-col md:flex-row justify-between gap-8 pt-6">
-                            <div className="flex-1 max-w-sm">
-                                <div className="bg-slate-50 dark:bg-white/5 rounded-2xl p-6 border border-slate-100 dark:border-white/5 print:bg-transparent print:p-0 print:border-none">
-                                    <h4 className="font-black text-[10px] uppercase tracking-widest mb-3 opacity-40">Payment Info</h4>
-                                    <p className="text-xs leading-relaxed opacity-70">
-                                        Please keep this invoice for your records. All prices are inclusive of applicable taxes. Need help? Contact <span className="text-solarGreen font-bold">support@infinityhelios.com</span>
-                                    </p>
+                        {/* 4. Financials */}
+                        <div className="flex justify-end mt-4 md:mt-12 mb-12 md:mb-20">
+                            <div className="w-full md:w-72 space-y-3">
+                                <div className="flex justify-between items-center text-sm text-neutral-600">
+                                    <span className="font-medium">Subtotal</span>
+                                    <span>{order.currency_symbol} {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                                 </div>
-                            </div>
+                                <div className="flex justify-between items-center text-sm text-neutral-600">
+                                    <span className="font-medium">Tax</span>
+                                    <span>{order.currency_symbol} {(parseFloat(order.total_tax) || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm text-neutral-600">
+                                    <span className="font-medium">Shipping</span>
+                                    <span>{parseFloat(order.shipping_total) > 0 ? `${order.currency_symbol} ${parseFloat(order.shipping_total).toFixed(2)}` : 'Free'}</span>
+                                </div>
 
-                            <div className="md:w-64 space-y-3">
-                                <div className="flex justify-between items-center text-xs">
-                                    <span className="opacity-50 font-bold uppercase tracking-wider text-[9px]">Subtotal</span>
-                                    <span className="font-bold">{order.currency_symbol} {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                                </div>
-                                <div className="flex justify-between items-center text-xs">
-                                    <span className="opacity-50 font-bold uppercase tracking-wider text-[9px]">Tax Total</span>
-                                    <span className="font-bold">{order.currency_symbol} {taxTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                                </div>
-                                <div className="flex justify-between items-center text-xs">
-                                    <span className="opacity-50 font-bold uppercase tracking-wider text-[9px]">Shipping</span>
-                                    <span className="font-bold text-solarGreen">FREE</span>
-                                </div>
-                                <div className="h-px bg-slate-100 dark:bg-white/10 my-2"></div>
-                                <div className="flex justify-between items-center">
-                                    <span className="font-black uppercase tracking-widest text-[10px]">Total Amount</span>
-                                    <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-solarGreen to-blue-500">
+                                <div className="h-px bg-black my-4"></div>
+
+                                <div className="flex justify-between items-end">
+                                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400 pb-1">Total Due</span>
+                                    <span className="text-2xl md:text-3xl font-light tracking-tight text-black">
                                         {order.currency_symbol} {total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                     </span>
                                 </div>
-                                <div className="bg-solarGreen/10 border border-solarGreen/20 px-3 py-1.5 rounded-lg mt-4">
-                                    <p className="text-[9px] font-black text-solarGreen text-center uppercase tracking-widest">
-                                        Total Paid: {order.currency_symbol} {total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                    </p>
-                                </div>
                             </div>
                         </div>
 
-                        {/* Footer Info */}
-                        <div className="mt-10 pt-6 border-t border-slate-50 dark:border-white/5 text-center print:mt-10">
-                            <div className="inline-flex items-center gap-1.5 text-xl font-black tracking-tighter opacity-10 mb-1">
-                                INFINITY<span className="text-solarGreen">HELIOS</span>
+                        {/* 5. Footer */}
+                        <div className="mt-auto pt-8 md:pt-12 border-t border-neutral-100 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-xs text-neutral-400">
+                            <div className="space-y-1">
+                                <p className="font-bold text-black uppercase tracking-widest text-[10px]">Infinity Helios Energy Solutions</p>
+                                <p>Sustainable Power for the Future</p>
                             </div>
-                            <p className="text-[8px] font-black uppercase tracking-[0.3em] opacity-30">Thank you for choosing renewable energy</p>
+                            <div className="text-left md:text-right space-y-1">
+                                <p>Generated on {new Date().toLocaleDateString()}</p>
+                                <p>support@infinityhelios.com</p>
+                            </div>
                         </div>
+
                     </div>
-                </motion.div>
 
-                {/* Print Footer Hint */}
-                <p className="text-center mt-6 text-[10px] opacity-40 print:hidden italic">
-                    Tip: When printing, enable "Background Graphics" in your browser settings for the best result.
-                </p>
+                    {/* Minimalist Watermark/Decoration */}
+                    <div className="absolute top-0 left-0 w-2 h-full bg-black"></div>
+                </div>
             </div>
         </div>
     );

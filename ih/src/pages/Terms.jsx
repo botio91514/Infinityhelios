@@ -31,7 +31,7 @@ export default function Terms() {
         },
         {
             title: "7. Governing Law",
-            content: "These terms shall be governed by and construed in accordance with the laws of India. Any disputes arising under or in connection with these terms shall be subject to the exclusive jurisdiction of the courts in New Delhi."
+            content: "These terms shall be governed by and construed in accordance with the laws of England and Wales. Any disputes arising under or in connection with these terms shall be subject to the exclusive jurisdiction of the courts in London, UK."
         }
     ];
 

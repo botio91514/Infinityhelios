@@ -16,12 +16,12 @@ export default function PrivacyData() {
         {
             icon: <Server className="w-6 h-6 text-solarGreen" />,
             title: "Data Storage",
-            content: "Your personal information is stored on secure, isolated servers located within India, complying with the Digital Personal Data Protection Act (DPDP) 2023."
+            content: "Your personal information is stored on secure, isolated servers located within the UK and EU, complying with the UK Data Protection Act 2018 and GDPR."
         },
         {
             icon: <Globe className="w-6 h-6 text-solarGreen" />,
             title: "Third-Party Sharing",
-            content: "Infinity Helios does not sell your data. We only share necessary information with certified installation partners and government bodies for subsidy processing."
+            content: "Infinity Helios does not sell your data. We only share necessary information with certified MCS installation partners and regulatory bodies for grant processing."
         }
     ];
 

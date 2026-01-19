@@ -97,7 +97,7 @@ export default function Cart() {
                       <span className="text-[8px] font-black uppercase tracking-widest text-solarGreen">In Stock</span>
                       <h3 className="font-black text-base md:text-lg tracking-tighter text-slate-900 dark:text-white group-hover:text-solarGreen transition-colors line-clamp-2">{item.name}</h3>
                       <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
-                        Price: ₹{(item.prices.price / 100).toLocaleString('en-IN')}
+                        Price: £{(item.prices.price / 100).toLocaleString('en-GB')}
                       </p>
                     </div>
 
@@ -123,7 +123,7 @@ export default function Cart() {
                     <div className="text-center md:text-right">
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Item Total</p>
                       <p className="font-black text-xl text-slate-900 dark:text-white tracking-tighter">
-                        ₹{(item.totals.line_total / 100).toLocaleString('en-IN')}
+                        £{(item.totals.line_total / 100).toLocaleString('en-GB')}
                       </p>
                     </div>
                     <button
@@ -153,7 +153,7 @@ export default function Cart() {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-center text-white/50">
                     <span className="text-[9px] font-black uppercase tracking-widest">Subtotal</span>
-                    <span className="font-black text-white text-[10px] tracking-tight">₹{(cart.totals.total_price / 100).toLocaleString('en-IN')}</span>
+                    <span className="font-black text-white text-[10px] tracking-tight">£{(cart.totals.total_price / 100).toLocaleString('en-GB')}</span>
                   </div>
                   <div className="flex justify-between items-center text-white/50">
                     <span className="text-[9px] font-black uppercase tracking-widest">Shipping</span>
@@ -170,7 +170,7 @@ export default function Cart() {
                     <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Total Amount</span>
                     <p className="text-[8px] text-solarGreen font-bold animate-pulse uppercase tracking-widest">Verified</p>
                   </div>
-                  <span className="text-2xl font-black text-white tracking-tighter">₹{(cart.totals.total_price / 100).toLocaleString('en-IN')}</span>
+                  <span className="text-2xl font-black text-white tracking-tighter">£{(cart.totals.total_price / 100).toLocaleString('en-GB')}</span>
                 </div>
 
                 <Link

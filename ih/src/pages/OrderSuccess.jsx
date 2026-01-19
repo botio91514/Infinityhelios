@@ -13,6 +13,8 @@ import {
 const OrderSuccess = () => {
     const location = useLocation();
     const orderDetails = location.state?.order || {};
+    const instructions = location.state?.instructions || null;
+    const isBankTransfer = orderDetails.payment_method === 'bacs';
 
     return (
         <div className="min-h-screen bg-white dark:bg-solarBlue pt-28 pb-12 relative overflow-hidden flex items-center justify-center">
@@ -64,8 +66,8 @@ const OrderSuccess = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {[
                                 { label: "Order ID", value: `#${orderDetails.order_id || "PENDING"}`, icon: <Package className="w-4 h-4 text-solarGreen" /> },
-                                { label: "Status", value: "Processing", icon: <Zap className="w-4 h-4 text-solarGreen" /> },
-                                { label: "Payment", value: "Cash on Delivery", icon: <ShieldCheck className="w-4 h-4 text-solarGreen" /> },
+                                { label: "Status", value: isBankTransfer ? "On-Hold (Pending Payment)" : "Processing", icon: <Zap className="w-4 h-4 text-solarGreen" /> },
+                                { label: "Payment", value: orderDetails.payment_method_title || "Processed Securely", icon: <ShieldCheck className="w-4 h-4 text-solarGreen" /> },
                                 { label: "Est. Delivery", value: "3-5 Business Days", icon: <Truck className="w-4 h-4 text-solarGreen" /> }
                             ].map((item, idx) => (
                                 <div key={idx} className="space-y-1 group-hover:translate-x-1 transition-transform duration-500">
@@ -77,6 +79,23 @@ const OrderSuccess = () => {
                             ))}
                         </div>
 
+                        {/* BANK TRANSFER INSTRUCTIONS */}
+                        {isBankTransfer && (
+                            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/5">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white mb-4">Bank Transfer Details</h3>
+                                <div className="bg-slate-100 dark:bg-white/5 p-4 rounded-2xl space-y-2 text-xs font-bold text-slate-600 dark:text-gray-300">
+                                    <p className="flex justify-between"><span>Bank Name:</span> <span>{instructions?.bank_name || "Solar Bank UK"}</span></p>
+                                    <p className="flex justify-between"><span>Account Name:</span> <span>{instructions?.account_name || "Infinity Helios Energy"}</span></p>
+                                    <p className="flex justify-between"><span>Sort Code:</span> <span className="font-mono">{instructions?.sort_code || "20-00-00"}</span></p>
+                                    <p className="flex justify-between"><span>Account Number:</span> <span className="font-mono">{instructions?.account_number || "12345678"}</span></p>
+                                    <p className="flex justify-between"><span>IBAN:</span> <span className="font-mono">{instructions?.iban || "GB20SOLAR123456"}</span></p>
+                                </div>
+                                <p className="mt-3 text-[9px] text-slate-400 font-bold uppercase tracking-widest text-center">
+                                    Please use your Order ID (#{orderDetails.order_id}) as the payment reference.
+                                </p>
+                            </div>
+                        )}
+
                         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
                             <div className="flex items-center gap-3 text-slate-400">
                                 <div className="p-2.5 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/10">
@@ -87,12 +106,15 @@ const OrderSuccess = () => {
                                     <p className="text-[9px] font-bold opacity-60">Sent to {orderDetails.billing?.email || "your email"}</p>
                                 </div>
                             </div>
-                            <Link
-                                to={`/order/${orderDetails.order_id}/invoice`}
-                                className="text-[9px] font-black text-solarGreen uppercase tracking-widest hover:opacity-70 transition-opacity"
-                            >
-                                View Invoice →
-                            </Link>
+                            {/* Hide Invoice Link for Bank Transfer until paid, or show it as Pro-forma? Keeping simple for now */}
+                            {!isBankTransfer && (
+                                <Link
+                                    to={`/order/${orderDetails.order_id}/invoice`}
+                                    className="text-[9px] font-black text-solarGreen uppercase tracking-widest hover:opacity-70 transition-opacity"
+                                >
+                                    View Invoice →
+                                </Link>
+                            )}
                         </div>
                     </div>
 

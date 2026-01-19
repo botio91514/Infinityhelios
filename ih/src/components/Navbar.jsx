@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, User, Menu, X, ChevronRight, LayoutDashboard, LogOut, Search } from "lucide-react";
 import logo from "../assets/ihlogo.png";
+import logoDark from "../assets/ihlogo-dark.png";
 
 export default function Navbar({ darkMode, setDarkMode }) {
   const { cart } = useCart();
@@ -66,7 +67,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
         {/* Logo */}
         <Link to="/" className="relative z-[110] group">
           <img
-            src={logo}
+            src={darkMode ? logo : logoDark}
             alt="Infinity Helios"
             className={`
               h-12 md:h-14 w-auto object-contain transition-all duration-500
@@ -159,7 +160,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                   state={{ from: location }}
                   className="px-8 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-solarBlue text-[11px] font-black rounded-full hover:shadow-2xl hover:shadow-solarGreen/20 transition-all uppercase tracking-widest"
                 >
-                  Join Us
+                  Log In
                 </Link>
               )}
             </div>

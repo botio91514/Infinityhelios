@@ -35,52 +35,15 @@ const Checkout = () => {
             address_2: "",
             city: "",
             state: "",
+            state: "",
             postcode: "",
-            country: "IN",
+            country: "GB",
             email: "",
             phone: ""
         }
     });
 
-    const indianStates = [
-        { code: "AN", name: "Andaman and Nicobar Islands" },
-        { code: "AP", name: "Andhra Pradesh" },
-        { code: "AR", name: "Arunachal Pradesh" },
-        { code: "AS", name: "Assam" },
-        { code: "BR", name: "Bihar" },
-        { code: "CH", name: "Chandigarh" },
-        { code: "CT", name: "Chhattisgarh" },
-        { code: "DN", name: "Dadra and Nagar Haveli" },
-        { code: "DD", name: "Daman and Diu" },
-        { code: "DL", name: "Delhi" },
-        { code: "GA", name: "Goa" },
-        { code: "GJ", name: "Gujarat" },
-        { code: "HR", name: "Haryana" },
-        { code: "HP", name: "Himachal Pradesh" },
-        { code: "JK", name: "Jammu and Kashmir" },
-        { code: "JH", name: "Jharkhand" },
-        { code: "KA", name: "Karnataka" },
-        { code: "KL", name: "Kerala" },
-        { code: "LA", name: "Ladakh" },
-        { code: "LD", name: "Lakshadweep" },
-        { code: "MP", name: "Madhya Pradesh" },
-        { code: "MH", name: "Maharashtra" },
-        { code: "MN", name: "Manipur" },
-        { code: "ML", name: "Meghalaya" },
-        { code: "MZ", name: "Mizoram" },
-        { code: "NL", name: "Nagaland" },
-        { code: "OD", name: "Odisha" },
-        { code: "PY", name: "Puducherry" },
-        { code: "PB", name: "Punjab" },
-        { code: "RJ", name: "Rajasthan" },
-        { code: "SK", name: "Sikkim" },
-        { code: "TN", name: "Tamil Nadu" },
-        { code: "TS", name: "Telangana" },
-        { code: "TR", name: "Tripura" },
-        { code: "UP", name: "Uttar Pradesh" },
-        { code: "UK", name: "Uttarakhand" },
-        { code: "WB", name: "West Bengal" }
-    ];
+
 
     useEffect(() => {
         // Load saved data first
@@ -107,8 +70,7 @@ const Checkout = () => {
                     if (response.ok && data.billing) {
                         setCustomerId(data.id);
                         const loadedState = data.billing.state || data.state || "";
-                        const isValidState = indianStates.some(s => s.code === loadedState);
-                        const safeState = isValidState ? loadedState : "";
+                        const safeState = loadedState;
 
                         // Merge profile data but prefer saved fields if user typed something
                         setFormData(prev => ({
@@ -121,7 +83,7 @@ const Checkout = () => {
                                 city: prev.billing_address.city || data.billing.city || "",
                                 state: prev.billing_address.state || safeState,
                                 postcode: prev.billing_address.postcode || data.billing.postcode || "",
-                                country: data.billing.country || "IN",
+                                country: data.billing.country || "GB",
                                 email: prev.billing_address.email || data.billing.email || user.email,
                                 phone: prev.billing_address.phone || data.billing.phone || ""
                             }
@@ -155,8 +117,8 @@ const Checkout = () => {
 
         if (!b.postcode.trim()) {
             newErrors.postcode = "Required";
-        } else if (!/^\d{6}$/.test(b.postcode.trim())) {
-            newErrors.postcode = "Invalid (6 digits)";
+        } else if (b.postcode.length < 5) {
+            newErrors.postcode = "Invalid Postcode";
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -166,11 +128,10 @@ const Checkout = () => {
             newErrors.email = "Invalid Email";
         }
 
-        const phoneRegex = /^[6-9]\d{9}$/;
-        const cleanPhone = b.phone.trim().replace(/[-\s]/g, "");
+        const phoneRegex = /^[\d\+\-\s]{10,15}$/;
         if (!b.phone.trim()) {
             newErrors.phone = "Required";
-        } else if (!phoneRegex.test(cleanPhone)) {
+        } else if (!phoneRegex.test(b.phone.trim())) {
             newErrors.phone = "Invalid Number";
         }
 
@@ -334,20 +295,14 @@ const Checkout = () => {
                                             State {errors.state && <span className="text-red-500">*</span>}
                                         </label>
                                         <div className="relative">
-                                            <select
+                                            <input
+                                                type="text"
                                                 name="state"
                                                 value={formData.billing_address.state}
                                                 onChange={handleChange}
-                                                className={`w-full bg-white dark:bg-slate-900 border ${errors.state ? 'border-red-500' : 'border-slate-200 dark:border-white/10'} rounded-2xl px-5 py-2.5 text-xs font-bold text-slate-900 dark:text-white focus:border-solarGreen outline-none transition-all shadow-inner appearance-none cursor-pointer`}
-                                            >
-                                                <option value="">Select State</option>
-                                                {indianStates.map(st => (
-                                                    <option key={st.code} value={st.code}>{st.name}</option>
-                                                ))}
-                                            </select>
-                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
-                                                <ChevronLeft className="w-3 h-3 -rotate-90" />
-                                            </div>
+                                                className={`w-full bg-white dark:bg-slate-900 border ${errors.state ? 'border-red-500' : 'border-slate-200 dark:border-white/10'} rounded-2xl px-5 py-2.5 text-xs font-bold text-slate-900 dark:text-white focus:border-solarGreen outline-none transition-all shadow-inner`}
+                                                placeholder="County (Optional)"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -362,8 +317,8 @@ const Checkout = () => {
                                             name="postcode"
                                             value={formData.billing_address.postcode}
                                             onChange={handleChange}
-                                            placeholder="6-digit PIN code"
-                                            className={`w-full bg-white dark:bg-slate-900 border ${errors.postcode ? 'border-red-500' : 'border-slate-200 dark:border-white/10'} rounded-2xl px-5 py-2.5 text-xs font-bold text-slate-900 dark:text-white focus:border-solarGreen outline-none transition-all shadow-inner placeholder:text-slate-300 dark:placeholder:text-white/10`}
+                                            placeholder="Postcode (e.g. SW1A 1AA)"
+                                            className={`w-full bg-white dark:bg-slate-900 border ${errors.postcode ? 'border-red-500' : 'border-slate-200 dark:border-white/10'} rounded-2xl px-5 py-2.5 text-xs font-bold text-slate-900 dark:text-white focus:border-solarGreen outline-none transition-all shadow-inner placeholder:text-slate-300 dark:placeholder:text-white/10 uppercase`}
                                         />
                                     </div>
                                     <div className="space-y-1.5">
@@ -373,7 +328,7 @@ const Checkout = () => {
                                         <input
                                             type="text"
                                             name="country"
-                                            value="India"
+                                            value="United Kingdom"
                                             readOnly
                                             className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl px-5 py-2.5 text-xs font-black text-slate-500 dark:text-white/50 opacity-40 cursor-not-allowed uppercase tracking-widest"
                                         />
@@ -399,14 +354,14 @@ const Checkout = () => {
                                             Phone {errors.phone && <span className="text-red-500">*</span>}
                                         </label>
                                         <div className="relative">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-black opacity-20 pr-3 border-r border-slate-200 dark:border-white/10">+91</span>
+
                                             <input
                                                 type="tel"
                                                 name="phone"
                                                 value={formData.billing_address.phone}
                                                 onChange={handleChange}
-                                                placeholder="10-digit mobile"
-                                                className={`w-full bg-white dark:bg-slate-900 border ${errors.phone ? 'border-red-500' : 'border-slate-200 dark:border-white/10'} rounded-2xl pl-16 pr-5 py-2.5 text-xs font-bold text-slate-900 dark:text-white focus:border-solarGreen outline-none transition-all shadow-inner placeholder:text-slate-300 dark:placeholder:text-white/10`}
+                                                placeholder="Mobile Number"
+                                                className={`w-full bg-white dark:bg-slate-900 border ${errors.phone ? 'border-red-500' : 'border-slate-200 dark:border-white/10'} rounded-2xl px-5 py-2.5 text-xs font-bold text-slate-900 dark:text-white focus:border-solarGreen outline-none transition-all shadow-inner placeholder:text-slate-300 dark:placeholder:text-white/10`}
                                             />
                                         </div>
                                     </div>
@@ -423,6 +378,7 @@ const Checkout = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         {[
                                             { id: 'cod', label: 'Cash on Delivery', sub: 'Pay when your items arrive', icon: <PackageCheck className="w-4 h-4" /> },
+                                            { id: 'stripe', label: 'Credit / Debit Card', sub: 'Secure payment via Stripe', icon: <CreditCard className="w-4 h-4" /> },
                                             { id: 'bacs', label: 'Bank Transfer', sub: 'Pay directly via bank transition', icon: <CreditCard className="w-4 h-4" /> }
                                         ].map(method => (
                                             <label
@@ -500,7 +456,7 @@ const Checkout = () => {
                                             </div>
                                         </div>
                                         <div className="text-right flex-shrink-0">
-                                            <p className="font-black text-[10px] text-white tracking-widest">₹{(item.prices.price / 100 * item.quantity).toLocaleString('en-IN')}</p>
+                                            <p className="font-black text-[10px] text-white tracking-widest">£{(item.prices.price / 100 * item.quantity).toLocaleString('en-GB')}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -516,11 +472,11 @@ const Checkout = () => {
                                 <div className="space-y-2 mb-2">
                                     <div className="flex justify-between items-center text-white/40">
                                         <span className="text-[8px] font-black uppercase tracking-widest">Subtotal</span>
-                                        <span className="font-black text-white text-[10px]">₹{cartTotal.toLocaleString('en-IN')}</span>
+                                        <span className="font-black text-white text-[10px]">£{cartTotal.toLocaleString('en-GB')}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-white/40">
                                         <span className="text-[8px] font-black uppercase tracking-widest">Taxes</span>
-                                        <span className="text-white font-black text-[8px] tracking-widest">INC. GST</span>
+                                        <span className="text-white font-black text-[8px] tracking-widest">INC. VAT</span>
                                     </div>
                                     <div className="flex justify-between items-center text-white/40">
                                         <span className="text-[8px] font-black uppercase tracking-widest">Shipping</span>
@@ -531,7 +487,7 @@ const Checkout = () => {
                                     <div className="space-y-0.5">
                                         <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/30">Total Amount</span>
                                     </div>
-                                    <span className="text-2xl text-white tracking-tighter">₹{cartTotal.toLocaleString('en-IN')}</span>
+                                    <span className="text-2xl text-white tracking-tighter">£{cartTotal.toLocaleString('en-GB')}</span>
                                 </div>
                             </div>
 

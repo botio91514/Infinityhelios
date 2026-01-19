@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap, IndianRupee, Map, Sun, TrendingUp, Leaf, ArrowRight, Info } from "lucide-react";
+import { Zap, PoundSterling, Map, Sun, TrendingUp, Leaf, ArrowRight, Info } from "lucide-react";
 import SEO from "../components/SEO";
 
 const ScrollReveal = ({ children, delay = 0 }) => (
@@ -18,7 +18,7 @@ const ScrollReveal = ({ children, delay = 0 }) => (
 const SolarCalculator = () => {
     const navigate = useNavigate();
     // Input States
-    const [monthlyBill, setMonthlyBill] = useState(5000); // in INR
+    const [monthlyBill, setMonthlyBill] = useState(150); // in GBP
     const [roofSpace, setRoofSpace] = useState(500); // in sq ft
     const [sunlight, setSunlight] = useState(1); // 0.8: Low, 1: Average, 1.2: High
 
@@ -33,11 +33,11 @@ const SolarCalculator = () => {
         twentyFiveYearSavings: 0
     });
 
-    // Pricing & Tech Constants (Average Indian Market Rates)
-    const UNIT_COST = 8; // Average cost per unit in INR
-    const KW_COST = 60000; // Average cost per KW in INR (including installation)
-    const SPACE_PER_KW = 100; // 100 sq ft per 1KW
-    const UNITS_PER_KW_DAY = 4; // 1KW produces ~4 units per day
+    // Pricing & Tech Constants (Average UK Market Rates)
+    const UNIT_COST = 0.29; // Average cost per unit in GBP (approx 29p/kWh)
+    const KW_COST = 1800; // Average cost per KW in GBP (including installation)
+    const SPACE_PER_KW = 70; // ~6-7m² per kW = ~70 sq ft
+    const UNITS_PER_KW_DAY = 2.8; // 1KW produces ~2.8 units per day (UK Annual Average)
 
     useEffect(() => {
         // 1. Calculate possible system size based on roof space
@@ -116,21 +116,21 @@ const SolarCalculator = () => {
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-end">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Monthly Bill</label>
-                                        <span className="text-xl font-black text-solarGreen">₹{monthlyBill.toLocaleString('en-IN')}</span>
+                                        <span className="text-xl font-black text-solarGreen">£{monthlyBill.toLocaleString('en-GB')}</span>
                                     </div>
                                     <div className="relative pt-2">
                                         <input
                                             type="range"
-                                            min="500"
-                                            max="100000"
-                                            step="500"
+                                            min="50"
+                                            max="1000"
+                                            step="10"
                                             value={monthlyBill}
                                             onChange={(e) => setMonthlyBill(parseInt(e.target.value))}
                                             className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-solarGreen"
                                         />
                                         <div className="flex justify-between mt-2 text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
-                                            <span>₹500</span>
-                                            <span>₹1L+</span>
+                                            <span>£50</span>
+                                            <span>£1,000+</span>
                                         </div>
                                     </div>
                                 </div>
@@ -145,7 +145,7 @@ const SolarCalculator = () => {
                                         <input
                                             type="range"
                                             min="100"
-                                            max="10000"
+                                            max="2000"
                                             step="50"
                                             value={roofSpace}
                                             onChange={(e) => setRoofSpace(parseInt(e.target.value))}
@@ -153,7 +153,7 @@ const SolarCalculator = () => {
                                         />
                                         <div className="flex justify-between mt-2 text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
                                             <span>100</span>
-                                            <span>10K+</span>
+                                            <span>2,000+</span>
                                         </div>
                                     </div>
                                 </div>
@@ -185,7 +185,7 @@ const SolarCalculator = () => {
                                 <div className="pt-4 border-t border-slate-200 dark:border-white/10 flex items-start gap-2">
                                     <Info className="w-4 h-4 text-solarGreen flex-shrink-0" />
                                     <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                                        Calculations are based on current Indian market averages of ₹60/Watt and standard Tier-1 engineering specifications.
+                                        Calculations are based on current UK market averages of £0.29/kWh and standardized MCS installation costs.
                                     </p>
                                 </div>
                             </div>
@@ -201,10 +201,10 @@ const SolarCalculator = () => {
                                 <div className="relative z-10 space-y-1 md:space-y-4">
                                     <span className="block text-solarGreen font-black tracking-[0.3em] uppercase text-[9px] md:text-[10px] mb-1">Lifetime 25-Year Projection</span>
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-3xl md:text-5xl font-black text-white/40">₹</span>
+                                        <span className="text-3xl md:text-5xl font-black text-white/40">£</span>
                                         {/* OPTIMIZED FONT SIZE FOR MOBILE */}
                                         <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white text-glow leading-none tracking-tighter break-all sm:break-normal">
-                                            {parseInt(results.twentyFiveYearSavings).toLocaleString('en-IN')}
+                                            {parseInt(results.twentyFiveYearSavings).toLocaleString('en-GB')}
                                         </h2>
                                     </div>
                                     <p className="text-base md:text-xl text-white/60 font-light max-w-xl">
@@ -235,9 +235,9 @@ const SolarCalculator = () => {
                                 },
                                 {
                                     label: "Annual Savings",
-                                    value: `₹${parseInt(results.annualSavings).toLocaleString('en-IN')}`,
+                                    value: `£${parseInt(results.annualSavings).toLocaleString('en-GB')}`,
                                     unit: "",
-                                    icon: <IndianRupee className="w-5 h-5" />,
+                                    icon: <PoundSterling className="w-5 h-5" />,
                                     color: "bg-blue-500/10 text-blue-500",
                                     border: "group-hover:border-blue-500/30"
                                 },
@@ -271,7 +271,7 @@ const SolarCalculator = () => {
                             <div className="bg-solarGreen p-6 md:p-8 rounded-[30px] flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl shadow-solarGreen/10">
                                 <div className="space-y-1 text-center md:text-left">
                                     <span className="text-[9px] font-black uppercase tracking-widest text-solarBlue/60">Estimated Total Investment</span>
-                                    <h3 className="text-2xl md:text-3xl font-black text-solarBlue">₹{parseInt(results.estimatedCost).toLocaleString('en-IN')}</h3>
+                                    <h3 className="text-2xl md:text-3xl font-black text-solarBlue">£{parseInt(results.estimatedCost).toLocaleString('en-GB')}</h3>
                                     <p className="text-solarBlue/70 font-medium italic text-xs">Including high-precision engineering and installation.</p>
                                 </div>
                                 <button

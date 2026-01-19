@@ -4,9 +4,9 @@ import { CheckCircle, Award, Scale, AlertTriangle, FileCheck, ShieldCheck } from
 export default function Compliance() {
     const compliances = [
         {
-            title: "ISO 9001:2015 Certified",
-            id: "QMS-2025-8892",
-            description: "Certified Quality Management System ensuring consistent quality in our solar panel manufacturing and installation processes.",
+            title: "MCS Certified",
+            id: "MCS-PV-021",
+            description: "Fully certified under the Microgeneration Certification Scheme (MCS), ensuring all installations qualify for the Smart Export Guarantee (SEG).",
             status: "Active",
             color: "text-green-500"
         },
@@ -18,16 +18,16 @@ export default function Compliance() {
             color: "text-blue-500"
         },
         {
-            title: "BIS Certification",
-            id: "R-99002212",
-            description: "Bureau of Indian Standards (BIS) compulsory registration for solar photovoltaic modules, ensuring adherence to Indian safety standards.",
+            title: "UK Building Regulations",
+            id: "PART-P-ELEC",
+            description: "All electrical work complies with Part P of the Building Regulations, ensuring safety and efficiency in your home's electrical systems.",
             status: "Compliant",
             color: "text-orange-500"
         },
         {
-            title: "Grid Connectivity Standards",
-            id: "CEA-REG-2023",
-            description: "Fully compliant with Central Electricity Authority (CEA) technical standards for connectivity to the grid.",
+            title: "G98 & G99 Compliant",
+            id: "ENA-ER-G98",
+            description: "Inverters and systems meet the Energy Networks Association (ENA) G98/99 standards for grid connection in the UK.",
             status: "Approved",
             color: "text-purple-500"
         }
@@ -108,7 +108,7 @@ export default function Compliance() {
                     className="text-center mt-10 pt-6 border-t border-slate-200 dark:border-white/5"
                 >
                     <p className="text-slate-500 dark:text-slate-500 text-xs flex items-center justify-center gap-2">
-                        <Scale className="w-3 h-3" /> All installation protocols verify with current Ministry of New and Renewable Energy (MNRE) guidelines.
+                        <Scale className="w-3 h-3" /> All installation protocols verify with current Ofgem and RECC guidelines.
                     </p>
                 </motion.div>
             </div>

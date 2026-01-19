@@ -1,4 +1,6 @@
 import { storeApi } from "./storeApi";
+import API_BASE_URL from "./config";
+import axios from "axios";
 
 // Store nonces and tokens in localStorage for persistence across reloads/logins
 const getSavedNonce = () => localStorage.getItem("wc_nonce");
@@ -76,14 +78,78 @@ export const clearCartSession = () => {
 };
 
 // CHECKOUT
-export const processCheckout = async (billingData, paymentMethod = "cod") => {
+export const processCheckout = async (billingData, paymentMethod = "cod", paymentData = []) => {
     // Separate email from shipping address (Store API validates schema strictly)
     const { email, ...shippingData } = billingData;
 
-    const res = await storeApi.post("/v1/checkout", {
+    const payload = {
         billing_address: billingData,
         shipping_address: shippingData,
         payment_method: paymentMethod,
-    });
+        payment_data: paymentData
+    };
+
+    const res = await storeApi.post("/v1/checkout", payload);
     return res.data;
+};
+
+// CREATE PAYMENT INTENT (For Stripe)
+export const createPaymentIntent = async () => {
+    try {
+        const cartToken = getSavedCartToken();
+        // We hit our Node Proxy directly, passing the cart token
+        const res = await axios.post(`${API_BASE_URL}/api/create-payment-intent`, {}, {
+            headers: {
+                "Cart-Token": cartToken
+            },
+            withCredentials: true
+        });
+        return res.data;
+    } catch (e) {
+        console.warn("Payment intent creation failed", e);
+        return null;
+    }
+};
+
+// PLACE SECURE ORDER (Post-Payment)
+export const placeSecureOrder = async (billingData, paymentIntentId) => {
+    const { email, ...shippingData } = billingData;
+    const cartToken = getSavedCartToken();
+
+    const res = await axios.post(`${API_BASE_URL}/api/place-secure-order`, {
+        payment_intent_id: paymentIntentId,
+        billing_data: billingData,
+        shipping_data: shippingData
+    }, {
+        headers: {
+            "Cart-Token": cartToken
+        },
+        withCredentials: true
+    });
+
+    // Clear local cart text
+    clearCartSession();
+
+    return res.data;
+};
+
+// PLACE BANK TRANSFER ORDER
+export const placeBankTransferOrder = async (billingData) => {
+    const { email, ...shippingData } = billingData;
+    const cartToken = getSavedCartToken();
+
+    const res = await axios.post(`${API_BASE_URL}/api/place-bank-transfer-order`, {
+        billing_data: billingData,
+        shipping_data: shippingData
+    }, {
+        headers: {
+            "Cart-Token": cartToken
+        },
+        withCredentials: true
+    });
+
+    // Clear local cart text
+    clearCartSession();
+
+    return res.data; // Returns { order, instructions }
 };

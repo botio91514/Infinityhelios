@@ -49,14 +49,14 @@ export default function ShippingPolicy() {
 
                             <h4 className="font-bold mt-4 text-sm">Shipping Rates</h4>
                             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                                We offer free standard shipping on all solar system kits above ₹50,000. For smaller components, shipping charges will be calculated at checkout based on weight and location.
+                                We offer free standard shipping on all solar system kits above £500. For smaller components, shipping charges will be calculated at checkout based on weight and location.
                             </p>
 
                             <h4 className="font-bold mt-4 text-sm">Delivery Estimates</h4>
                             <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
-                                <li>Metro Cities: 3-5 Business Days</li>
-                                <li>Rest of India: 5-7 Business Days</li>
-                                <li>Remote Locations: 7-10 Business Days</li>
+                                <li>UK Mainland: 2-3 Business Days</li>
+                                <li>Highlands & Islands: 4-6 Business Days</li>
+                                <li>Northern Ireland: 3-5 Business Days</li>
                             </ul>
                         </div>
                     </motion.div>

@@ -192,9 +192,9 @@ export default function ProductDetails() {
                 <div className="flex flex-col">
                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Price Point</span>
                   <div className="flex items-baseline gap-3">
-                    <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">₹{price}</span>
+                    <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">£{price}</span>
                     {regularPrice && regularPrice !== price && (
-                      <span className="text-lg text-slate-400 line-through font-medium opacity-50">₹{regularPrice}</span>
+                      <span className="text-lg text-slate-400 line-through font-medium opacity-50">£{regularPrice}</span>
                     )}
                   </div>
                 </div>

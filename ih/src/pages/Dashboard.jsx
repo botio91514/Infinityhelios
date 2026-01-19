@@ -29,45 +29,7 @@ import {
     Truck
 } from "lucide-react";
 
-const indianStates = [
-    { code: "AN", name: "Andaman and Nicobar Islands" },
-    { code: "AP", name: "Andhra Pradesh" },
-    { code: "AR", name: "Arunachal Pradesh" },
-    { code: "AS", name: "Assam" },
-    { code: "BR", name: "Bihar" },
-    { code: "CH", name: "Chandigarh" },
-    { code: "CT", name: "Chhattisgarh" },
-    { code: "DN", name: "Dadra and Nagar Haveli" },
-    { code: "DD", name: "Daman and Diu" },
-    { code: "DL", name: "Delhi" },
-    { code: "GA", name: "Goa" },
-    { code: "GJ", name: "Gujarat" },
-    { code: "HR", name: "Haryana" },
-    { code: "HP", name: "Himachal Pradesh" },
-    { code: "JK", name: "Jammu and Kashmir" },
-    { code: "JH", name: "Jharkhand" },
-    { code: "KA", name: "Karnataka" },
-    { code: "KL", name: "Kerala" },
-    { code: "LA", name: "Ladakh" },
-    { code: "LD", name: "Lakshadweep" },
-    { code: "MP", name: "Madhya Pradesh" },
-    { code: "MH", name: "Maharashtra" },
-    { code: "MN", name: "Manipur" },
-    { code: "ML", name: "Meghalaya" },
-    { code: "MZ", name: "Mizoram" },
-    { code: "NL", name: "Nagaland" },
-    { code: "OD", name: "Odisha" },
-    { code: "PY", name: "Puducherry" },
-    { code: "PB", name: "Punjab" },
-    { code: "RJ", name: "Rajasthan" },
-    { code: "SK", name: "Sikkim" },
-    { code: "TN", name: "Tamil Nadu" },
-    { code: "TS", name: "Telangana" },
-    { code: "TR", name: "Tripura" },
-    { code: "UP", name: "Uttar Pradesh" },
-    { code: "UK", name: "Uttarakhand" },
-    { code: "WB", name: "West Bengal" }
-];
+// indianStates array removed
 import SEO from "../components/SEO";
 
 const Dashboard = () => {
@@ -311,7 +273,7 @@ const Dashboard = () => {
                                             <div className="bg-slate-50 dark:bg-white/5 px-6 py-3 rounded-2xl border border-slate-200 dark:border-white/10 flex items-center gap-3 shadow-inner">
                                                 <Calendar className="w-4 h-4 text-solarGreen" />
                                                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-white/70">
-                                                    {new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
+                                                    {new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
                                                 </span>
                                             </div>
                                         </div>
@@ -319,7 +281,7 @@ const Dashboard = () => {
                                         {/* Stats Grid */}
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                             {[
-                                                { label: "Lifetime Spend", value: `₹${stats.totalSpent.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`, icon: <TrendingUp className="w-5 h-5" />, color: "bg-solarGreen text-solarBlue", subtext: "Total transaction value" },
+                                                { label: "Lifetime Spend", value: `£${stats.totalSpent.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`, icon: <TrendingUp className="w-5 h-5" />, color: "bg-solarGreen text-solarBlue", subtext: "Total transaction value" },
                                                 { label: "My Orders", value: stats.totalOrders.toString().padStart(2, '0'), icon: <ShoppingBag className="w-5 h-5" />, color: "bg-slate-900 text-white dark:bg-white dark:text-solarBlue", subtext: "Total orders placed" },
                                                 {
                                                     label: "Loyalty Tier",
@@ -500,32 +462,12 @@ const Dashboard = () => {
                                                                 <div className="w-1.5 h-6 bg-solarGreen rounded-full shadow-[0_0_10px_rgba(100,255,153,0.3)]" />
                                                                 {label}
                                                             </h3>
-                                                            {!isEditing ? (
-                                                                <button
-                                                                    onClick={() => setEditingAddress(type)}
-                                                                    className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-solarGreen hover:text-solarBlue transition-colors"
-                                                                >
-                                                                    <Edit2 className="w-3 h-3" /> Edit
-                                                                </button>
-                                                            ) : (
-                                                                <div className="flex items-center gap-2">
-                                                                    <button
-                                                                        onClick={() => handleCancelAddressEdit(type)}
-                                                                        className="p-2 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-colors"
-                                                                        disabled={isSaving}
-                                                                    >
-                                                                        <X className="w-4 h-4" />
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={() => handleSaveAddress(type)}
-                                                                        disabled={isSaving}
-                                                                        className="flex items-center gap-2 px-4 py-2 bg-solarGreen text-solarBlue rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg disabled:opacity-50"
-                                                                    >
-                                                                        {isSaving ? <Loader className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
-                                                                        Save
-                                                                    </button>
-                                                                </div>
-                                                            )}
+                                                            <a
+                                                                href="mailto:info.infinityhelios@gmail.com"
+                                                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-solarGreen hover:text-solarBlue transition-colors text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-solarBlue"
+                                                            >
+                                                                Contact Admin
+                                                            </a>
                                                         </div>
 
                                                         {!isEditing ? (
@@ -585,29 +527,17 @@ const Dashboard = () => {
                                                                     <input type="text" value={data.city || ""} onChange={(e) => handleAddressChange(type, 'city', e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-xs font-bold focus:border-solarGreen outline-none" placeholder="City" />
                                                                 </div>
                                                                 <div className="space-y-1">
-                                                                    <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">State</label>
-                                                                    <div className="relative">
-                                                                        <select
-                                                                            value={data.state || ""}
-                                                                            onChange={(e) => handleAddressChange(type, 'state', e.target.value)}
-                                                                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-xs font-bold focus:border-solarGreen outline-none appearance-none cursor-pointer"
-                                                                        >
-                                                                            <option value="">Select State</option>
-                                                                            {indianStates.map(st => (
-                                                                                <option key={st.code} value={st.code}>{st.name}</option>
-                                                                            ))}
-                                                                        </select>
-                                                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50 pointer-events-none" />
-                                                                    </div>
+                                                                    <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">County (Optional)</label>
+                                                                    <input type="text" value={data.state || ""} onChange={(e) => handleAddressChange(type, 'state', e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-xs font-bold focus:border-solarGreen outline-none" placeholder="County" />
                                                                 </div>
 
                                                                 <div className="space-y-1">
                                                                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">Postcode</label>
-                                                                    <input type="text" value={data.postcode || ""} onChange={(e) => handleAddressChange(type, 'postcode', e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-xs font-bold focus:border-solarGreen outline-none" placeholder="PIN Code" />
+                                                                    <input type="text" value={data.postcode || ""} onChange={(e) => handleAddressChange(type, 'postcode', e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-xs font-bold focus:border-solarGreen outline-none" placeholder="Postcode" />
                                                                 </div>
                                                                 <div className="space-y-1">
                                                                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">Country</label>
-                                                                    <input type="text" value={data.country || "IN"} disabled className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-xs font-bold opacity-50 cursor-not-allowed" />
+                                                                    <input type="text" value={data.country || "GB"} disabled className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-xs font-bold opacity-50 cursor-not-allowed" />
                                                                 </div>
 
                                                                 {type === 'billing' && (
@@ -652,32 +582,12 @@ const Dashboard = () => {
                                                     <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Personal Info</h3>
                                                 </div>
 
-                                                {!isEditingProfile ? (
-                                                    <button
-                                                        onClick={() => setIsEditingProfile(true)}
-                                                        className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-solarGreen hover:text-solarBlue transition-colors"
-                                                    >
-                                                        <Edit2 className="w-3 h-3" /> Edit
-                                                    </button>
-                                                ) : (
-                                                    <div className="flex items-center gap-2">
-                                                        <button
-                                                            onClick={() => setIsEditingProfile(false)}
-                                                            className="p-2 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-colors"
-                                                            disabled={isSaving}
-                                                        >
-                                                            <X className="w-4 h-4" />
-                                                        </button>
-                                                        <button
-                                                            onClick={handleSaveProfile}
-                                                            disabled={isSaving}
-                                                            className="flex items-center gap-2 px-4 py-2 bg-solarGreen text-solarBlue rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg disabled:opacity-50"
-                                                        >
-                                                            {isSaving ? <Loader className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
-                                                            Save
-                                                        </button>
-                                                    </div>
-                                                )}
+                                                <a
+                                                    href="mailto:info.infinityhelios@gmail.com"
+                                                    className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-solarGreen hover:text-solarBlue transition-colors text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-solarBlue"
+                                                >
+                                                    Contact Admin
+                                                </a>
                                             </div>
 
                                             <div className="space-y-6 relative z-10">

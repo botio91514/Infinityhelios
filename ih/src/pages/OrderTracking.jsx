@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Mail, Package, ArrowRight, Loader, AlertCircle, CheckCircle2, MapPin, Truck, Calendar } from "lucide-react";
+import { Search, Mail, Package, ArrowRight, ArrowLeft, Loader, AlertCircle, CheckCircle2, MapPin, Truck, Calendar } from "lucide-react";
 import axios from "axios";
 import API_BASE_URL from "../api/config";
 import SEO from "../components/SEO";
@@ -60,211 +60,221 @@ const OrderTracking = () => {
             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-solarGreen/5 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-solarOrange/5 rounded-full blur-[100px] pointer-events-none" />
 
-            <div className="max-w-4xl w-full relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
-
-                {/* FORM SECTION */}
-                <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="order-2 lg:order-1"
+            <div className="max-w-4xl w-full relative z-10">
+                <Link
+                    to="/dashboard"
+                    className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-all text-xs font-bold uppercase tracking-widest mb-8 hover:-translate-x-1 duration-300"
                 >
-                    <div className="bg-white dark:bg-slate-950/40 backdrop-blur-3xl rounded-[30px] p-6 md:p-10 border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden">
-                        <div className="mb-8">
-                            <span className="inline-block px-3 py-1 rounded-full bg-solarGreen/10 text-solarGreen text-[10px] font-black tracking-widest uppercase mb-4">
-                                Public Tracker
-                            </span>
-                            <h1 className="text-3xl font-black mb-3 tracking-tighter text-slate-900 dark:text-white">
-                                Track Your <span className="text-solarGreen">Order</span>
-                            </h1>
-                            <p className="text-slate-500 text-sm font-medium leading-relaxed">
-                                Enter your Order ID and the Email Address used during checkout to view current status.
-                            </p>
-                        </div>
+                    <ArrowLeft className="w-4 h-4" />
+                    Back to Dashboard
+                </Link>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-3">
-                                    <Package className="w-3 h-3" /> Order ID
-                                </label>
-                                <input
-                                    type="text"
-                                    value={orderId}
-                                    onChange={(e) => setOrderId(e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-6 py-3.5 text-sm font-bold focus:outline-none focus:border-solarGreen focus:bg-white dark:focus:bg-white/10 transition-all shadow-inner"
-                                    placeholder="e.g. 772"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-3">
-                                    <Mail className="w-3 h-3" /> Billing Email
-                                </label>
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-6 py-3.5 text-sm font-bold focus:outline-none focus:border-solarGreen focus:bg-white dark:focus:bg-white/10 transition-all shadow-inner"
-                                    placeholder="email@example.com"
-                                    required
-                                />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+
+                    {/* FORM SECTION */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="order-2 lg:order-1"
+                    >
+                        <div className="bg-white dark:bg-slate-950/40 backdrop-blur-3xl rounded-[30px] p-6 md:p-10 border border-slate-200 dark:border-white/10 shadow-2xl relative overflow-hidden">
+                            <div className="mb-8">
+                                <span className="inline-block px-3 py-1 rounded-full bg-solarGreen/10 text-solarGreen text-[10px] font-black tracking-widest uppercase mb-4">
+                                    Public Tracker
+                                </span>
+                                <h1 className="text-3xl font-black mb-3 tracking-tighter text-slate-900 dark:text-white">
+                                    Track Your <span className="text-solarGreen">Order</span>
+                                </h1>
+                                <p className="text-slate-500 text-sm font-medium leading-relaxed">
+                                    Enter your Order ID and the Email Address used during checkout to view current status.
+                                </p>
                             </div>
 
-                            {error && (
-                                <div className="p-4 bg-red-500/5 border border-red-500/20 text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3">
-                                    <AlertCircle className="w-4 h-4" />
-                                    {error}
+                            <form onSubmit={handleSubmit} className="space-y-5">
+                                <div className="space-y-2">
+                                    <label className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-3">
+                                        <Package className="w-3 h-3" /> Order ID
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={orderId}
+                                        onChange={(e) => setOrderId(e.target.value)}
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-6 py-3.5 text-sm font-bold focus:outline-none focus:border-solarGreen focus:bg-white dark:focus:bg-white/10 transition-all shadow-inner"
+                                        placeholder="e.g. 772"
+                                        required
+                                    />
                                 </div>
-                            )}
-
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="group w-full flex items-center justify-between pl-6 pr-3 py-3 bg-solarGreen text-solarBlue rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl shadow-solarGreen/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:grayscale transition-all"
-                            >
-                                <span className="relative z-10">{isSubmitting ? "Searching..." : "Track Status"}</span>
-                                <div className="w-10 h-10 bg-solarBlue text-solarGreen rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    {isSubmitting ? <Loader className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-                                </div>
-                            </button>
-                        </form>
-                    </div>
-                </motion.div>
-
-                {/* RESULT SECTION */}
-                <motion.div
-                    className="order-1 lg:order-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                >
-                    <AnimatePresence mode="wait">
-                        {!order ? (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                key="placeholder"
-                                className="h-full min-h-[400px] flex flex-col items-center justify-center text-center opacity-30"
-                            >
-                                <Package className="w-24 h-24 mb-6 stroke-1" />
-                                <h3 className="text-xl font-black uppercase tracking-widest mb-2">Ready to Track</h3>
-                                <p className="text-sm max-w-xs mx-auto">Enter details to see real-time status updates.</p>
-                            </motion.div>
-                        ) : (
-                            <motion.div
-                                initial={{ opacity: 0, y: 50 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -50 }}
-                                key="result"
-                                className="bg-white dark:bg-slate-900/80 backdrop-blur-3xl border border-slate-200 dark:border-white/10 rounded-[30px] p-8 shadow-2xl relative overflow-hidden group"
-                            >
-                                {/* Decorative Glows */}
-                                <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-solarGreen/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-solarGreen/20 transition-colors duration-1000" />
-                                <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-solarOrange/5 rounded-full blur-[60px] translate-y-1/2 -translate-x-1/2" />
-
-                                {/* Status Header */}
-                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 pb-8 border-b border-slate-100 dark:border-white/5 relative z-10 w-full">
-                                    <div className="w-full md:w-auto">
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Order Current Status</p>
-                                        <div className="flex items-center gap-3">
-                                            <span className={`flex h-3 w-3 relative shrink-0`}>
-                                                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${['completed'].includes(order.status) ? 'bg-green-500' : 'bg-solarGreen'}`}></span>
-                                                <span className={`relative inline-flex rounded-full h-3 w-3 ${['completed'].includes(order.status) ? 'bg-green-500' : 'bg-solarGreen'}`}></span>
-                                            </span>
-                                            <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter break-words">{order.status.replace('-', ' ')}</h2>
-                                        </div>
-                                    </div>
-                                    <div className="w-full md:w-auto text-left md:text-right flex flex-row md:flex-col justify-between md:justify-start items-center md:items-end gap-3 md:gap-0">
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 md:mb-2">Order Date</p>
-                                        <div className="flex items-center justify-end gap-2 text-slate-900 dark:text-white font-black text-sm">
-                                            <Calendar className="w-4 h-4 text-solarGreen" />
-                                            {new Date(order.date_created).toLocaleDateString()}
-                                        </div>
-                                    </div>
+                                <div className="space-y-2">
+                                    <label className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-3">
+                                        <Mail className="w-3 h-3" /> Billing Email
+                                    </label>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-6 py-3.5 text-sm font-bold focus:outline-none focus:border-solarGreen focus:bg-white dark:focus:bg-white/10 transition-all shadow-inner"
+                                        placeholder="email@example.com"
+                                        required
+                                    />
                                 </div>
 
-                                {/* Timeline Section */}
-                                {['cancelled', 'refunded', 'failed', 'trash'].includes(order.status) ? (
-                                    <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl mb-8 flex items-center gap-4 text-red-500">
-                                        <AlertCircle className="w-8 h-8 shrink-0" />
-                                        <div>
-                                            <h3 className="font-black uppercase tracking-widest text-sm mb-1">Order {order.status}</h3>
-                                            <p className="text-xs font-medium opacity-80">This order has been stopped. Please contact support for help.</p>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="mb-12 pl-2 md:pl-4 relative space-y-10">
-                                        {/* Timeline Line */}
-                                        <div className="absolute top-3 left-[19px] md:left-[21px] bottom-3 w-0.5 bg-slate-100 dark:bg-white/5 z-0" />
-
-                                        {[
-                                            { step: 1, label: "Order Placed", icon: CheckCircle2, active: true }, // Always true if exists
-                                            { step: 2, label: "Processing", icon: Package, active: ['processing', 'completed', 'on-hold'].includes(order.status) },
-                                            { step: 3, label: "On Its Way", icon: Truck, active: ['completed'].includes(order.status) },
-                                            { step: 4, label: "Delivered", icon: MapPin, active: ['completed'].includes(order.status) }
-                                        ].map((item, index) => (
-                                            <motion.div
-                                                key={index}
-                                                initial={{ opacity: 0, x: -20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: index * 0.1 }}
-                                                className={`relative z-10 flex items-start md:items-center gap-4 md:gap-6 ${item.active ? 'opacity-100' : 'opacity-40 grayscale'}`}
-                                            >
-                                                <div className={`w-10 h-10 md:w-11 md:h-11 rounded-full border-4 flex items-center justify-center transition-all duration-500 z-10 shrink-0 ${item.active ? 'bg-solarGreen border-solarGreen/20 text-solarBlue shadow-[0_0_20px_rgba(34,197,94,0.4)] scale-110' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-white/5 text-slate-400'}`}>
-                                                    <item.icon className="w-4 h-4 md:w-5 md:h-5" />
-                                                </div>
-                                                <div className="pt-2 md:pt-0">
-                                                    <h4 className={`text-xs md:text-sm font-black uppercase tracking-widest ${item.active ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{item.label}</h4>
-                                                    {item.active && index === 0 && <p className="text-[10px] text-slate-500 mt-1 font-medium">We have received your order.</p>}
-                                                    {item.active && index === 1 && order.status === 'processing' && <p className="text-[10px] text-solarGreen mt-1 animate-pulse font-bold">Currently working on it...</p>}
-                                                </div>
-                                            </motion.div>
-                                        ))}
+                                {error && (
+                                    <div className="p-4 bg-red-500/5 border border-red-500/20 text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3">
+                                        <AlertCircle className="w-4 h-4" />
+                                        {error}
                                     </div>
                                 )}
 
-                                {/* Order Details */}
-                                <div className="space-y-6 bg-slate-50 dark:bg-white/5 p-5 md:p-8 rounded-3xl border border-slate-100 dark:border-white/5 relative z-10">
-                                    {/* Items */}
-                                    <div>
-                                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4">Items Ordered</p>
-                                        <div className="space-y-3">
-                                            {order.line_items.map(item => (
-                                                <div key={item.id} className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-0 text-xs font-bold p-4 bg-white dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm hover:border-solarGreen/30 transition-colors">
-                                                    <div className="flex items-start gap-4">
-                                                        <span className="w-6 h-6 bg-slate-100 dark:bg-white/10 rounded-lg flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-300 font-black shrink-0">{item.quantity}x</span>
-                                                        <span className="text-slate-900 dark:text-white break-words w-full sm:w-auto pr-4">{item.name}</span>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="group w-full flex items-center justify-between pl-6 pr-3 py-3 bg-solarGreen text-solarBlue rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl shadow-solarGreen/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:grayscale transition-all"
+                                >
+                                    <span className="relative z-10">{isSubmitting ? "Searching..." : "Track Status"}</span>
+                                    <div className="w-10 h-10 bg-solarBlue text-solarGreen rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        {isSubmitting ? <Loader className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                                    </div>
+                                </button>
+                            </form>
+                        </div>
+                    </motion.div>
+
+                    {/* RESULT SECTION */}
+                    <motion.div
+                        className="order-1 lg:order-2"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <AnimatePresence mode="wait">
+                            {!order ? (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    key="placeholder"
+                                    className="h-full min-h-[400px] flex flex-col items-center justify-center text-center opacity-30"
+                                >
+                                    <Package className="w-24 h-24 mb-6 stroke-1" />
+                                    <h3 className="text-xl font-black uppercase tracking-widest mb-2">Ready to Track</h3>
+                                    <p className="text-sm max-w-xs mx-auto">Enter details to see real-time status updates.</p>
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 50 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -50 }}
+                                    key="result"
+                                    className="bg-white dark:bg-slate-900/80 backdrop-blur-3xl border border-slate-200 dark:border-white/10 rounded-[30px] p-8 shadow-2xl relative overflow-hidden group"
+                                >
+                                    {/* Decorative Glows */}
+                                    <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-solarGreen/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-solarGreen/20 transition-colors duration-1000" />
+                                    <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-solarOrange/5 rounded-full blur-[60px] translate-y-1/2 -translate-x-1/2" />
+
+                                    {/* Status Header */}
+                                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 pb-8 border-b border-slate-100 dark:border-white/5 relative z-10 w-full">
+                                        <div className="w-full md:w-auto">
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Order Current Status</p>
+                                            <div className="flex items-center gap-3">
+                                                <span className={`flex h-3 w-3 relative shrink-0`}>
+                                                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${['completed'].includes(order.status) ? 'bg-green-500' : 'bg-solarGreen'}`}></span>
+                                                    <span className={`relative inline-flex rounded-full h-3 w-3 ${['completed'].includes(order.status) ? 'bg-green-500' : 'bg-solarGreen'}`}></span>
+                                                </span>
+                                                <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter break-words">{order.status.replace('-', ' ')}</h2>
+                                            </div>
+                                        </div>
+                                        <div className="w-full md:w-auto text-left md:text-right flex flex-row md:flex-col justify-between md:justify-start items-center md:items-end gap-3 md:gap-0">
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 md:mb-2">Order Date</p>
+                                            <div className="flex items-center justify-end gap-2 text-slate-900 dark:text-white font-black text-sm">
+                                                <Calendar className="w-4 h-4 text-solarGreen" />
+                                                {new Date(order.date_created).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Timeline Section */}
+                                    {['cancelled', 'refunded', 'failed', 'trash'].includes(order.status) ? (
+                                        <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl mb-8 flex items-center gap-4 text-red-500">
+                                            <AlertCircle className="w-8 h-8 shrink-0" />
+                                            <div>
+                                                <h3 className="font-black uppercase tracking-widest text-sm mb-1">Order {order.status}</h3>
+                                                <p className="text-xs font-medium opacity-80">This order has been stopped. Please contact support for help.</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="mb-12 pl-2 md:pl-4 relative space-y-10">
+                                            {/* Timeline Line */}
+                                            <div className="absolute top-3 left-[19px] md:left-[21px] bottom-3 w-0.5 bg-slate-100 dark:bg-white/5 z-0" />
+
+                                            {[
+                                                { step: 1, label: "Order Placed", icon: CheckCircle2, active: true },
+                                                { step: 2, label: "Processing", icon: Package, active: ['processing', 'completed', 'on-hold'].includes(order.status) },
+                                                { step: 3, label: "Shipped", icon: Truck, active: ['completed'].includes(order.status) },
+                                                { step: 4, label: "Delivered", icon: MapPin, active: ['completed'].includes(order.status) }
+                                            ].map((item, index) => (
+                                                <motion.div
+                                                    key={index}
+                                                    initial={{ opacity: 0, x: -20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    transition={{ delay: index * 0.1 }}
+                                                    className={`relative z-10 flex items-start md:items-center gap-4 md:gap-6 ${item.active ? 'opacity-100' : 'opacity-40 grayscale'}`}
+                                                >
+                                                    <div className={`w-10 h-10 md:w-11 md:h-11 rounded-full border-4 flex items-center justify-center transition-all duration-500 z-10 shrink-0 ${item.active ? 'bg-solarGreen border-solarGreen/20 text-solarBlue shadow-[0_0_20px_rgba(34,197,94,0.4)] scale-110' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-white/5 text-slate-400'}`}>
+                                                        <item.icon className="w-4 h-4 md:w-5 md:h-5" />
                                                     </div>
-                                                    <span className="text-slate-900 dark:text-white tabular-nums text-right sm:text-left">{order.currency_symbol}{item.total}</span>
-                                                </div>
+                                                    <div className="pt-2 md:pt-0">
+                                                        <h4 className={`text-xs md:text-sm font-black uppercase tracking-widest ${item.active ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{item.label}</h4>
+                                                        {item.active && index === 0 && <p className="text-[10px] text-slate-500 mt-1 font-medium">We have received your order.</p>}
+                                                        {item.active && index === 1 && order.status === 'processing' && <p className="text-[10px] text-solarGreen mt-1 animate-pulse font-bold">Currently working on it...</p>}
+                                                    </div>
+                                                </motion.div>
                                             ))}
                                         </div>
-                                    </div>
+                                    )}
 
-                                    {/* Shipping Address */}
-                                    <div className="flex items-start gap-4 pt-6 border-t border-slate-200 dark:border-white/5">
-                                        <div className="w-10 h-10 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5 flex items-center justify-center text-slate-400 shrink-0 shadow-sm">
-                                            <MapPin className="w-5 h-5" />
-                                        </div>
+                                    {/* Order Details */}
+                                    <div className="space-y-6 bg-slate-50 dark:bg-white/5 p-5 md:p-8 rounded-3xl border border-slate-100 dark:border-white/5 relative z-10">
+                                        {/* Items */}
                                         <div>
-                                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Shipping To</p>
-                                            <p className="text-sm font-bold text-slate-900 dark:text-white leading-relaxed">
-                                                {order.shipping.address_1}, {order.shipping.city}<br />
-                                                {order.shipping.postcode}, {order.shipping.country}
-                                            </p>
+                                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4">Items Ordered</p>
+                                            <div className="space-y-3">
+                                                {order.line_items.map(item => (
+                                                    <div key={item.id} className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-0 text-xs font-bold p-4 bg-white dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm hover:border-solarGreen/30 transition-colors">
+                                                        <div className="flex items-start gap-4">
+                                                            <span className="w-6 h-6 bg-slate-100 dark:bg-white/10 rounded-lg flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-300 font-black shrink-0">{item.quantity}x</span>
+                                                            <span className="text-slate-900 dark:text-white break-words w-full sm:w-auto pr-4">{item.name}</span>
+                                                        </div>
+                                                        <span className="text-slate-900 dark:text-white tabular-nums text-right sm:text-left">{order.currency_symbol}{item.total}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Shipping Address */}
+                                        <div className="flex items-start gap-4 pt-6 border-t border-slate-200 dark:border-white/5">
+                                            <div className="w-10 h-10 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-white/5 flex items-center justify-center text-slate-400 shrink-0 shadow-sm">
+                                                <MapPin className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Shipping To</p>
+                                                <p className="text-sm font-bold text-slate-900 dark:text-white leading-relaxed">
+                                                    {order.shipping.address_1}, {order.shipping.city}<br />
+                                                    {order.shipping.postcode}, {order.shipping.country}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0 px-4">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Paid</p>
-                                    <p className="text-2xl font-black text-solarGreen tabular-nums tracking-tighter shadow-solarGreen drop-shadow-lg">{order.currency_symbol}{order.total}</p>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </motion.div>
+                                    <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0 px-4">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Paid</p>
+                                        <p className="text-2xl font-black text-solarGreen tabular-nums tracking-tighter shadow-solarGreen drop-shadow-lg">{order.currency_symbol}{order.total}</p>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
+                </div>
             </div>
         </div>
     );

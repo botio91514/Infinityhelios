@@ -81,11 +81,11 @@ export default function ProductCard({
           <div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter tabular-nums">
-                ₹{finalPrice.toLocaleString('en-IN')}
+                £{finalPrice.toLocaleString('en-IN')}
               </span>
               {originalPrice && (
                 <span className="text-[10px] line-through text-red-500/60 font-black tabular-nums">
-                  ₹{originalPrice.toLocaleString('en-IN')}
+                  £{originalPrice.toLocaleString('en-IN')}
                 </span>
               )}
             </div>
