@@ -1,10 +1,12 @@
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { ArrowRight, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function StripePaymentForm({ onSuccess, onError, billingDetails }) {
     const stripe = useStripe();
     const elements = useElements();
+    const navigate = useNavigate();
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -42,20 +44,32 @@ export default function StripePaymentForm({ onSuccess, onError, billingDetails }
                         }
                     }
                 },
-                return_url: `${window.location.origin}/order-success`,
+                return_url: `${window.location.origin}/payment-verify`,
+                // NOTE: If Stripe redirects, it goes to success. If valid payment.
+                // If it fails, it usually stays here or we catch 'error'.
             },
             redirect: "if_required",
         });
 
         if (error) {
-            setMessage(error.message);
-            onError(error.message);
-            setIsLoading(false);
+            console.error("Payment Failed:", error);
+            // Navigate to Order Failed page
+            navigate("/order-failed", { state: { error: error.message } });
+
+            // Original error handling (optional, but we are redirecting now)
+            // setMessage(error.message);
+            // onError(error.message);
+            // setIsLoading(false);
         } else if (paymentIntent && paymentIntent.status === "succeeded") {
             setMessage("Payment succeeded!");
             onSuccess(paymentIntent);
         } else {
-            setMessage("Unexpected state");
+            // Processing or requires action (handled by redirect usually)
+            // If we get here with no error and no success, it might be weird state.
+            // But let's assume if it's not Success, it might be an issue?
+            // Actually 'requires_action' is handled by redirect: 'if_required' handles it?
+            // If redirect happens specificly, fine. If not, and not succeeded?
+            setMessage("Unexpected state: " + paymentIntent?.status);
             setIsLoading(false);
         }
     };

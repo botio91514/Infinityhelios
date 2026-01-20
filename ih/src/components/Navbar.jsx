@@ -54,6 +54,15 @@ export default function Navbar({ darkMode, setDarkMode }) {
     { name: "Knowledge Hub", path: "/learning-hub" },
   ];
 
+  const isHomePage = location.pathname === "/";
+  const navTextColor = (isHomePage && !isScrolled && !isMenuOpen)
+    ? "text-white hover:text-solarGreen"
+    : "text-golden-700 dark:text-white hover:text-solarGreen";
+
+  const iconColor = (isHomePage && !isScrolled && !isMenuOpen)
+    ? "text-white group-hover:text-solarGreen"
+    : "text-golden-700 dark:text-white group-hover:text-solarGreen";
+
   return (
     <nav className={`
       fixed top-0 left-0 w-full z-[100]
@@ -67,7 +76,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
         {/* Logo */}
         <Link to="/" className="relative z-[110] group">
           <img
-            src={darkMode ? logo : logoDark}
+            src={(isHomePage && !isScrolled && !isMenuOpen) || darkMode ? logo : logoDark}
             alt="Infinity Helios"
             className={`
               h-12 md:h-14 w-auto object-contain transition-all duration-500
@@ -88,7 +97,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                   text-[13px] font-black uppercase tracking-widest transition-all duration-300
                   ${location.pathname === link.path
                     ? "text-solarGreen"
-                    : "text-slate-600 dark:text-white/70 hover:text-solarGreen"
+                    : navTextColor
                   }
                 `}
               >
@@ -115,13 +124,13 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 onClick={() => setIsSearchOpen(true)}
                 className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group"
               >
-                <Search className="w-5 h-5 text-slate-800 dark:text-white group-hover:text-solarGreen transition-colors" />
+                <Search className={`w-5 h-5 transition-colors ${iconColor}`} />
               </button>
 
               <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
 
               <Link to="/cart" className="relative group p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
-                <ShoppingCart className="w-5 h-5 text-slate-800 dark:text-white group-hover:text-solarGreen transition-colors" />
+                <ShoppingCart className={`w-5 h-5 transition-colors ${iconColor}`} />
                 {(cart?.items_count > 0 || cart?.item_count > 0) && (
                   <motion.span
                     initial={{ scale: 0 }}
@@ -139,7 +148,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                     <div className="w-8 h-8 rounded-full bg-solarGreen flex items-center justify-center text-solarBlue font-black text-xs uppercase tracking-tighter">
                       {user.name.charAt(0)}
                     </div>
-                    <span className="text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-widest">
+                    <span className="text-[11px] font-black text-golden-700 dark:text-white uppercase tracking-widest">
                       Dashboard
                     </span>
                   </Link>
@@ -173,11 +182,11 @@ export default function Navbar({ darkMode, setDarkMode }) {
             onClick={() => setIsSearchOpen(true)}
             className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group"
           >
-            <Search className="w-6 h-6 text-slate-800 dark:text-white" />
+            <Search className="w-6 h-6 text-golden-700 dark:text-white" />
           </button>
 
           <Link to="/cart" className="relative group p-2">
-            <ShoppingCart className="w-6 h-6 text-slate-800 dark:text-white" />
+            <ShoppingCart className="w-6 h-6 text-golden-700 dark:text-white" />
             {(cart?.items_count > 0 || cart?.item_count > 0) && (
               <span className="absolute top-1 right-1 bg-solarOrange text-white text-[9px] font-black rounded-full h-4 w-4 flex items-center justify-center">
                 {cart.items_count || cart.item_count}

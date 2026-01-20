@@ -34,3 +34,15 @@ export const updateProfile = async (id, data) => {
         throw error;
     }
 };
+
+export const cancelOrder = async (orderId, email) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/order/cancel`, {
+            order_id: orderId,
+            email: email
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

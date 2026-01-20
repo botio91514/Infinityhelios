@@ -9,7 +9,10 @@ import Stripe from "stripe";
 dotenv.config();
 
 const app = express();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Ensure key is trimmed
+const stripeKey = process.env.STRIPE_SECRET_KEY ? process.env.STRIPE_SECRET_KEY.trim() : "";
+if (!stripeKey) console.warn("[Config Warning] STRIPE_SECRET_KEY is missing!");
+const stripe = new Stripe(stripeKey);
 
 // 1. Clean CORS Setup
 const allowedOrigins = [
@@ -405,8 +408,11 @@ app.post("/api/create-payment-intent", async (req, res) => {
         const totalAmount = parseInt(cartData.totals.total_price); // Amount in smallest unit (e.g. cents/paise)
         const currency = cartData.totals.currency_code.toLowerCase();
 
-        if (totalAmount <= 0) {
-            return res.status(400).json({ error: "Cart is empty" });
+        console.log(`[Stripe Init] Creating intent: Amount=${totalAmount}, Currency=gbp, Token=${cartToken ? "Yes" : "No"}`);
+
+        if (!totalAmount || totalAmount <= 0) {
+            console.error("[Stripe Error] Invalid Amount:", totalAmount);
+            return res.status(400).json({ error: "Cart is empty or invalid amount" });
         }
 
         // 3. Create Stripe Payment Intent
@@ -430,8 +436,8 @@ app.post("/api/create-payment-intent", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("[Stripe Error]", error.message);
-        res.status(500).json({ error: "Payment init failed", details: error.message });
+        console.error("[Stripe Error] Full Detail:", error);
+        res.status(500).json({ error: "Payment init failed", details: error.message, stack: error.stack });
     }
 });
 
@@ -454,21 +460,26 @@ app.post("/api/place-secure-order", async (req, res) => {
 
         // 1.5 IDEMPOTENCY CHECK (Advanced Security)
         // Check if an order already exists for this Payment Intent to prevent duplicates
-        // We search WC orders by the meta key '_stripe_intent_id'
-        // Note: WC REST API usually doesn't strictly support searching by meta in the main list endpoint without plugins,
-        // but we can try to filter if possible, or we just proceed with creation if we can't easily check.
-        // BETTER APPROACH for Headless/Node:
-        // We can't easily search metadata via standard WC API.
-        // However, we can use the 'transaction_id' field which IS searchable? Match it?
-        // Let's try searching by transaction_id if mapped.
-        // If not, we rely on the client not calling this twice, BUT proper systems need this.
+        try {
+            // Retrieve latest orders (e.g., last 20) to scan for duplicates.
+            // Full search via WC API for meta is hard, but this covers relevant recent retries.
+            const recentOrders = await wc.get("orders", { per_page: 30 });
+            if (recentOrders.data && Array.isArray(recentOrders.data)) {
+                const existingOrder = recentOrders.data.find(o =>
+                    o.meta_data.some(m => m.key === "_stripe_intent_id" && m.value === payment_intent_id) ||
+                    o.transaction_id === payment_intent_id
+                );
 
-        // For now, let's implement a 'Best Effort' check if your WC setup supports it, 
-        // otherwise we proceed.
-        // (Skipping strict API search to avoid 500s on unconfigured WC)
+                if (existingOrder) {
+                    console.log(`[Idempotency] Order ${existingOrder.id} already exists for PI ${payment_intent_id}`);
+                    return res.json(existingOrder);
+                }
+            }
+        } catch (checkErr) {
+            console.warn("[Idempotency Warning] Failed to check duplicates:", checkErr.message);
+        }
 
         // 2. Create Order in WooCommerce via Admin API
-        // This ensures we can set the status to 'processing' and avoid Store API validation issues
         const orderData = {
             payment_method: "stripe",
             payment_method_title: "Credit Card (Stripe)",
@@ -476,6 +487,7 @@ app.post("/api/place-secure-order", async (req, res) => {
             status: "processing",
             billing: billing_data,
             shipping: shipping_data,
+            transaction_id: payment_intent_id, // Store PI ID as transaction ID for easy tracking
             line_items: [], // We need items! 
             // PROBLEM: Admin API creates new order, doesn't convert Cart.
             // SOLUTION: We must fetch cart items first.
@@ -526,6 +538,49 @@ app.post("/api/place-secure-order", async (req, res) => {
         res.status(500).json({ error: "Failed to place order after payment" });
     }
 });
+
+
+app.post("/api/order/cancel", async (req, res) => {
+    try {
+        const { order_id, email } = req.body;
+
+        if (!order_id || !email) return res.status(400).json({ error: "Missing Order ID or Email" });
+
+        // 1. Fetch Order details to verify ownership
+        const response = await wc.get(`orders/${order_id}`);
+        const order = response.data;
+
+        if (!order) return res.status(404).json({ error: "Order not found" });
+
+        // 2. Ownership Check (Case Insensitive)
+        if (order.billing.email.toLowerCase() !== email.toLowerCase()) {
+            return res.status(403).json({ error: "Unauthorized: Order doesn't belong to this email." });
+        }
+
+        // 3. Status Check (Only allow cancelling if not shipped/completed)
+        const allowedStatuses = ['processing', 'on-hold', 'pending'];
+        if (!allowedStatuses.includes(order.status)) {
+            return res.status(400).json({ error: `Cannot cancel order with status: ${order.status}` });
+        }
+
+        // 4. Update Status to 'cancelled'
+        const updateResponse = await wc.put(`orders/${order_id}`, {
+            status: 'cancelled'
+        });
+
+        // 5. Add Note
+        await wc.post(`orders/${order_id}/notes`, {
+            note: "Cancelled by customer via User Dashboard."
+        });
+
+        res.json({ success: true, order: updateResponse.data });
+
+    } catch (error) {
+        console.error("[Cancel Order Error]", error.response?.data || error.message);
+        res.status(500).json({ error: "Failed to cancel order" });
+    }
+});
+
 app.post("/api/track-order", async (req, res) => {
     try {
         const { order_id, email } = req.body;

@@ -25,6 +25,8 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import OrderTracking from "./pages/OrderTracking";
 import OrderSuccess from "./pages/OrderSuccess";
+import OrderFailed from "./pages/OrderFailed";
+import PaymentVerify from "./pages/PaymentVerify";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import Dashboard from "./pages/Dashboard";
 import Invoice from "./pages/Invoice";
@@ -93,6 +95,8 @@ function App() {
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/track-order" element={<OrderTracking />} />
                     <Route path="/order-success" element={<OrderSuccess />} />
+                    <Route path="/order-failed" element={<OrderFailed />} />
+                    <Route path="/payment-verify" element={<PaymentVerify />} />
                     <Route path="/order-confirmation" element={<OrderConfirmation />} />
                     <Route
                       path="/dashboard"

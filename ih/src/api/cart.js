@@ -111,6 +111,17 @@ export const createPaymentIntent = async () => {
     }
 };
 
+// CLEAR BACKEND CART
+export const clearBackendCart = async () => {
+    try {
+        await storeApi.delete("/v1/cart/items");
+    } catch (e) {
+        console.warn("Failed to clear backend cart", e);
+    }
+    // Also clear tokens to be safe
+    clearCartSession();
+};
+
 // PLACE SECURE ORDER (Post-Payment)
 export const placeSecureOrder = async (billingData, paymentIntentId) => {
     const { email, ...shippingData } = billingData;
@@ -127,8 +138,8 @@ export const placeSecureOrder = async (billingData, paymentIntentId) => {
         withCredentials: true
     });
 
-    // Clear local cart text
-    clearCartSession();
+    // Clear the cart items on the server
+    await clearBackendCart();
 
     return res.data;
 };
@@ -148,8 +159,8 @@ export const placeBankTransferOrder = async (billingData) => {
         withCredentials: true
     });
 
-    // Clear local cart text
-    clearCartSession();
+    // Clear the cart items on the server
+    await clearBackendCart();
 
     return res.data; // Returns { order, instructions }
 };

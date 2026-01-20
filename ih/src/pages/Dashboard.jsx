@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useLoader } from "../context/LoaderContext";
-import { getProfile, getOrders, updateProfile } from "../api/customer";
+import { getProfile, getOrders, updateProfile, cancelOrder } from "../api/customer";
 import {
     LayoutDashboard,
     ShoppingBag,
@@ -18,6 +18,7 @@ import {
     Zap,
     User as UserIcon,
     ShieldCheck,
+    XCircle, // Import Icon
     Cpu,
     Activity,
     Box,
@@ -31,6 +32,8 @@ import {
 
 // indianStates array removed
 import SEO from "../components/SEO";
+import Toast from "../components/Toast";
+import ConfirmationModal from "../components/ConfirmationModal";
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -47,6 +50,14 @@ const Dashboard = () => {
     const [editingAddress, setEditingAddress] = useState(null); // 'billing' | 'shipping' | null
     const [editForm, setEditForm] = useState({});
     const [isSaving, setIsSaving] = useState(false);
+    const [toast, setToast] = useState(null); // { message, type }
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, orderId: null });
+    const [isCancelling, setIsCancelling] = useState(false); // Local loader state for modal
+
+    const showToast = (message, type = 'success') => {
+        setToast(null); // Clear previous quicky to restart animation
+        setTimeout(() => setToast({ message, type }), 100);
+    };
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -74,9 +85,12 @@ const Dashboard = () => {
                 // Pass email to catch guest orders or unlinked orders
                 const ordersData = await getOrders(profileData.id, user.email);
                 setOrders(ordersData);
-                const total = ordersData.reduce((acc, order) => acc + parseFloat(order.total), 0);
+                // Calculate stats based on VALID orders only (exclude cancelled/failed)
+                const validOrders = ordersData.filter(o => !['cancelled', 'failed', 'trash', 'refunded'].includes(o.status));
+                const total = validOrders.reduce((acc, order) => acc + parseFloat(order.total), 0);
+
                 setStats({
-                    totalOrders: ordersData.length,
+                    totalOrders: validOrders.length,
                     totalSpent: total
                 });
             }
@@ -130,6 +144,31 @@ const Dashboard = () => {
                 [field]: value
             }
         }));
+    };
+
+    // --- Cancel Order Logic ---
+    const initiateCancelOrder = (orderId) => {
+        setConfirmModal({ isOpen: true, orderId });
+    };
+
+    const processCancellation = async () => {
+        const orderId = confirmModal.orderId;
+        if (!orderId) return;
+
+        setIsCancelling(true); // Start local loading
+        try {
+            await cancelOrder(orderId, user.email);
+            // Refresh orders immediately
+            const updatedOrders = await getOrders(user.id, user.email);
+            setOrders(updatedOrders);
+            showToast("Order cancelled successfully.", "success");
+            setConfirmModal({ isOpen: false, orderId: null }); // Close modal
+        } catch (error) {
+            console.error(error);
+            showToast(error.response?.data?.error || "Failed to cancel order.", "error");
+        } finally {
+            setIsCancelling(false); // Stop loading
+        }
     };
 
     const handleSaveAddress = async (type) => {
@@ -337,9 +376,17 @@ const Dashboard = () => {
                                                         </div>
                                                         <div className="flex flex-col md:items-end gap-4 w-full md:w-auto">
                                                             <div className="text-left md:text-right">
-                                                                <p className="text-3xl font-black text-solarGreen tabular-nums tracking-tighter">₹{parseFloat(orders[0].total).toLocaleString('en-IN')}</p>
-                                                                <span className="inline-flex items-center gap-2 mt-2 px-4 py-1.5 bg-solarGreen/10 text-solarGreen text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-solarGreen/20">
-                                                                    <div className="w-1 h-1 bg-solarGreen rounded-full animate-pulse" />
+                                                                <p className="text-3xl font-black text-solarGreen tabular-nums tracking-tighter">£{parseFloat(orders[0].total).toLocaleString('en-GB')}</p>
+                                                                <span className={`inline-flex items-center gap-2 mt-2 px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-full border ${orders[0].status === 'completed' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+                                                                    orders[0].status === 'processing' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
+                                                                        orders[0].status === 'cancelled' || orders[0].status === 'failed' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                                                                            'bg-solarOrange/10 text-solarOrange border-solarOrange/20'
+                                                                    }`}>
+                                                                    <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${orders[0].status === 'completed' ? 'bg-emerald-500' :
+                                                                        orders[0].status === 'processing' ? 'bg-blue-500' :
+                                                                            orders[0].status === 'cancelled' || orders[0].status === 'failed' ? 'bg-red-500' :
+                                                                                'bg-solarOrange'
+                                                                        }`} />
                                                                     Status: {orders[0].status}
                                                                 </span>
                                                             </div>
@@ -386,7 +433,8 @@ const Dashboard = () => {
                                                                 <h4 className="text-xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Solar Equipment</h4>
                                                                 <span className={`px-3 py-1 text-[8px] font-black uppercase tracking-[0.2em] rounded-full border ${order.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
                                                                     order.status === 'processing' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
-                                                                        'bg-solarOrange/10 text-solarOrange border-solarOrange/20'
+                                                                        order.status === 'cancelled' || order.status === 'failed' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                                                                            'bg-solarOrange/10 text-solarOrange border-solarOrange/20'
                                                                     }`}>
                                                                     {order.status}
                                                                 </span>
@@ -394,7 +442,7 @@ const Dashboard = () => {
                                                             <div className="flex items-center gap-4">
                                                                 <p className="text-[9px] font-black text-slate-400 flex items-center gap-1.5 uppercase tracking-widest">
                                                                     <Calendar className="w-3 h-3 text-solarGreen" />
-                                                                    {new Date(order.date_created).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                                    {new Date(order.date_created).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                                                                 </p>
                                                                 <div className="w-1 h-1 bg-slate-200 dark:bg-white/10 rounded-full" />
                                                                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{order.line_items.length} Items</p>
@@ -405,10 +453,20 @@ const Dashboard = () => {
 
                                                     <div className="flex items-center gap-8 w-full md:w-auto border-t md:border-t-0 pt-6 md:pt-0 border-slate-100 dark:border-white/5">
                                                         <div className="flex-grow md:text-right">
-                                                            <p className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">₹{parseFloat(order.total).toLocaleString('en-IN')}</p>
+                                                            <p className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">£{parseFloat(order.total).toLocaleString('en-GB')}</p>
                                                             <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">{order.payment_method_title}</p>
                                                         </div>
                                                         <div className="flex items-center gap-3">
+                                                            {['processing', 'on-hold', 'pending'].includes(order.status) && (
+                                                                <button
+                                                                    onClick={() => initiateCancelOrder(order.id)}
+                                                                    className="px-4 py-3 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/20 rounded-xl flex items-center gap-2 hover:bg-red-500 hover:text-white transition-all shadow-sm font-black text-[9px] uppercase tracking-widest"
+                                                                    title="Cancel Order"
+                                                                >
+                                                                    <XCircle className="w-3.5 h-3.5" />
+                                                                    <span className="hidden sm:inline">Cancel</span>
+                                                                </button>
+                                                            )}
                                                             <button
                                                                 onClick={() => navigate('/track-order', { state: { orderId: order.id, email: user.email } })}
                                                                 className="px-5 py-3 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl flex items-center gap-2 hover:bg-solarGreen hover:text-solarBlue transition-all shadow-sm group/btn font-black text-[10px] uppercase tracking-widest text-slate-600 dark:text-slate-400"
@@ -650,6 +708,26 @@ const Dashboard = () => {
                     </main>
                 </div>
             </div>
+            {/* Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={confirmModal.isOpen}
+                onClose={() => !isCancelling && setConfirmModal({ ...confirmModal, isOpen: false })} // Prevent close while loading
+                onConfirm={processCancellation}
+                isLoading={isCancelling}
+                title="Cancel Order"
+                message="Are you sure you want to cancel this order? This action cannot be undone and we will stop processing your shipment."
+            />
+
+            {/* Toast Notification */}
+            <AnimatePresence>
+                {toast && (
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={() => setToast(null)}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 };

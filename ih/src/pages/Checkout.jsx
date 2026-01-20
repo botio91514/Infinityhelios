@@ -35,7 +35,7 @@ const Checkout = () => {
             address_2: "",
             city: "",
             state: "",
-            state: "",
+
             postcode: "",
             country: "GB",
             email: "",
