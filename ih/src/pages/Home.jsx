@@ -27,6 +27,8 @@ export default function Home() {
             muted
             loop
             playsInline
+            preload="auto"
+            poster="/assets/products/commercial.jpg"
             className="w-full h-full object-cover scale-105"
           >
             <source src="/hero/solar.mp4" type="video/mp4" />
