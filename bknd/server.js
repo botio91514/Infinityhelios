@@ -444,7 +444,6 @@ app.post("/api/create-payment-intent", async (req, res) => {
             details: error.response?.data?.message || error.message
         });
     }
-}
 });
 
 // ---------------------------------------------------------
