@@ -436,9 +436,15 @@ app.post("/api/create-payment-intent", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("[Stripe Error] Full Detail:", error);
-        res.status(500).json({ error: "Payment init failed", details: error.message, stack: error.stack });
+        console.error("[Stripe Init Error]", error.response?.data || error.message);
+
+        // Return detailed error for debugging (remove in strict prod if needed, but helpful now)
+        res.status(500).json({
+            error: "Payment initialization failed",
+            details: error.response?.data?.message || error.message
+        });
     }
+}
 });
 
 // ---------------------------------------------------------
