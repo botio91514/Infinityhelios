@@ -32,16 +32,16 @@ export default function Footer() {
 
   return (
     <footer className="bg-slate-950 text-slate-300 border-t border-white/5 pt-24">
-      <div className="container-main pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-12">
+      <div className="container-main pb-12 lg:pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 md:gap-8 lg:gap-12">
 
           {/* BRAND AND INFO */}
-          <div className="lg:col-span-4 space-y-10">
+          <div className="lg:col-span-4 space-y-8 lg:space-y-10">
             <div>
               <h3 className="text-3xl font-black text-white mb-6 tracking-tighter flex items-center gap-2">
                 Infinity <span className="text-solarGreen text-glow">Helios</span>
               </h3>
-              <p className="text-lg text-slate-400 font-light leading-relaxed max-w-sm">
+              <p className="text-base lg:text-lg text-slate-400 font-light leading-relaxed max-w-sm">
                 Engineering a sustainable future through intelligent solar infrastructure and high-performance energy systems.
               </p>
             </div>
@@ -99,8 +99,8 @@ export default function Footer() {
 
           {/* QUICK LINKS */}
           <div className="lg:col-span-2 lg:ml-auto">
-            <h4 className="font-black text-white mb-8 text-xs uppercase tracking-[0.2em]">Engineering</h4>
-            <ul className="space-y-4">
+            <h4 className="font-black text-white mb-6 lg:mb-8 text-xs uppercase tracking-[0.2em]">Engineering</h4>
+            <ul className="space-y-3 lg:space-y-4">
               {[
                 { name: "Solar Panels", path: "/products" },
                 { name: "ROI Calculator", path: "/calculator", highlight: true },
@@ -124,8 +124,8 @@ export default function Footer() {
 
           {/* SUPPORT */}
           <div className="lg:col-span-2">
-            <h4 className="font-black text-white mb-8 text-xs uppercase tracking-[0.2em]">Customer Support</h4>
-            <ul className="space-y-4 text-sm">
+            <h4 className="font-black text-white mb-6 lg:mb-8 text-xs uppercase tracking-[0.2em]">Customer Support</h4>
+            <ul className="space-y-3 lg:space-y-4 text-sm">
               <li><Link to="/maintenance" className="text-slate-400 hover:text-white transition-colors">Monitoring Care</Link></li>
               <li><Link to="/dashboard" className="text-slate-400 hover:text-white transition-colors">Client Dashboard</Link></li>
               <li><Link to="/faq" className="text-slate-400 hover:text-white transition-colors">Help Center & FAQ</Link></li>
@@ -138,7 +138,7 @@ export default function Footer() {
 
           {/* CONTACT INFO CARD */}
           <div className="lg:col-span-4">
-            <div className="bg-white/5 border border-white/10 rounded-[40px] p-10 relative overflow-hidden group">
+            <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 lg:p-10 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-solarGreen/5 rounded-full blur-2xl group-hover:bg-solarGreen/10 transition-colors" />
 
               <h4 className="font-black text-white mb-8 text-xs uppercase tracking-[0.2em]">Get in Touch</h4>
@@ -152,7 +152,7 @@ export default function Footer() {
 
                 <div className="space-y-2">
                   <span className="text-[10px] font-black uppercase text-solarGreen tracking-widest">Contact Directly</span>
-                  <a href="tel:+919000000000" className="block text-2xl font-black text-white hover:text-solarGreen transition-colors">
+                  <a href="tel:+919000000000" className="block text-xl lg:text-2xl font-black text-white hover:text-solarGreen transition-colors">
                     +91 90000 00000
                   </a>
                 </div>
