@@ -42,6 +42,7 @@ import ShippingPolicy from "./pages/ShippingPolicy";
 import NotFound from "./pages/NotFound";
 
 import SplashScreen from "./components/SplashScreen";
+import CookieBanner from "./components/CookieBanner";
 
 function App() {
   // Start in dark mode by default
@@ -127,6 +128,8 @@ function App() {
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                   <Footer />
+                  <FloatingActionButtons />
+                  <CookieBanner /> { /* GDPR Consent Banner */}
                 </div>
               </div>
             </BrowserRouter>
