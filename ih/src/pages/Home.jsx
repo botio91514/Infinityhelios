@@ -10,6 +10,7 @@ import Testimonials from "../components/Testimonials";
 import RollingBanner from "../components/RollingBanner";
 
 import SEO from "../components/SEO";
+import commercialImg from "../assets/products/commercial.jpg";
 
 export default function Home() {
   return (
@@ -28,7 +29,7 @@ export default function Home() {
             loop
             playsInline
             preload="auto"
-            poster="/assets/products/commercial.jpg"
+            poster={commercialImg}
             className="w-full h-full object-cover scale-105"
           >
             <source src="/hero/solar.mp4" type="video/mp4" />
