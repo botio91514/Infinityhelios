@@ -36,12 +36,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 md:gap-8 lg:gap-12">
 
           {/* BRAND AND INFO */}
-          <div className="lg:col-span-4 space-y-8 lg:space-y-10">
+          <div className="lg:col-span-4 space-y-8 lg:space-y-10 text-center lg:text-left">
             <div>
-              <h3 className="text-3xl font-black text-white mb-6 tracking-tighter flex items-center gap-2">
+              <h3 className="text-3xl font-black text-white mb-6 tracking-tighter flex items-center justify-center lg:justify-start gap-2">
                 Infinity <span className="text-solarGreen text-glow">Helios</span>
               </h3>
-              <p className="text-base lg:text-lg text-slate-400 font-light leading-relaxed max-w-sm">
+              <p className="text-base lg:text-lg text-slate-400 font-light leading-relaxed max-w-sm mx-auto lg:mx-0">
                 Engineering a sustainable future through intelligent solar infrastructure and high-performance energy systems.
               </p>
             </div>
@@ -49,7 +49,7 @@ export default function Footer() {
             {/* Newsletter */}
             <div className="space-y-6">
               <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-white">Join the Clean Revolution</h5>
-              <form onSubmit={handleSubscribe} className="relative max-w-sm">
+              <form onSubmit={handleSubscribe} className="relative max-w-sm mx-auto lg:mx-0">
                 <input
                   type="email"
                   value={email}
@@ -79,7 +79,7 @@ export default function Footer() {
             </div>
 
             {/* Social Media */}
-            <div className="flex gap-4">
+            <div className="flex justify-center lg:justify-start gap-4">
               {[
                 { icon: <Linkedin className="w-5 h-5" />, href: "https://linkedin.com/company/infinityhelios" },
                 { icon: <Twitter className="w-5 h-5" />, href: "https://twitter.com/infinityhelios" },
@@ -98,7 +98,7 @@ export default function Footer() {
           </div>
 
           {/* QUICK LINKS */}
-          <div className="lg:col-span-2 lg:ml-auto">
+          <div className="lg:col-span-2 lg:ml-auto text-center lg:text-left">
             <h4 className="font-black text-white mb-6 lg:mb-8 text-xs uppercase tracking-[0.2em]">Engineering</h4>
             <ul className="space-y-3 lg:space-y-4">
               {[
@@ -111,7 +111,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     to={link.path}
-                    className={`text-sm transition-all duration-300 flex items-center gap-2 group ${link.highlight ? "text-solarGreen font-bold" : "text-slate-400 hover:text-white"
+                    className={`text-sm transition-all duration-300 flex items-center justify-center lg:justify-start gap-2 group ${link.highlight ? "text-solarGreen font-bold" : "text-slate-400 hover:text-white"
                       }`}
                   >
                     <ArrowRight className={`w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all ${link.highlight ? "opacity-100 translate-x-0" : ""}`} />
@@ -123,22 +123,22 @@ export default function Footer() {
           </div>
 
           {/* SUPPORT */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 text-center lg:text-left">
             <h4 className="font-black text-white mb-6 lg:mb-8 text-xs uppercase tracking-[0.2em]">Customer Support</h4>
             <ul className="space-y-3 lg:space-y-4 text-sm">
-              <li><Link to="/maintenance" className="text-slate-400 hover:text-white transition-colors">Monitoring Care</Link></li>
-              <li><Link to="/dashboard" className="text-slate-400 hover:text-white transition-colors">Client Dashboard</Link></li>
-              <li><Link to="/faq" className="text-slate-400 hover:text-white transition-colors">Help Center & FAQ</Link></li>
-              <li><Link to="/terms" className="text-slate-400 hover:text-white transition-colors">Terms & Conditions</Link></li>
-              <li><Link to="/shipping-policy" className="text-slate-400 hover:text-white transition-colors">Shipping & Returns</Link></li>
-              <li><Link to="/privacy-data" className="text-slate-400 hover:text-white transition-colors">Privacy & Data</Link></li>
-              <li><Link to="/compliance" className="text-slate-400 hover:text-white transition-colors">Compliance</Link></li>
+              <li><Link to="/maintenance" className="text-slate-400 hover:text-white transition-colors block lg:inline">Monitoring Care</Link></li>
+              <li><Link to="/dashboard" className="text-slate-400 hover:text-white transition-colors block lg:inline">Client Dashboard</Link></li>
+              <li><Link to="/faq" className="text-slate-400 hover:text-white transition-colors block lg:inline">Help Center & FAQ</Link></li>
+              <li><Link to="/terms" className="text-slate-400 hover:text-white transition-colors block lg:inline">Terms & Conditions</Link></li>
+              <li><Link to="/shipping-policy" className="text-slate-400 hover:text-white transition-colors block lg:inline">Shipping & Returns</Link></li>
+              <li><Link to="/privacy-data" className="text-slate-400 hover:text-white transition-colors block lg:inline">Privacy & Data</Link></li>
+              <li><Link to="/compliance" className="text-slate-400 hover:text-white transition-colors block lg:inline">Compliance</Link></li>
             </ul>
           </div>
 
           {/* CONTACT INFO CARD */}
           <div className="lg:col-span-4">
-            <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 lg:p-10 relative overflow-hidden group">
+            <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 lg:p-10 relative overflow-hidden group text-center lg:text-left">
               <div className="absolute top-0 right-0 w-32 h-32 bg-solarGreen/5 rounded-full blur-2xl group-hover:bg-solarGreen/10 transition-colors" />
 
               <h4 className="font-black text-white mb-8 text-xs uppercase tracking-[0.2em]">Get in Touch</h4>
@@ -158,8 +158,8 @@ export default function Footer() {
                 </div>
               </div>
 
-              <div className="mt-10 pt-10 border-t border-white/5 flex items-center justify-between">
-                <div className="flex gap-4 opacity-40">
+              <div className="mt-10 pt-10 border-t border-white/5 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div className="flex gap-4 opacity-40 justify-center">
                   <ShieldCheck className="w-6 h-6" />
                   <Zap className="w-6 h-6 text-solarGreen" />
                 </div>
