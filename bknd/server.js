@@ -50,7 +50,8 @@ const wc = axios.create({
         password: process.env.WC_CONSUMER_SECRET,
     },
     headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
 });
 
@@ -219,10 +220,16 @@ app.use("/api/store", async (req, res) => {
     try {
         const headers = {
             ...req.headers,
-            host: new URL(WP_BASE_URL).host
+            host: new URL(WP_BASE_URL).host,
+            origin: WP_BASE_URL,
+            referer: WP_BASE_URL,
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         };
+
+        // Remove headers that often trigger security blocks or are invalid for the upstream
         delete headers["content-length"];
         delete headers["connection"];
+        delete headers["cookie"]; // Important: Localhost cookies can trigger ModSecurity on remote servers
 
         const response = await axios({
             method: req.method,
@@ -240,7 +247,16 @@ app.use("/api/store", async (req, res) => {
 
     } catch (error) {
         console.error(`[Store Proxy Error] ${targetUrl}:`, error.message);
-        res.status(error.response?.status || 500).json(error.response?.data || { message: "Store API Error" });
+
+        if (error.response) {
+            console.error("Upstream Response Status:", error.response.status);
+            console.error("Upstream Response Data:", JSON.stringify(error.response.data, null, 2));
+
+            // Forward the exact error from WP
+            res.status(error.response.status).json(error.response.data);
+        } else {
+            res.status(500).json({ message: "Store API Error", detail: error.message });
+        }
     }
 });
 
@@ -539,8 +555,18 @@ app.post("/api/place-secure-order", async (req, res) => {
         res.json(response.data);
 
     } catch (error) {
-        console.error("[Order Placement Error]", error.response?.data || error.message);
-        res.status(500).json({ error: "Failed to place order after payment" });
+        console.error("###################################################");
+        console.error("[CRITICAL PAYMENT ALERT] Order creation failed for PAID transaction!");
+        console.error("Transaction ID:", payment_intent_id);
+        console.error("Error Details:", error.response?.data || error.message);
+        console.error("###################################################");
+
+        res.status(500).json({
+            error: "Order creation failed, but payment was successful.",
+            fatal: true,
+            transaction_id: payment_intent_id,
+            details: error.message
+        });
     }
 });
 
