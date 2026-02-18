@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect } from "react";
 
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
@@ -26,6 +26,7 @@ import OrderTracking from "./pages/OrderTracking";
 import OrderSuccess from "./pages/OrderSuccess";
 import OrderFailed from "./pages/OrderFailed";
 import PaymentVerify from "./pages/PaymentVerify";
+import OrderConfirmation from "./pages/OrderConfirmation";
 import Dashboard from "./pages/Dashboard";
 import Invoice from "./pages/Invoice";
 import Maintenance from "./pages/Maintenance";
@@ -42,8 +43,6 @@ import SplashScreen from "./components/SplashScreen";
 import CookieBanner from "./components/CookieBanner";
 
 import { ProductProvider } from "./context/ProductContext";
-
-const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
 
 function App() {
   // Start in dark mode by default
@@ -78,54 +77,55 @@ function App() {
                 <div className={darkMode ? "dark" : ""}>
                   <div className="min-h-screen overflow-x-hidden bg-white dark:bg-solarBlue text-slate-900 dark:text-white transition-colors duration-300">
                     <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
-                    <Suspense fallback={<div className="min-h-screen grid place-items-center"><div className="w-10 h-10 border-4 border-solarGreen border-t-transparent rounded-full animate-spin"></div></div>}>
-                      <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/products" element={<ProductsPage />} />
-                        <Route path="/product/:id" element={<ProductDetails />} />
-                        <Route path="/cart" element={<Cart />} />
-                        <Route
-                          path="/checkout"
-                          element={<Checkout />}
-
-                        />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/forgot-password" element={<ForgotPassword />} />
-                        <Route path="/track-order" element={<OrderTracking />} />
-                        <Route path="/order-success" element={<OrderSuccess />} />
-                        <Route path="/order-failed" element={<OrderFailed />} />
-                        <Route path="/payment-verify" element={<PaymentVerify />} />
-                        <Route path="/order-confirmation" element={<OrderConfirmation />} />
-                        <Route
-                          path="/dashboard"
-                          element={
-                            <ProtectedRoute>
-                              <Dashboard />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/maintenance" element={<Maintenance />} />
-                        <Route path="/learning-hub" element={<LearningHub />} />
-                        <Route path="/blog/:id" element={<BlogPost />} />
-                        <Route path="/privacy-data" element={<PrivacyData />} />
-                        <Route path="/compliance" element={<Compliance />} />
-                        <Route path="/terms" element={<Terms />} />
-                        <Route path="/faq" element={<FAQ />} />
-                        <Route path="/shipping-policy" element={<ShippingPolicy />} />
-                        <Route
-                          path="/order/:id/invoice"
-                          element={
-                            <ProtectedRoute>
-                              <Invoice />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </Suspense>
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/products" element={<ProductsPage />} />
+                      <Route path="/product/:id" element={<ProductDetails />} />
+                      <Route path="/cart" element={<Cart />} />
+                      <Route
+                        path="/checkout"
+                        element={
+                          <ProtectedRoute>
+                            <Checkout />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/forgot-password" element={<ForgotPassword />} />
+                      <Route path="/track-order" element={<OrderTracking />} />
+                      <Route path="/order-success" element={<OrderSuccess />} />
+                      <Route path="/order-failed" element={<OrderFailed />} />
+                      <Route path="/payment-verify" element={<PaymentVerify />} />
+                      <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <Dashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/maintenance" element={<Maintenance />} />
+                      <Route path="/learning-hub" element={<LearningHub />} />
+                      <Route path="/blog/:id" element={<BlogPost />} />
+                      <Route path="/privacy-data" element={<PrivacyData />} />
+                      <Route path="/compliance" element={<Compliance />} />
+                      <Route path="/terms" element={<Terms />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                      <Route
+                        path="/order/:id/invoice"
+                        element={
+                          <ProtectedRoute>
+                            <Invoice />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
                     <Footer />
                     <FloatingActionButtons />
                     <CookieBanner /> { /* GDPR Consent Banner */}
