@@ -36,18 +36,18 @@ export default function ContactCTA() {
   };
 
   return (
-    <section className="section bg-solarBlue text-white">
+    <section className="py-10 bg-solarBlue text-white">
       <div className="container-main text-center">
         <ScrollReveal>
           <h2 className="text-4xl font-bold">
-            Ready to Switch to <span className="text-solarGreen">Solar?</span>
+            Need a <span className="text-solarGreen">Custom Quote?</span>
           </h2>
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
           <p className="mt-4 opacity-80 max-w-xl mx-auto">
-            Get a free solar consultation and discover how Infinity Helios
-            can power your home or business sustainably.
+            Looking for specific components or bulk pricing?
+            Tell us what you need, and our team will build a tailored package for you.
           </p>
         </ScrollReveal>
 
@@ -58,7 +58,7 @@ export default function ContactCTA() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Your Name"
+              placeholder="Your Name / Company"
               className="w-full md:w-auto px-5 py-4 rounded-full text-black outline-none border-2 border-transparent focus:border-solarGreen transition-all"
             />
           </StaggerItem>
@@ -68,7 +68,7 @@ export default function ContactCTA() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Your Email Address"
+              placeholder="Email Address"
               className="w-full md:w-auto px-5 py-4 rounded-full text-black outline-none border-2 border-transparent focus:border-solarGreen transition-all"
             />
           </StaggerItem>
@@ -78,7 +78,7 @@ export default function ContactCTA() {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              placeholder="Phone Number"
+              placeholder="Phone / Requirements"
               className="w-full md:w-auto px-5 py-4 rounded-full text-black outline-none border-2 border-transparent focus:border-solarGreen transition-all"
             />
           </StaggerItem>
@@ -96,7 +96,7 @@ export default function ContactCTA() {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : status === "success" ? (
                 <>
-                  <Check className="w-5 h-5" /> Sent!
+                  <Check className="w-5 h-5" /> Request Sent
                 </>
               ) : (
                 "Get Free Quote"

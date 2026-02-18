@@ -57,7 +57,7 @@ export default function About() {
             transition={{ duration: 0.6 }}
           >
             <span className="inline-block px-3 py-1 rounded-full bg-solarGreen/10 text-solarGreen text-xs font-bold tracking-widest uppercase mb-4">
-              Who We Are
+              Our Mission
             </span>
           </motion.div>
 
@@ -67,9 +67,8 @@ export default function About() {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="text-4xl md:text-5xl font-black mb-6 text-slate-900 dark:text-white"
           >
-            Engineering the <br />
-            <span className="text-solarGreen">Next Generation</span> <br />
-            of Clean Energy
+            Your Trusted Global Partner for <br />
+            <span className="text-solarGreen">Solar Component Supply</span>
           </motion.h1>
 
           <motion.p
@@ -78,9 +77,9 @@ export default function About() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="max-w-2xl text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-light"
           >
-            Infinity Helios is a technology-driven solar energy company focused on
-            designing intelligent, high-performance renewable power systems that
-            scale from individual homes to global energy infrastructure.
+            Infinity Helios is a premier digital marketplace and distributor for solar hardware.
+            We connect installers, businesses, and homeowners with authentic, Tier-1 photovoltaic components,
+            streamlining the supply chain for a sustainable future.
           </motion.p>
         </div>
 
@@ -91,7 +90,7 @@ export default function About() {
               <div className="absolute inset-0 bg-solarGreen/20 rounded-[30px] blur-2xl group-hover:blur-3xl transition-all duration-700 -z-10" />
               <img
                 src="/images/about/solarfarm.jpg"
-                alt="Solar Plant"
+                alt="Solar Warehouse"
                 className="rounded-[30px] shadow-xl w-full object-cover max-h-[400px] border border-white/10"
               />
             </div>
@@ -100,29 +99,29 @@ export default function About() {
           <ScrollReveal delay={0.2}>
             <div className="space-y-6">
               <h2 className="text-3xl md:text-4xl font-black leading-tight text-slate-900 dark:text-white">
-                Built on Precision. <br />
-                <span className="text-solarGreen">Driven by Purpose.</span>
+                Authentic Quality. <br />
+                <span className="text-solarGreen">Global Reach.</span>
               </h2>
               <div className="space-y-4 text-base text-slate-600 dark:text-slate-400 leading-relaxed">
                 <p>
-                  We believe renewable energy should be engineered — not improvised.
-                  Every Infinity Helios system is designed with precision, tested for
-                  durability, and optimized for long-term performance.
+                  Sourcing reliable solar hardware shouldn't be complicated.
+                  We have built strong direct relationships with the world's leading manufacturers
+                  to ensure every panel, inverter, and battery you buy is 100% genuine and competitively priced.
                 </p>
                 <p>
-                  Our expertise spans residential rooftops, commercial facilities, and
-                  large-scale industrial installations across diverse environments.
+                  Whether you are outfitting a single rooftop or sourcing for a megawatt-scale project,
+                  our robust logistics network ensures your equipment arrives on time and site-ready.
                 </p>
               </div>
 
               <div className="flex flex-wrap gap-4 pt-2">
                 <div className="flex items-center gap-2 bg-slate-50 dark:bg-white/5 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10">
-                  <Zap className="w-4 h-4 text-solarGreen" />
-                  <span className="text-sm font-bold text-slate-900 dark:text-white">High Efficiency</span>
+                  <Globe className="w-4 h-4 text-solarGreen" />
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">Global Logistics</span>
                 </div>
                 <div className="flex items-center gap-2 bg-slate-50 dark:bg-white/5 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10">
                   <ShieldCheck className="w-4 h-4 text-solarGreen" />
-                  <span className="text-sm font-bold text-slate-900 dark:text-white">Certified Quality</span>
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">Authentic Brands</span>
                 </div>
               </div>
             </div>
@@ -133,8 +132,8 @@ export default function About() {
         <div className="py-8">
           <ScrollReveal>
             <div className="text-center mb-10">
-              <span className="text-solarGreen font-bold tracking-widest uppercase text-xs mb-2 block">Our Evolution</span>
-              <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">The Road to <span className="text-solarGreen">Innovation</span></h2>
+              <span className="text-solarGreen font-bold tracking-widest uppercase text-xs mb-2 block">Our Growth</span>
+              <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">Building the <span className="text-solarGreen">Supply Chain</span></h2>
             </div>
           </ScrollReveal>
 
@@ -163,12 +162,12 @@ export default function About() {
                 <div className="space-y-4">
                   <span className="text-5xl font-black text-solarGreen/20">2018</span>
                   <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
-                    Foundation & Vision
+                    A Focused Distributor
                   </h3>
                   <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Infinity Helios was founded with a mission to deliver engineered,
-                    high-efficiency solar solutions focused on reliability, safety,
-                    and measurable performance.
+                    Infinity Helios began as a specialized distributor in the UK,
+                    identifying a need for faster, more reliable access to high-efficiency solar modules
+                    for local installers.
                   </p>
                 </div>
               </ScrollReveal>
@@ -216,12 +215,11 @@ export default function About() {
                   <div className="space-y-4">
                     <span className="text-5xl font-black text-solarGreen/20">2021</span>
                     <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
-                      Scaling Across Industries
+                      Expanding Warehousing
                     </h3>
                     <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed">
-                      We expanded into commercial and industrial solar projects,
-                      delivering scalable solutions tailored to diverse operational
-                      and environmental requirements.
+                      We expanded our portfolio to include inverters, storage systems, and mounting hardware,
+                      establishing strategic warehousing hubs to drastically reduce lead times for our partners.
                     </p>
                   </div>
                 </ScrollReveal>
@@ -245,12 +243,12 @@ export default function About() {
                 <div className="space-y-4">
                   <span className="text-5xl font-black text-solarGreen/20">2024</span>
                   <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
-                    Intelligent Energy Systems
+                    Digital Marketplace
                   </h3>
                   <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Today, Infinity Helios integrates smart monitoring, advanced
-                    analytics, and automation to deliver intelligent energy systems
-                    built for the future.
+                    Today, Infinity Helios is a full-service e-commerce platform,
+                    giving instant access to live inventory, wholesale pricing,
+                    and expert technical support to customers worldwide.
                   </p>
                 </div>
               </ScrollReveal>
@@ -260,7 +258,7 @@ export default function About() {
                   <div className="absolute -inset-4 bg-gradient-to-br from-solarGreen/20 to-solarOrange/20 blur-2xl rounded-full -z-10 opacity-50" />
                   <img
                     src="/images/about/journey3.jpg"
-                    alt="Smart Energy"
+                    alt="Digital Platform"
                     className="rounded-[20px] shadow-lg w-full max-h-[300px] object-cover"
                   />
                 </div>
@@ -273,9 +271,9 @@ export default function About() {
         <div className="py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: <Target className="w-8 h-8" />, title: "Mission", desc: "Deliver engineered solar solutions with long-term value and measurable impact." },
-              { icon: <Eye className="w-8 h-8" />, title: "Vision", desc: "Lead the global transition to intelligent, self-sustaining renewable energy." },
-              { icon: <ShieldCheck className="w-8 h-8" />, title: "Values", desc: "Integrity, innovation, sustainability, and absolute engineering excellence." },
+              { icon: <Target className="w-8 h-8" />, title: "Mission", desc: "To provide the most reliable and efficient supply chain for high-quality solar components." },
+              { icon: <Eye className="w-8 h-8" />, title: "Vision", desc: "To be the world's leading digital marketplace for renewable energy hardware." },
+              { icon: <ShieldCheck className="w-8 h-8" />, title: "Guarantee", desc: "We only sell authentic products with full manufacturer warranties and support." },
             ].map((item, i) => (
               <ScrollReveal key={i} delay={i * 0.1}>
                 <div className="bg-slate-50 dark:bg-white/5 backdrop-blur-xl p-8 rounded-[30px] border border-slate-200 dark:border-white/10 group hover:border-solarGreen/50 transition-colors duration-500 h-full">
@@ -300,17 +298,16 @@ export default function About() {
 
             <div className="relative z-10 space-y-6">
               <h3 className="text-3xl md:text-4xl font-black text-white leading-tight">
-                Powering Progress. <br />
-                <span className="text-solarGreen text-glow">Protecting Tomorrow.</span>
+                Ready to Scale <br />
+                <span className="text-solarGreen text-glow">Your Solar Business?</span>
               </h3>
               <p className="text-white/70 leading-relaxed max-w-xl mx-auto text-base md:text-lg font-light">
-                Infinity Helios partners with organizations that demand performance,
-                responsibility, and innovation — delivering energy systems built for
-                generations to come.
+                Join thousands of installers and homeowners who trust Infinity Helios
+                for their hardware needs. Competitive pricing, fast shipping, and expert support.
               </p>
               <div className="pt-4">
                 <button className="px-8 py-4 bg-solarGreen hover:bg-solarGreen/90 text-white font-black rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-solarGreen/20 flex items-center gap-3 mx-auto text-sm tracking-widest uppercase">
-                  Partner with Us <ArrowRight className="w-4 h-4" />
+                  Open Trade Account <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>

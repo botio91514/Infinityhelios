@@ -43,7 +43,7 @@ export default function Stats() {
   const items = [
     { value: 10, label: "Years Experience" },
     { value: 25, label: "Countries Served" },
-    { value: 1000, label: "Projects Completed" },
+    { value: 1000, label: "Successfully Delivered" },
     { value: 99, label: "Customer Satisfaction" },
   ];
 

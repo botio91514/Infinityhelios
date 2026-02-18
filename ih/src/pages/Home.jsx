@@ -4,10 +4,12 @@ import { ArrowRight, Play } from "lucide-react";
 import Stats from "../components/Stats";
 import ProductCatalog from "../components/ProductCatalog";
 import Technology from "../components/Technology";
-import Projects from "../components/Projects";
 import ContactCTA from "../components/ContactCTA";
 import Testimonials from "../components/Testimonials";
 import RollingBanner from "../components/RollingBanner";
+import CategoryGrid from "../components/CategoryGrid";
+import ShopByCategory from "../components/ShopByCategory";
+import ShopByBrand from "../components/ShopByBrand";
 
 import SEO from "../components/SEO";
 import commercialImg from "../assets/products/commercial.jpg";
@@ -49,7 +51,7 @@ export default function Home() {
               className="mt-8 mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-solarGreen/20 backdrop-blur-md border border-solarGreen/30"
             >
               <span className="w-2 h-2 rounded-full bg-solarGreen animate-pulse"></span>
-              <span className="text-solarGreen text-xs font-bold tracking-widest uppercase">Pioneering Renewable Excellence</span>
+              <span className="text-solarGreen text-xs font-bold tracking-widest uppercase">Premium Solar Hardware Marketplace</span>
             </motion.div>
 
             <motion.h1
@@ -58,9 +60,9 @@ export default function Home() {
               transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="text-premium-h2 text-white mb-10"
             >
-              Powering an <br />
-              <span className="text-solarGreen text-glow">Infinite</span> <br />
-              Sustainable Future
+              The World's Best <br />
+              <span className="text-solarGreen text-glow">Solar Components</span> <br />
+              Direct to You
             </motion.h1>
 
             <motion.p
@@ -69,8 +71,8 @@ export default function Home() {
               transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="max-w-2xl text-xl md:text-2xl text-white/80 mb-12 font-light leading-relaxed"
             >
-              Advanced solar solutions engineered for homes, businesses, and industries —
-              built for performance, reliability, and a cleaner tomorrow.
+              Shop Tier-1 Modules, Inverters, Mounting Systems, and Batteries.
+              High-efficiency hardware for every project size, delivered with speed.
             </motion.p>
 
             <motion.div
@@ -79,25 +81,25 @@ export default function Home() {
               transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-wrap gap-6"
             >
-              <Link to="/contact">
+              <Link to="/products">
                 <motion.button
                   whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(100, 255, 153, 0.3)" }}
                   whileTap={{ scale: 0.95 }}
                   className="group px-6 py-3 md:px-10 md:py-5 rounded-full bg-solarGreen text-solarBlue font-black transition-all duration-300 flex items-center gap-3"
                 >
-                  Get Free Solar Quote
+                  Shop Now
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </Link>
 
-              <Link to="/products">
+              <Link to="/contact">
                 <motion.button
                   whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.15)" }}
                   whileTap={{ scale: 0.95 }}
                   className="px-6 py-3 md:px-10 md:py-5 rounded-full border-2 border-white/20 text-white bg-white/5 backdrop-blur-xl transition-all duration-300 flex items-center gap-3 font-bold"
                 >
                   <Play className="w-4 h-4 fill-white" />
-                  Explore Products
+                  Bulk Orders
                 </motion.button>
               </Link>
             </motion.div>
@@ -128,9 +130,11 @@ export default function Home() {
         </div>
 
         <Stats />
+        <CategoryGrid />
+        <ShopByCategory />
+        <ShopByBrand limit={4} />
         <ProductCatalog limit={4} />
         <Technology />
-        <Projects />
         <Testimonials />
         <ContactCTA />
       </div>

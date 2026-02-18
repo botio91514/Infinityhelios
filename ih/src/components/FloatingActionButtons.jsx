@@ -1,9 +1,31 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ArrowUp } from "lucide-react";
 
 export default function FloatingActionButtons() {
-  const [isHovered, setIsHovered] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Toggle visibility of scroll-to-top button
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   const whatsappNumber = "919000000000";
   const whatsappMessage = "Hello, I'm interested in your solar solutions.";
@@ -52,7 +74,23 @@ export default function FloatingActionButtons() {
   ];
 
   return (
-    <div className="fixed right-4 md:right-8 bottom-8 z-[100] flex flex-col gap-4">
+    <div className="fixed right-4 md:right-8 bottom-8 z-[100] flex flex-col gap-4 items-end">
+      {/* Scroll To Top Button */}
+      <AnimatePresence>
+        {isVisible && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.5, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: 20 }}
+            onClick={scrollToTop}
+            className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl flex items-center justify-center cursor-pointer border-2 border-white/20 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors mb-2"
+          >
+            <ArrowUp className="w-6 h-6" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Main Actions */}
       {actions.map((action) => (
         <div key={action.id} className="relative group flex items-center justify-end">
           <span

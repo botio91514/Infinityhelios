@@ -263,14 +263,65 @@ app.use("/api/store", async (req, res) => {
 // ---------------------------------------------------------
 // 5. DATA FETCHING ROUTES
 // ---------------------------------------------------------
+// Simple In-Memory Cache
+let productsCache = {
+    data: null,
+    timestamp: 0,
+    TTL: 1000 * 60 * 15 // 15 Minutes Cache
+};
+
 app.get("/api/products", async (req, res) => {
     try {
-        console.log("Fetching products from:", `${WP_BASE_URL}/wp-json/wc/v3/products`);
-        const response = await wc.get("/products");
-        res.json(response.data);
+        const now = Date.now();
+
+        // Check if cache is valid
+        if (productsCache.data && (now - productsCache.timestamp < productsCache.TTL)) {
+            console.log("Serving cached products");
+            return res.json(productsCache.data);
+        }
+
+        console.log("Fetching ALL products from WooCommerce...");
+
+        let allProducts = [];
+        let page = 1;
+        let hasMore = true;
+
+        while (hasMore) {
+            console.log(`Fetching page ${page}...`);
+            const response = await wc.get("/products", {
+                params: {
+                    per_page: 100,
+                    page: page,
+                    status: 'publish' // Ensure we only get published products
+                }
+            });
+
+            const products = response.data;
+            if (products.length === 0) {
+                hasMore = false;
+            } else {
+                allProducts = allProducts.concat(products);
+                page++;
+            }
+
+            // Safety break to prevent infinite loops if something goes wrong (e.g. 50 pages = 5000 products)
+            if (page > 50) break;
+        }
+
+        console.log(`Total products fetched: ${allProducts.length}`);
+
+        // Update Cache
+        productsCache.data = allProducts;
+        productsCache.timestamp = now;
+
+        res.json(allProducts);
     } catch (error) {
         console.error("[Products Error]", error.response?.data || error.message);
-        // Pass the actual error from WP back to frontend for debugging
+        // Serve stale cache if available on error?
+        if (productsCache.data) {
+            console.warn("Serving stale cache due to error");
+            return res.json(productsCache.data);
+        }
         res.status(error.response?.status || 500).json(error.response?.data || { error: "Failed to fetch products" });
     }
 });

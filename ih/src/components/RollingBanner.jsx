@@ -13,18 +13,18 @@ export default function RollingBanner() {
       }}
     >
       <div className="flex whitespace-nowrap animate-marquee text-base font-medium text-slate-300 dark:text-slate-400">
-        <span className="mx-10">☀️ Clean Energy Solutions</span>
-        <span className="mx-10">⚡ High-Efficiency Solar Panels</span>
-        <span className="mx-10">🌍 Renewable Energy Experts</span>
-        <span className="mx-10">🔋 Smart Solar Technology</span>
-        <span className="mx-10">♻️ Sustainable Future</span>
+        <span className="mx-10">☀️ Premium Solar & Inverters</span>
+        <span className="mx-10">⚡ Wholesale Pricing</span>
+        <span className="mx-10">🌍 Global Shipping</span>
+        <span className="mx-10">🔋 In-Stock Batteries</span>
+        <span className="mx-10">📦 Bulk Discounts</span>
 
         {/* duplicate for smooth loop */}
-        <span className="mx-10">☀️ Clean Energy Solutions</span>
-        <span className="mx-10">⚡ High-Efficiency Solar Panels</span>
-        <span className="mx-10">🌍 Renewable Energy Experts</span>
-        <span className="mx-10">🔋 Smart Solar Technology</span>
-        <span className="mx-10">♻️ Sustainable Future</span>
+        <span className="mx-10">☀️ Premium Solar & Inverters</span>
+        <span className="mx-10">⚡ Wholesale Pricing</span>
+        <span className="mx-10">🌍 Global Shipping</span>
+        <span className="mx-10">🔋 In-Stock Batteries</span>
+        <span className="mx-10">📦 Bulk Discounts</span>
       </div>
     </motion.div>
   );

@@ -41,16 +41,18 @@ export default function Navbar({ darkMode, setDarkMode }) {
     setIsMenuOpen(false);
   }, [location]);
 
+  // Products Dropdown Configuration - Removed as per request
+
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Products", path: "/products" },
-    { name: "Projects", path: "/projects" },
     { name: "Contact", path: "/contact" },
   ];
 
   const secondaryLinks = [
     { name: "Solar Care", path: "/maintenance" },
+    { name: "Track Order", path: "/track-order" },
     { name: "Knowledge Hub", path: "/learning-hub" },
   ];
 
@@ -88,21 +90,27 @@ export default function Navbar({ darkMode, setDarkMode }) {
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-10">
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-8 relative">
             {navLinks.map((link) => (
-              <Link
+              <div
                 key={link.name}
-                to={link.path}
-                className={`
-                  text-[13px] font-black uppercase tracking-widest transition-all duration-300
-                  ${location.pathname === link.path
-                    ? "text-solarGreen"
-                    : navTextColor
-                  }
-                `}
+                className="relative"
               >
-                {link.name}
-              </Link>
+                <Link
+                  to={link.path}
+                  className={`
+                    text-[13px] font-black uppercase tracking-widest transition-all duration-300 py-4
+                    ${location.pathname === link.path
+                      ? "text-solarGreen"
+                      : navTextColor
+                    }
+                  `}
+                >
+                  {link.name}
+                </Link>
+
+
+              </div>
             ))}
           </div>
 
@@ -110,10 +118,10 @@ export default function Navbar({ darkMode, setDarkMode }) {
 
           <div className="flex items-center gap-6">
             <Link
-              to="/calculator"
+              to="/track-order"
               className="px-6 py-2.5 bg-solarGreen/10 text-solarGreen text-[11px] font-black rounded-full hover:bg-solarGreen hover:text-solarBlue transition-all uppercase tracking-[0.15em] border border-solarGreen/20 shadow-lg shadow-solarGreen/5"
             >
-              Calculator
+              Track Order
             </Link>
 
             {/* Icons Group */}
@@ -246,12 +254,6 @@ export default function Navbar({ darkMode, setDarkMode }) {
                         {link.name}
                       </Link>
                     ))}
-                    <Link
-                      to="/calculator"
-                      className="block text-sm font-black text-solarGreen uppercase tracking-widest pt-2"
-                    >
-                      Solar ROI Calculator
-                    </Link>
                   </div>
 
                   <div className="mt-auto pt-8 border-t border-slate-100 dark:border-white/10 flex flex-col gap-4">

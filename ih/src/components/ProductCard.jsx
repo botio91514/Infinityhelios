@@ -47,7 +47,7 @@ export default function ProductCard({
       <div className="absolute inset-0 bg-gradient-to-br from-solarGreen/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-10" />
 
       {/* IMAGE CONTAINER - Increased height and padding for visibility */}
-      <div className="h-48 overflow-hidden bg-white dark:bg-slate-950 relative border-b border-slate-100 dark:border-white/5 flex items-center justify-center p-4">
+      <div className="h-48 overflow-hidden bg-white dark:bg-slate-950 relative border-b border-slate-100 dark:border-white/5 flex items-center justify-center">
         <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-slate-900 to-transparent opacity-20 z-10" />
         {image ? (
           <img

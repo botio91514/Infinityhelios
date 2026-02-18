@@ -9,70 +9,70 @@ const testimonials = [
     role: "Homeowner",
     location: "Mumbai, India",
     rating: 5,
-    text: "Infinity Helios transformed our home with their solar panels. Our electricity bills have dropped by 80% and the installation was seamless. Highly recommended!",
+    text: "I was looking for high-efficiency panels for my villa. The Aiko ABC modules recommended by Infinity Helios are performing incredibly well, even on cloudy days.",
     image: "👩"
   },
   {
     id: 2,
     name: "Rajesh Kumar",
-    role: "Business Owner",
-    location: "Delhi, India",
+    role: "Factory Owner",
+    location: "Gujarat, India",
     rating: 5,
-    text: "The commercial solar system has been a game-changer for our manufacturing unit. We've cut energy costs significantly while reducing our carbon footprint.",
+    text: "We installed a 100kW Growatt inverter system for our textile unit. The ROI calculation was spot on, and the power generation has exceeded our estimates by 15%.",
     image: "👨"
   },
   {
     id: 3,
     name: "Priya Sharma",
-    role: "Factory Manager",
+    role: "Interior Designer",
     location: "Bangalore, India",
     rating: 5,
-    text: "Outstanding service from start to finish. The team was professional, knowledgeable, and the system has exceeded our expectations in performance.",
+    text: "Aesthetics were important for my client's modern home. The all-black Dmegc panels look stunning on the roof, and the Enphase microinverters make monitoring so easy.",
     image: "👩"
   },
   {
     id: 4,
     name: "Amit Patel",
-    role: "Property Developer",
+    role: "Tech Entrepreneur",
     location: "Pune, India",
     rating: 5,
-    text: "We've installed Infinity Helios systems in multiple properties. Consistent quality, excellent support, and great ROI. The best solar solution provider!",
+    text: "The technical expertise at Infinity Helios is unmatched. They helped me integrate a GivEnergy battery storage system that keeps my servers running 24/7 purely on solar.",
     image: "👨"
   },
   {
     id: 5,
-    name: "Ravi Singh",
-    role: "Hospital Administrator",
+    name: "Dr. Ravi Singh",
+    role: "Hospital Director",
     location: "Chennai, India",
     rating: 5,
-    text: "Our hospital needed reliable power and Infinity Helios delivered beyond expectations. The solar installation runs flawlessly and has reduced our operational costs dramatically.",
+    text: "Reliability is critical for our hospital. The Canadian Solar modules combined with Huawei inverters have provided us with stable, clean power and massive savings.",
     image: "👨"
   },
   {
     id: 6,
     name: "Meera Desai",
-    role: "Hotel Owner",
+    role: "Resort Owner",
     location: "Goa, India",
     rating: 5,
-    text: "Installing solar panels was the best investment we made for our hotel. Guests love our commitment to sustainability, and our energy savings are incredible!",
+    text: "Our eco-resort needed a silent, efficient solution. The Enphase system is whisper-quiet and safe. Guests love seeing our real-time energy production on the lobby display.",
     image: "👩"
   },
   {
     id: 7,
     name: "Vikram Reddy",
-    role: "School Principal",
+    role: "Agricultural Consultant",
     location: "Hyderabad, India",
     rating: 5,
-    text: "Our school now runs on clean solar energy. Infinity Helios not only reduced our electricity costs but also provided an educational opportunity for our students about renewable energy.",
+    text: "For solar water pumping, you need robust gear. The Solis inverters we bought from Infinity Helios withstand the harsh heat and dust without a single glitch.",
     image: "👨"
   },
   {
     id: 8,
     name: "Anjali Mehta",
-    role: "Restaurant Owner",
-    location: "Ahmedabad, India",
+    role: "Architect",
+    location: "Delhi, India",
     rating: 5,
-    text: "Switching to solar power has been fantastic for our restaurant chain. Lower operating costs and a great way to show our commitment to the environment. Excellent service and support!",
+    text: "I specify Infinity Helios for all my sustainable projects. Their range of mounting systems and Tier-1 modules makes it easy to design compliant, high-performance roofs.",
     image: "👩"
   }
 ];
@@ -210,7 +210,7 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="section bg-slate-50 dark:bg-slate-900">
+    <section className="py-10 bg-slate-50 dark:bg-slate-900">
       <div className="container-main">
         <ScrollReveal>
           <div className="text-center mb-16">

@@ -1,28 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getProducts } from "../api/woocommerce";
+import { useProducts } from "../context/ProductContext"; // Use Context
 import ScrollReveal from "./ScrollReveal";
-import ProductCard from "./ProductCard"; // Re-using the premium card component
+import ProductCard from "./ProductCard";
 import { ArrowRight } from "lucide-react";
 import LogoLoop from "./LogoLoop";
 
 export default function ProductCatalog({ limit }) {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await getProducts();
-        setProducts(limit ? res.slice(0, limit) : res);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, [limit]);
+  const { products, loading } = useProducts(); // Use cached products
+  const displayProducts = limit ? products.slice(0, limit) : products;
 
   // Helper to strip HTML tags from description
   const stripHtml = (html) => {
@@ -32,7 +18,7 @@ export default function ProductCatalog({ limit }) {
   };
 
   // Prepare products for LogoLoop
-  const loopItems = products.map(product => ({
+  const loopItems = displayProducts.map(product => ({
     node: (
       <div className="w-[280px] h-[420px] select-none pointer-events-auto pb-4">
         <ProductCard
@@ -51,7 +37,7 @@ export default function ProductCatalog({ limit }) {
   }));
 
   return (
-    <section className="relative pt-0 pb-16 bg-white dark:bg-solarBlue overflow-hidden">
+    <section className="relative pt-0 pb-10 bg-white dark:bg-solarBlue overflow-hidden">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-solarGreen/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-solarOrange/5 rounded-full blur-[100px] pointer-events-none" />
